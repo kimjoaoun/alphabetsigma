@@ -1,6 +1,6 @@
 baseurl = "/"
 languageCode = "en-us"
-title = "A Hugo website"
+title = "Alphabet Sigma"
 theme = "hyde"
 googleAnalytics = ""
 disqusShortname = ""
