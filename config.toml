@@ -10,16 +10,19 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     post = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
-    name = "Sobre mim"
+    name = "Posts"
+    weight = 100
+    identifier = "posts"
+    url = "/posts/"
+[[menu.main]]
+    name = "About"
+    identifier = "about"
+    weight = 300
     url = "/about/"
-[[menu.main]]
-    name = "GitHub"
-    url = "https://github.com/kimjoaoun"
-[[menu.main]]
-    name = "Twitter"
-    url = "https://twitter.com/kimjoaoun"
 
 [params]
+
+    authorimage = "/img/foto.jpg"
     description = "Um blog sobre números, letras e suas interseções."
 
     # options for highlight.js (version, additional languages, and theme)
@@ -40,4 +43,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     width = 50
     height = 50
     alt = "Logo"
-
+    
+    [params.social]
+	twitter = "kimjoaoun"
+	github = "kimjoaoun"
+	linkedin = "www.linkedin.com/in/joaoposantos"
+	stackoverflow = "https://stackoverflow.com/users/9829398/john-p-s   "
