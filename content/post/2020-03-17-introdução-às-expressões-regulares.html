@@ -58,6 +58,11 @@ stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement
 ## [17] &quot;RESOURCES&quot;        &quot;THANKS&quot;</code></pre>
 <pre class="r"><code>list.files(path = R.home(&quot;doc&quot;), pattern = &quot;.\\d$&quot;) ## Essa função irá listar todos os arquivos do diretório que terminem com &quot;.[NUMERO]&quot;</code></pre>
 <pre><code>## [1] &quot;NEWS.0&quot; &quot;NEWS.1&quot; &quot;NEWS.2&quot;</code></pre>
+<p>Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:</p>
+<ul>
+<li><p>list.files - A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos <code>path</code> e <code>pattern</code>. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.</p></li>
+<li><p>R.home</p></li>
+</ul>
 <p>Como é possível observar nos três exemplos acima, a operação é feita somente na parte do texto que a expressão é compatível e essa é a beleza das Expressões Regulares. Porém, como saber o que significa uma expressão regular, e mais do que isso, como escrever uma? No bloco seguinte tento explicar um pouco da lógica por trás das expressões regulares.</p>
 </div>
 <div id="o-básico" class="section level3">

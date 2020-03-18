@@ -66,6 +66,11 @@ list.files(path = R.home("doc")) ## Essa função irá listar todos os arquivos 
 list.files(path = R.home("doc"), pattern = ".\\d$") ## Essa função irá listar todos os arquivos do diretório que terminem com ".[NUMERO]"
 ```
 
+Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:
+
+* list.files - A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos ```path``` e ```pattern```. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.
+
+* R.home
 
 Como é possível observar nos três exemplos acima, a operação é feita somente na parte do texto que a expressão é compatível e essa é a beleza das Expressões Regulares. Porém, como saber o que significa uma expressão regular, e mais do que isso, como escrever uma? No bloco seguinte tento explicar um pouco da lógica por trás das expressões regulares.
 
