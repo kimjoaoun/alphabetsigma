@@ -1,5 +1,5 @@
 baseurl = "/"
-languageCode = "en-us"
+languageCode = "en"
 title = "Alphabet Sigma"
 theme = "hyde-hyde"
 googleAnalytics = ""
@@ -10,10 +10,11 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     post = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
-    name = "Posts"
-    weight = 100
-    identifier = "posts"
-    url = "/posts/"
+    name = "Inicio"
+    identifier = "home"
+    weight = 1
+    url = "/"
+
 [[menu.main]]
     name = "About"
     identifier = "about"
@@ -21,8 +22,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     url = "/about/"
 
 [params]
-
-    authorimage = "/img/foto.jpg"
+    author = "Joao Pedro Oliveira"
+    
+    #authorimage = "/img/foto.jpg"
     description = "Um blog sobre números, letras e suas interseções."
 
     # options for highlight.js (version, additional languages, and theme)
@@ -47,5 +49,5 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     [params.social]
 	twitter = "kimjoaoun"
 	github = "kimjoaoun"
-	linkedin = "www.linkedin.com/in/joaoposantos"
-	stackoverflow = "https://stackoverflow.com/users/9829398/john-p-s   "
+	linkedin = "joaoposantos"
+	stackoverflow = "9829398/john-p-s"

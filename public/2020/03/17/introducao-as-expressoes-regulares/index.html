@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
     
     
 
@@ -76,14 +76,6 @@
         <a href="/">Alphabet Sigma</a>
       </span>
       
-        
-        
-        
-        <div class="author-image">
-          <img src="/img/foto.jpg" alt="Author Image" class="img--circle img--headshot element--center">
-        </div>
-        
-      
       
       <p class="site__description">
          Um blog sobre números, letras e suas interseções. 
@@ -99,8 +91,8 @@
 		 
 			 
 				<li>
-					<a href="/posts/">
-						<span>Posts</span>
+					<a href="/">
+						<span>Inicio</span>
 					</a>
 				</li>
 			 
@@ -130,10 +122,10 @@
 	
 	
 	
-	<a href="https://linkedin.com/in/www.linkedin.com/in/joaoposantos" rel="me"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a>
+	<a href="https://linkedin.com/in/joaoposantos" rel="me"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a>
 	
 	
-	<a href="https://stackoverflow.com/users/https://stackoverflow.com/users/9829398/john-p-s%20%20%20" rel="me"><i class="fab fa-stack-overflow fa-lg" aria-hidden="true"></i></a>
+	<a href="https://stackoverflow.com/users/9829398/john-p-s" rel="me"><i class="fab fa-stack-overflow fa-lg" aria-hidden="true"></i></a>
 	
 	
 	
@@ -231,10 +223,12 @@ Observando a falta de material relacionado ao Processamento de Linguagem Natural
 <p>Se você substituir o biscoitão por um texto e o <em>cortador</em> por um tipo de pseudo-código feito para fazer abstrações do texto (qual possui o nome técnico de <code>denotations</code>), você já entendeu o que são as expressões regulares.</p>
 <p>Deixando a metáfora de lado, expressões regulares são um conjunto de comandos que possuem como objetivo representar uma construção textual. Estes podem ser usados para diversas operações encontrar um conjunto de palavras em textos de qualquer extensão.</p>
 <pre class="r"><code>frase = &quot;Eu sou um grande apreciador de bolos e sobremesas doces&quot;
+
 stringr::str_extract(string = frase, pattern = &quot;grande\\sapreciador\\sde\\s\\w{5}&quot;)</code></pre>
 <pre><code>## [1] &quot;grande apreciador de bolos&quot;</code></pre>
 <p>Ou substituir um bloco de texto por outro. Não raro encontramos pessoas que não gostam de bolos, tudo bem, existem outras alternativas!</p>
 <pre class="r"><code>frase = &quot;Eu sou um grande apreciador de bolos e sobremesas doces&quot;
+
 stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement = &quot;tortas&quot;)</code></pre>
 <pre><code>## [1] &quot;Eu sou um grande apreciador de tortas e sobremesas doces&quot;</code></pre>
 <p>Mas elas não aparecem somente quando você está lidando com strings, diversas funções aceitam expressões regulares em seus argumentos, como é o caso da função <code>base::list.files()</code>, essa função lista todos os arquivos que estão dentro de um diretório escolhido, mas aceita um argumento chamado “pattern”:</p>

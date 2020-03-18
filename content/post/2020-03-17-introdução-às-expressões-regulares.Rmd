@@ -50,6 +50,7 @@ Deixando a metáfora de lado, expressões regulares são um conjunto de comandos
 
 ```{r echo=TRUE}
 frase = "Eu sou um grande apreciador de bolos e sobremesas doces"
+
 stringr::str_extract(string = frase, pattern = "grande\\sapreciador\\sde\\s\\w{5}")
 ```
 
@@ -57,6 +58,7 @@ Ou substituir um bloco de texto por outro. Não raro encontramos pessoas que nã
 
 ```{r echo=TRUE}
 frase = "Eu sou um grande apreciador de bolos e sobremesas doces"
+
 stringr::str_replace(string = frase, pattern = "b\\w{3}s", replacement = "tortas")
 ```
 
