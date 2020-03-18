@@ -8,6 +8,11 @@
   </url>
   
   <url>
+    <loc>/categories/dificuldade-intermediaria/</loc>
+    <lastmod>2020-03-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2020/03/17/introducao-as-expressoes-regulares/</loc>
     <lastmod>2020-03-17T00:00:00+00:00</lastmod>
   </url>
@@ -33,17 +38,7 @@
   </url>
   
   <url>
-    <loc>/categories/r/</loc>
-    <lastmod>2020-03-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/regex/</loc>
-    <lastmod>2020-03-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/regex/</loc>
     <lastmod>2020-03-17T00:00:00+00:00</lastmod>
   </url>
   

@@ -13,8 +13,7 @@ tags:
   - r
 Categories:
   - nlp
-  - r
-  - regex
+  - dificuldade intermediaria
 Description: ''
 Tags:
   - nlp
@@ -26,12 +25,16 @@ Tags:
 
 
 <p><strong>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.</strong></p>
+<ul>
+<li>São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.</li>
+</ul>
 <div id="parte-1." class="section level2">
 <h2>Parte 1.</h2>
 <div id="one-reason-why" class="section level3">
 <h3>One Reason Why</h3>
 <p>Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês. Por conta dessa deficiência iniciei este blog.
 Observando a falta de material relacionado ao Processamento de Linguagem Natural (NLP) em R disponível - em português - na internet, inicio este projeto como uma forma de popular o ecossistema de NLP em português.</p>
+<p><em>Antes de tudo aproveito para lembrar ao leitor que blocos de texto no R são chamados de <code>strings</code>. Uma String não é nada mais que uma cadeia de caracteres, que tem como característica principal estar entre aspas simples (’’) ou aspas duplas (&quot;&quot;).</em></p>
 </div>
 </div>
 <div id="expressões-regulares" class="section level2">
@@ -40,7 +43,7 @@ Observando a falta de material relacionado ao Processamento de Linguagem Natural
 <h3>O que são, e motivos para aprender.</h3>
 <p>A maioria dos leitores deve apreciar um biscoitão caseiro. Sim, um biscoito, aquele que sua mãe fazia nas manhãs de domingo e que você provavelmente tomava com um leite ou algo do tipo. Sua mãe não fazia? Tudo bem, mas ainda assim, esses biscoitos são bons e são intimamente ligados com o assunto desse post.</p>
 <p>Quando um biscoito é feito é comum que usemos de um cortador para que ele fique em um formato agradável, alguns gostam de estrelas, outros da lua, os americanos adoram aquele em formato de boneco. Sempre que pressionar o cortador contra o biscoito, parte do biscoito de solta com os contornos iguais aos do cortador. A melhor coisa disso é que isso pode ser repetido em qualquer superficie de biscoito maior que a forma, gerando biscoitinhos semelhantes ao primeiro.</p>
-<p>Se você substituir o biscoitão por um texto (<code>strings</code>), e o <em>cortador</em> por um tipo de pseudo-código feito para fazer abstrações do texto (qual possui o nome técnico de <code>denotations</code>), você já entendeu o que são as expressões regulares.</p>
+<p>Se você substituir o biscoitão por um texto e o <em>cortador</em> por um tipo de pseudo-código feito para fazer abstrações do texto (qual possui o nome técnico de <code>denotations</code>), você já entendeu o que são as expressões regulares.</p>
 <p>Deixando a metáfora de lado, expressões regulares são um conjunto de comandos que possuem como objetivo representar uma construção textual. Estes podem ser usados para diversas operações encontrar um conjunto de palavras em textos de qualquer extensão.</p>
 <pre class="r"><code>frase = &quot;Eu sou um grande apreciador de bolos e sobremesas doces&quot;
 stringr::str_extract(string = frase, pattern = &quot;grande\\sapreciador\\sde\\s\\w{5}&quot;)</code></pre>
@@ -58,11 +61,13 @@ stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement
 ## [17] &quot;RESOURCES&quot;        &quot;THANKS&quot;</code></pre>
 <pre class="r"><code>list.files(path = R.home(&quot;doc&quot;), pattern = &quot;.\\d$&quot;) ## Essa função irá listar todos os arquivos do diretório que terminem com &quot;.[NUMERO]&quot;</code></pre>
 <pre><code>## [1] &quot;NEWS.0&quot; &quot;NEWS.1&quot; &quot;NEWS.2&quot;</code></pre>
-<p>Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:</p>
+<p>Hora do Break para explicações:</p>
+<p><em>Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:</em></p>
 <ul>
-<li><p>list.files - A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos <code>path</code> e <code>pattern</code>. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.</p></li>
-<li><p>R.home</p></li>
+<li><p>list.files - <em>A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos <code>path</code> e <code>pattern</code>. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.</em></p></li>
+<li><p>R.home - <em>A função R.home() retorna ao usuário a pasta onde o R está instalado naquele computador. Aqui usamos ela como exemplo pois é reprodutivel em todo computador.</em></p></li>
 </ul>
+<p>Continuando…</p>
 <p>Como é possível observar nos três exemplos acima, a operação é feita somente na parte do texto que a expressão é compatível e essa é a beleza das Expressões Regulares. Porém, como saber o que significa uma expressão regular, e mais do que isso, como escrever uma? No bloco seguinte tento explicar um pouco da lógica por trás das expressões regulares.</p>
 </div>
 <div id="o-básico" class="section level3">

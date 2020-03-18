@@ -13,8 +13,7 @@ tags:
   - r
 Categories:
   - nlp
-  - r
-  - regex
+  - dificuldade intermediaria
 Description: ''
 Tags:
   - nlp
@@ -25,12 +24,16 @@ Tags:
 
 **ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.**
 
+* São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.
+
 ## Parte 1.
 
 ### One Reason Why
 
 Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês. Por conta dessa deficiência iniciei este blog.
 Observando a falta de material relacionado ao Processamento de Linguagem Natural (NLP) em R disponível - em português - na internet, inicio este projeto como uma forma de popular o ecossistema de NLP em português.
+
+*Antes de tudo aproveito para lembrar ao leitor que blocos de texto no R são chamados de ```strings```. Uma String não é nada mais que uma cadeia de caracteres, que tem como característica principal estar entre aspas simples ('') ou aspas duplas ("").*
 
 ## Expressões Regulares
 
@@ -40,7 +43,8 @@ A maioria dos leitores deve apreciar um biscoitão caseiro. Sim, um biscoito, aq
 
 Quando um biscoito é feito é comum que usemos de um cortador para que ele fique em um formato agradável, alguns gostam de estrelas, outros da lua, os americanos adoram aquele em formato de boneco. Sempre que pressionar o cortador contra o biscoito, parte do biscoito de solta com os contornos iguais aos do cortador. A melhor coisa disso é que isso pode ser repetido em qualquer superficie de biscoito maior que a forma, gerando biscoitinhos semelhantes ao primeiro.
 
-Se você substituir o biscoitão por um texto (```strings```), e o *cortador* por um tipo de pseudo-código feito para fazer abstrações do texto (qual possui o nome técnico de ```denotations```), você já entendeu o que são as expressões regulares.
+
+Se você substituir o biscoitão por um texto e o *cortador* por um tipo de pseudo-código feito para fazer abstrações do texto (qual possui o nome técnico de ```denotations```), você já entendeu o que são as expressões regulares.
 
 Deixando a metáfora de lado, expressões regulares são um conjunto de comandos que possuem como objetivo representar uma construção textual. Estes podem ser usados para diversas operações encontrar um conjunto de palavras em textos de qualquer extensão.
 
@@ -66,11 +70,16 @@ list.files(path = R.home("doc")) ## Essa função irá listar todos os arquivos 
 list.files(path = R.home("doc"), pattern = ".\\d$") ## Essa função irá listar todos os arquivos do diretório que terminem com ".[NUMERO]"
 ```
 
-Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:
 
-* list.files - A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos ```path``` e ```pattern```. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.
+Hora do Break para explicações:
 
-* R.home
+*Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:*
+
+* list.files - *A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos ```path``` e ```pattern```. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.*
+
+* R.home - *A função R.home() retorna ao usuário a pasta onde o R está instalado naquele computador. Aqui usamos ela como exemplo pois é reprodutivel em todo computador.*
+
+Continuando...
 
 Como é possível observar nos três exemplos acima, a operação é feita somente na parte do texto que a expressão é compatível e essa é a beleza das Expressões Regulares. Porém, como saber o que significa uma expressão regular, e mais do que isso, como escrever uma? No bloco seguinte tento explicar um pouco da lógica por trás das expressões regulares.
 

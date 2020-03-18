@@ -18,7 +18,7 @@
       
       <guid>/2020/03/17/introducao-as-expressoes-regulares/</guid>
       <description>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.
-Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês.</description>
+ São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês.</description>
     </item>
     
   </channel>
