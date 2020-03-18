@@ -40,7 +40,7 @@
     <nav>
       <ul class="sidebar-nav">
         <li><a href="/">Home</a> </li>
-        <li><a href="/about/"> About </a></li><li><a href="https://github.com/kimjoaoun"> GitHub </a></li><li><a href="/2020/03/17/introducao-as-expressoes-regulares/"> Introdução às Expressões Regulares em R </a></li><li><a href="https://twitter.com/kimjoaoun"> Twitter </a></li>
+        <li><a href="/about/"> About </a></li><li><a href="https://github.com/kimjoaoun"> GitHub </a></li><li><a href="https://twitter.com/kimjoaoun"> Twitter </a></li>
       </ul>
     </nav>
 
@@ -105,6 +105,7 @@ stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement
 <div id="o-operador-ou" class="section level4">
 <h4>2. O operador “OU”</h4>
 <p>Contudo, pode ser de interesse do leitor remover mais de um termo ao mesmo tempo. E para isso é necessário o uso de parentesis <code>()</code> e do operador “ou” <code>|</code>. O parêntesis é necessário para que se evite confusões e que o R saiba qual a ordem das operações e qual a abrangência delas, o “ou” diz quais são as opções. Agora, removeremos trechos do texto usando a função <code>stringr::str_remove()</code>*.</p>
+<p>Caso meu objetivo seja remover as palavras “institucional” e “complementares” pois já sei sobre quasi atos estamos falando, pode-se usar o operador, dentro de parentesis com as expressões desejadas.</p>
 <pre class="r"><code>(frase_eg = stringr::str_remove(string = frase_eg, pattern = &quot;(institucional|complementares)&quot;))</code></pre>
 <pre><code>## [1] &quot;Barraco queria um ato  que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Exxxecutivo.&quot;</code></pre>
 <ul>

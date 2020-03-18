@@ -1,6 +1,8 @@
 ---
 date: "2016-05-05T21:48:51-07:00"
-title: About
+title: Sobre
 ---
 
-This is a "hello world" example website for the [**blogdown**](https://github.com/rstudio/blogdown) package. The theme was forked from [@jrutheiser/hugo-lithium-theme](https://github.com/jrutheiser/hugo-lithium-theme) and modified by [Yihui Xie](https://github.com/yihui/hugo-lithium).
+Olá queridos, 
+
+Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no [Twitter](www.twitter.com/kimjoaoun)!

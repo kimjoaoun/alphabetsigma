@@ -20,7 +20,7 @@ Tags:
   - nlp
   - r
   - regex
-menu: main
+  
 ---
 
 **ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.**
@@ -93,6 +93,8 @@ E voilá, temos um ditador com nome popular, e uma Expressão Regular que funcio
 
 Contudo, pode ser de interesse do leitor remover mais de um termo ao mesmo tempo. E para isso é necessário o uso de parentesis ```()``` e do operador "ou" ```|```. O parêntesis é necessário para que se evite confusões e que o R saiba qual a ordem das operações e qual a abrangência delas, o "ou" diz quais são as opções. Agora, removeremos trechos do texto usando a função ```stringr::str_remove()```*.
  
+Caso meu objetivo seja remover as palavras "institucional" e "complementares" pois já sei sobre quasi atos estamos falando, pode-se usar o operador, dentro de parentesis com as expressões desejadas. 
+
 ```{r}
 (frase_eg = stringr::str_remove(string = frase_eg, pattern = "(institucional|complementares)"))
 ```
