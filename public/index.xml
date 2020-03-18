@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Entendendo funções em 5 minutos</title>
+      <link>/2020/03/18/entendendo-funcoes-cinco-minutos/</link>
+      <pubDate>Wed, 18 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/03/18/entendendo-funcoes-cinco-minutos/</guid>
+      <description>Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.</description>
+    </item>
+    
+    <item>
       <title>Introdução às Expressões Regulares em R</title>
       <link>/2020/03/17/introducao-as-expressoes-regulares/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
@@ -28,7 +37,7 @@
       
       <guid>/about/</guid>
       <description>Olá queridos,
-Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no Twitter!</description>
+Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no Twitter! No menu lateral você consegue encontrar outras formas de me contactar, com oo LinkedIn e o Github.</description>
     </item>
     
   </channel>

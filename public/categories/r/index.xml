@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>r on Alphabet Sigma</title>
+    <title>R on Alphabet Sigma</title>
     <link>/categories/r/</link>
-    <description>Recent content in r on Alphabet Sigma</description>
+    <description>Recent content in R on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 17 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <language>en</language>
+    <lastBuildDate>Wed, 18 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Introdução às Expressões Regulares em R</title>
-      <link>/2020/03/17/introducao-as-expressoes-regulares/</link>
-      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
+      <title>Entendendo funções em 5 minutos</title>
+      <link>/2020/03/18/entendendo-funcoes-cinco-minutos/</link>
+      <pubDate>Wed, 18 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/03/17/introducao-as-expressoes-regulares/</guid>
-      <description>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.
- Dificuldade: Intermediária - A publicação requer conhecimentos intermediários de R.
- São utilizadas: Strings e Funções do R-Base e do {Stringr};
-  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês.</description>
+      <guid>/2020/03/18/entendendo-funcoes-cinco-minutos/</guid>
+      <description>Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.</description>
     </item>
     
   </channel>

@@ -14,11 +14,13 @@ tags:
 Categories:
   - nlp
   - dificuldade intermediaria
-Description: ''
+Description: 'Nesse tutorial ensino o básico sobre manipulação de texto em R.'
 Tags:
   - nlp
   - r
   - regex
+lastmod: '2020-03-18T12:46:24-03:00'
+highlight: yes
   
 ---
 
@@ -116,7 +118,7 @@ Caso meu objetivo seja remover as palavras "institucional" e "complementares" po
 ```
 
 
-* Vale notar que ```str_remove(string = x, pattern = y)``` e ```str_replace(string = x, pattern = y, replacement= "")``` possuem efeitos idênticos, porém é recomendável o uso da segunda por questões de legibilidade.
+* Vale notar que ```str_remove(string = x, pattern = y)``` e ```str_replace(string = x, pattern = y, replacement= "")``` possuem efeitos idênticos, porém é recomendável o uso da primeira por questões de legibilidade.
 
 #### 3. Operador de Repetições
 

@@ -1,0 +1,35 @@
+---
+title: Entendendo funções em 5 minutos
+author: Joao Pedro Oliveira
+date: '2020-03-18'
+slug: entendendo-funcoes-cinco-minutos
+categories:
+  - R
+  - dificuldade basica
+tags:
+  - Functions
+  - R
+lastmod: '2020-03-18T12:46:24-03:00'
+layout: post
+type: post
+highlight: yes
+draft: true
+---
+
+Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara $(x= \frac{b^2\pm\sqrt{\Delta}}{2a})$. Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada $A_e$, sempre retornam $B_s$. Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.
+
+As funções em linguagens de programação obedecem a mesma lógica. Se você possui uma função $f$ ao ser inserido um argumento de valor $k$ o resultado é $100$, então $f(k) = 100$. Abaixo eu defino uma função no R chamada $f$, que sempre que receber o texto ```"k"```, terá como resposta o texto ```"l"```, caso não, retornará ```"Comando Inválido"```.
+
+```{r}
+f = function(entrada){ # A função function() é responsável por criar funções. Ela aceita infinitos argumentos, estes serão o argumento da sua nova função.
+  if(entrada == "k"){ # if() é um controlador de fluxo, ele estabelece uma condição a ser atendida ou não.
+    # Dentro de um "if" temos o bloco de código a ser executado caso a condição seja verdadeira.
+    return("100") # O return estabelece o que responder ao usuário no fim de uma computação, ele termina a função.
+  } else { # O else{} é o que responder
+    return("Comando Inválido")
+  }
+}
+```
+
+Para definir uma função com um nome, é só criarmos um objeto com o nome desejado e atribuir à ele a função ```function()``` seguido dos
+

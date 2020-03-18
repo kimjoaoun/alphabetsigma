@@ -1,0 +1,31 @@
+---
+title: Entendendo funções em 5 minutos
+author: Joao Pedro Oliveira
+date: '2020-03-18'
+slug: entendendo-funcoes-cinco-minutos
+categories:
+  - R
+  - dificuldade basica
+tags:
+  - Functions
+  - R
+lastmod: '2020-03-18T12:46:24-03:00'
+layout: post
+type: post
+highlight: yes
+draft: true
+---
+
+
+
+<p>Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara <span class="math inline">\((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\)</span>. Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada <span class="math inline">\(A_e\)</span>, sempre retornam <span class="math inline">\(B_s\)</span>. Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.</p>
+<p>As funções em linguagens de programação obedecem a mesma lógica. Se você possui uma função <span class="math inline">\(f\)</span> ao ser inserido um argumento de valor <span class="math inline">\(k\)</span> o resultado é <span class="math inline">\(100\)</span>, então <span class="math inline">\(f(k) = 100\)</span>. Abaixo eu defino uma função no R chamada <span class="math inline">\(f\)</span>, que sempre que receber o texto <code>&quot;k&quot;</code>, terá como resposta o texto <code>&quot;l&quot;</code>, caso não, retornará <code>&quot;Comando Inválido&quot;</code>.</p>
+<pre class="r"><code>f = function(entrada){ # A função function() é responsável por criar funções. Ela aceita infinitos argumentos, estes serão o argumento da sua nova função.
+  if(entrada == &quot;k&quot;){ # if() é um controlador de fluxo, ele estabelece uma condição a ser atendida ou não.
+    # Dentro de um &quot;if&quot; temos o bloco de código a ser executado caso a condição seja verdadeira.
+    return(&quot;100&quot;) # O return estabelece o que responder ao usuário no fim de uma computação, ele termina a função.
+  } else { # O else{} é o que responder
+    return(&quot;Comando Inválido&quot;)
+  }
+}</code></pre>
+<p>Para definir uma função com um nome, é só criarmos um objeto com o nome desejado e atribuir à ele a função <code>function()</code> seguido dos</p>

@@ -14,11 +14,13 @@ tags:
 Categories:
   - nlp
   - dificuldade intermediaria
-Description: ''
+Description: 'Nesse tutorial ensino o básico sobre manipulação de texto em R.'
 Tags:
   - nlp
   - r
   - regex
+lastmod: '2020-03-18T12:46:24-03:00'
+highlight: yes
   
 ---
 
@@ -91,7 +93,7 @@ stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement
 <pre class="r"><code>(frase_eg = stringr::str_remove(string = frase_eg, pattern = &quot;(institucional|complementares)&quot;))</code></pre>
 <pre><code>## [1] &quot;Barraco queria um ato  que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Exxxecutivo.&quot;</code></pre>
 <ul>
-<li>Vale notar que <code>str_remove(string = x, pattern = y)</code> e <code>str_replace(string = x, pattern = y, replacement= &quot;&quot;)</code> possuem efeitos idênticos, porém é recomendável o uso da segunda por questões de legibilidade.</li>
+<li>Vale notar que <code>str_remove(string = x, pattern = y)</code> e <code>str_replace(string = x, pattern = y, replacement= &quot;&quot;)</code> possuem efeitos idênticos, porém é recomendável o uso da primeira por questões de legibilidade.</li>
 </ul>
 </div>
 <div id="operador-de-repetições" class="section level4">
