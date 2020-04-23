@@ -221,16 +221,16 @@ res</code></pre>
 <pre><code>## # A tibble: 60 x 3
 ##    topic term         beta
 ##    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
-##  1     1 allah     0.0581 
-##  2     1 will      0.0240 
-##  3     1 said      0.0158 
-##  4     1 indeed    0.0117 
-##  5     1 people    0.0114 
-##  6     1 upon      0.00826
-##  7     1 one       0.00749
-##  8     1 messenger 0.00748
-##  9     1 lord      0.00745
-## 10     1 say       0.00685
+##  1     1 said      0.0416 
+##  2     1 ibn       0.0246 
+##  3     1 allah     0.0242 
+##  4     1 messenger 0.0115 
+##  5     1 allahs    0.00899
+##  6     1 prophet   0.00775
+##  7     1 one       0.00753
+##  8     1 people    0.00640
+##  9     1 whoever   0.00518
+## 10     1 day       0.00502
 ## # … with 50 more rows</code></pre>
 <p>O trecho acima é bem auto-explicativo, até mesmo devido aos comentários no código. Informações extras podem ser encontradas na documentação das funções.</p>
 <p>Vamos plotar as informações que conseguimos, assim é possível visualizarmos melhor o resultado.</p>
@@ -323,7 +323,7 @@ final = topTerms(res) %&gt;%
         title: 'Escola ISIS de Radicalização Religiosa: Uma Análise com NLP',
         clientID: 'c1170dfca474e1cb4d6d',
         clientSecret: 'a4c3b39af68c69dcceae407421a673fc09e892ba',
-        repo: 'kimjoaoun\/learning-ts',
+        repo: 'https:\/\/github.com\/kimjoaoun\/learning-ts',
         owner: 'kimjoaoun',
         admin: ['kimjoaoun'],
         body: decodeURI(location.href)
