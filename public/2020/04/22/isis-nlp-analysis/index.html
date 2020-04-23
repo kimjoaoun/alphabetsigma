@@ -22,12 +22,10 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Escola ISIS de Radicalização Religiosa: Uma Análise com NLP"/>
-<meta name="twitter:description" content="Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado https://www.kaggle.com/fifthtribe/isis-religious-texts. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
-Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util."/>
+<meta name="twitter:description" content="Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política."/>
 
 <meta property="og:title" content="Escola ISIS de Radicalização Religiosa: Uma Análise com NLP" />
-<meta property="og:description" content="Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado https://www.kaggle.com/fifthtribe/isis-religious-texts. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
-Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util." />
+<meta property="og:description" content="Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2020/04/22/isis-nlp-analysis/" />
 <meta property="article:published_time" content="2020-04-22T00:00:00+00:00" />
@@ -177,7 +175,7 @@ Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com aten
     
     
     <br/>
-    <i class="fas fa-clock"></i> 8 min read
+    <i class="fas fa-clock"></i> 7 min read
 </div>
 
 
@@ -199,35 +197,20 @@ library(magrittr) # NEW TOOLS!
 library(rlang)
 library(forcats)</code></pre>
 <p>Então vamos carregar os dados na memória, usando o <code>{readr}</code>, que já vem incluso na meta-biblioteca <code>{tidyverse}</code>. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o <a href="encoding">https://en.wikipedia.org/wiki/Character_encoding</a> da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a <code>{tm}</code>). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste – embora tenha um motivo claro, e preventivo, neste dataset – pode ser útil em outros contextos também.</p>
-<pre class="r"><code>dataset = readr::read_csv(&#39;../../data/ISIS Religious Texts v1.csv&#39;) # Carrega os dados</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Magazine = col_character(),
-##   Issue = col_double(),
-##   Date = col_character(),
-##   Type = col_character(),
-##   Source = col_character(),
-##   Quote = col_character(),
-##   Purpose = col_character(),
-##   `Article Name` = col_character()
-## )</code></pre>
-<pre class="r"><code>dataset$Quote = iconv(dataset$Quote, &quot;ASCII&quot;, &quot;UTF-8&quot;, sub=&quot;byte&quot;) # Altera o encoding
+<pre class="r"><code>dataset = readr::read_csv(&#39;../../data/ISIS Religious Texts v1.csv&#39;) # Carrega os dados
 
-(dataset)</code></pre>
-<pre><code>## # A tibble: 2,685 x 8
-##    Magazine Issue Date   Type   Source  Quote        Purpose `Article Name`     
-##    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;              
-##  1 Dabiq        1 Jun-14 Jihad… Abu Mu… The spark h… Support First Page         
-##  2 Dabiq        1 Jun-14 Hadith Sahih … &lt;93&gt;The Hou… Support Introduction       
-##  3 Dabiq        1 Jun-14 Jihad… Abu Mu… &lt;93&gt;The spa… Support Introduction       
-##  4 Dabiq        1 Jun-14 Jihad… Abu Ba… &lt;93&gt;O Musli… Support Khilafah Declared  
-##  5 Dabiq        1 Jun-14 Jihad… Abu Ba… &lt;93&gt;O Ummah… Support The World has Divi…
-##  6 Dabiq        1 Jun-14 Jihad… Abu Ba… &lt;93&gt;Therefo… Support A Call to Hijrah   
-##  7 Dabiq        1 Jun-14 Jihad… Abu Ba… &lt;93&gt;We make… Support A Call to all Musl…
-##  8 Dabiq        1 Jun-14 Hadith Al-Hak… Abdullah Ib… Support The Concept of Ima…
-##  9 Dabiq        1 Jun-14 Qur&#39;an an-Nah… {And do not… Support The Concept of Ima…
-## 10 Dabiq        1 Jun-14 Tafsir No Sou… In explaini… Support The Concept of Ima…
-## # … with 2,675 more rows</code></pre>
+dataset$Quote = iconv(dataset$Quote, &quot;ASCII&quot;, &quot;UTF-8&quot;, sub=&quot;byte&quot;) # Altera o encoding
+
+head(dataset)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   Magazine Issue Date   Type  Source   Quote           Purpose `Article Name`   
+##   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;            
+## 1 Dabiq        1 Jun-14 Jiha… Abu Mus… The spark has … Support First Page       
+## 2 Dabiq        1 Jun-14 Hadi… Sahih M… &lt;93&gt;The Hour w… Support Introduction     
+## 3 Dabiq        1 Jun-14 Jiha… Abu Mus… &lt;93&gt;The spark … Support Introduction     
+## 4 Dabiq        1 Jun-14 Jiha… Abu Bak… &lt;93&gt;O Muslims … Support Khilafah Declared
+## 5 Dabiq        1 Jun-14 Jiha… Abu Bak… &lt;93&gt;O Ummah of… Support The World has Di…
+## 6 Dabiq        1 Jun-14 Jiha… Abu Bak… &lt;93&gt;Therefore,… Support A Call to Hijrah</code></pre>
 <p>Ao observar o dataset vemos que ele possui 8 colunas e aproximadamente 2.700 linhas. Informações como data (2014-2016), revista, tipo e propósito são insumos valiosos, e não serão usadas aqui para mantermos esta publicação em um tamanho restrito. Uma ideia que não será abordada nessa publicação é observarmos se há alteração do discurso conforme a situação política do ISIS se agrava, será que o tom passou a ser mais messiânico? Não sei, fica o exercicio ao leitor.</p>
 <p>Enfim, passemos ao código…</p>
 <p>Como sempre começamos com uma função, dessa vez crio uma chamada <code>cleaner_impurities</code>, o que ela faz é simples. Ela passa o texto pela função <code>stringr::str_replace_all()</code>, que substitui um elemento expresso por meio de expressão regular, por outro. No código abaixo, entra texto, que é passado pela função anteriormente descrita, e então retornado sem pontuação, com um espaço no lugar.</p>
@@ -281,18 +264,18 @@ res = dataset %&gt;%
     
 res</code></pre>
 <pre><code>## # A tibble: 60 x 3
-##    topic term         beta
-##    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
-##  1     1 said      0.0462 
-##  2     1 allah     0.0231 
-##  3     1 ibn       0.0185 
-##  4     1 messenger 0.0145 
-##  5     1 allahs    0.0120 
-##  6     1 will      0.0109 
-##  7     1 one       0.00868
-##  8     1 prophet   0.00837
-##  9     1 people    0.00680
-## 10     1 indeed    0.00551
+##    topic term       beta
+##    &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt;
+##  1     1 said    0.0103 
+##  2     1 state   0.00842
+##  3     1 islamic 0.00810
+##  4     1 people  0.00794
+##  5     1 allah   0.00605
+##  6     1 ibn     0.00597
+##  7     1 muslims 0.00568
+##  8     1 one     0.00557
+##  9     1 also    0.00554
+## 10     1 islam   0.00433
 ## # … with 50 more rows</code></pre>
 <p>O trecho acima é bem auto-explicativo, até mesmo devido aos comentários no código. Informações extras podem ser encontradas na documentação das funções.</p>
 <p>Vamos plotar as informações que conseguimos, assim é possível visualizarmos melhor o resultado.</p>

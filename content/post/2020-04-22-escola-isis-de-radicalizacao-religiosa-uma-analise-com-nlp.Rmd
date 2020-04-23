@@ -9,6 +9,7 @@ lastmod: '2020-04-22T19:35:15-03:00'
 layout: post
 type: post
 highlight: yes
+Description: 'Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política.'
 ---
 
 Nesse post nós iremos fazer uma simples (e rápida) análise do dataset "ISIS Religious Texts v1", que pode ser encontrado [https://www.kaggle.com/fifthtribe/isis-religious-texts](AQUI). Essa base de dados contém textos de duas revistas do ISIS, estas sendo a "Dabiq" e a "Rumyiah", que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
@@ -29,12 +30,12 @@ library(forcats)
 
 Então vamos carregar os dados na memória, usando o `{readr}`, que já vem incluso na meta-biblioteca `{tidyverse}`. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o [https://en.wikipedia.org/wiki/Character_encoding](encoding) da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a `{tm}`). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste -- embora tenha um motivo claro, e preventivo, neste dataset -- pode ser útil em outros contextos também.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 dataset = readr::read_csv('../../data/ISIS Religious Texts v1.csv') # Carrega os dados
 
 dataset$Quote = iconv(dataset$Quote, "ASCII", "UTF-8", sub="byte") # Altera o encoding
 
-(dataset)
+head(dataset)
 ```
 
 Ao observar o dataset vemos que ele possui 8 colunas e aproximadamente 2.700 linhas. Informações como data (2014-2016), revista, tipo e propósito são insumos valiosos, e não serão usadas aqui para mantermos esta publicação em um tamanho restrito. Uma ideia que não será abordada nessa publicação é observarmos se há alteração do discurso conforme a situação política do ISIS se agrava, será que o tom passou a ser mais messiânico? Não sei, fica o exercicio ao leitor.
