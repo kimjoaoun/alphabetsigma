@@ -2,21 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>regex on Alphabet Sigma</title>
-    <link>/tags/regex/</link>
+    <link>https://alphabetsigma.netlify.app/tags/regex/</link>
     <description>Recent content in regex on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
+    <copyright>João Pedro Oliveira dos Santos</copyright>
     <lastBuildDate>Tue, 17 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/regex/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://alphabetsigma.netlify.app/tags/regex/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Introdução às Expressões Regulares em R</title>
-      <link>/post/introducao-as-expressoes-regulares/</link>
+      <link>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/introducao-as-expressoes-regulares/</guid>
+      <guid>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</guid>
       <description>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.
  São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês.</description>
     </item>

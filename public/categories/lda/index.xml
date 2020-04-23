@@ -2,21 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>LDA on Alphabet Sigma</title>
-    <link>/categories/lda/</link>
+    <link>https://alphabetsigma.netlify.app/categories/lda/</link>
     <description>Recent content in LDA on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
+    <copyright>João Pedro Oliveira dos Santos</copyright>
     <lastBuildDate>Wed, 22 Apr 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/lda/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://alphabetsigma.netlify.app/categories/lda/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</title>
-      <link>/post/isis-nlp-analysis/</link>
+      <link>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/isis-nlp-analysis/</guid>
+      <guid>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</guid>
       <description>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado https://www.kaggle.com/fifthtribe/isis-religious-texts. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
 Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util.</description>
     </item>

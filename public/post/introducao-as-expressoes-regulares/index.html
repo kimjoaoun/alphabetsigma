@@ -1,161 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-    <title>Introdução às Expressões Regulares em R :: Alphabet Sigma —  Um blog sobre números, letras e suas interseções.</title>
-  
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.
- São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês." />
-<meta name="keywords" content="" />
-<meta name="robots" content="noodp" />
-<link rel="canonical" href="/post/introducao-as-expressoes-regulares/" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Introdução às Expressões Regulares em R - Alphabet Sigma</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Joao Pedro Oliveira" /><meta name="description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares." />
 
 
 
 
-<link rel="stylesheet" href="/assets/style.css">
+
+
+<meta name="generator" content="Hugo 0.67.1 with theme even" />
+
+
+<link rel="canonical" href="https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
 
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
-
-  <link rel="shortcut icon" href="/img/favicon/orange.png">
-
-
-
-<meta name="twitter:card" content="summary" />
-
-  <meta name="twitter:site" content="https://alphabetsigma.netlify.app/" />
-
-<meta name="twitter:creator" content="Joao Pedro Oliveira" />
-
-
-<meta property="og:locale" content="en" />
-<meta property="og:type" content="article" />
-<meta property="og:title" content="Introdução às Expressões Regulares em R :: Alphabet Sigma">
+<meta property="og:title" content="Introdução às Expressões Regulares em R" />
 <meta property="og:description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares." />
-<meta property="og:url" content="/post/introducao-as-expressoes-regulares/" />
-<meta property="og:site_name" content="Introdução às Expressões Regulares em R" />
-
-  
-    <meta property="og:image" content="/img/favicon/orange.png">
-  
-
-<meta property="og:image:width" content="2048">
-<meta property="og:image:height" content="1024">
-
-  <meta property="article:section" content="nlp" />
-
-  <meta property="article:section" content="dificuldade intermediaria" />
-
-
-  <meta property="article:published_time" content="2020-03-17 00:00:00 &#43;0000 UTC" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/" />
+<meta property="article:published_time" content="2020-03-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-03-18T12:46:24-03:00" />
+<meta itemprop="name" content="Introdução às Expressões Regulares em R">
+<meta itemprop="description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares.">
+<meta itemprop="datePublished" content="2020-03-17T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-03-18T12:46:24-03:00" />
+<meta itemprop="wordCount" content="1755">
 
 
 
+<meta itemprop="keywords" content="nlp,r,regex," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Introdução às Expressões Regulares em R"/>
+<meta name="twitter:description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares."/>
 
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-
-
-
-
-
-
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
 
 </head>
-<body class="">
-
-
-<div class="container headings--one-size">
-
-  <header class="header">
-  <div class="header__inner">
-    <div class="header__logo">
-      <a href="/">
-  <div class="logo">
-    Terminal
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Alphabet Sigma</a>
   </div>
-</a>
-
-    </div>
-    <div class="menu-trigger">menu</div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
-  
-    <nav class="menu">
-  <ul class="menu__inner menu__inner--desktop">
-    
-      
-        
-          <li><a href="/showcase">Showcase</a></li>
-        
-      
-        
-          <li><a href="/about">Sobre</a></li>
-        
-      
-      
-    
-
-    
-  </ul>
-
-  <ul class="menu__inner menu__inner--mobile">
-    
-      
-        <li><a href="/showcase">Showcase</a></li>
-      
-    
-      
-        <li><a href="/about">Sobre</a></li>
-      
-    
-    
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
   </ul>
 </nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Alphabet Sigma</a>
+</div>
 
-  
-</header>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Introdução às Expressões Regulares em R</h1>
 
-  <div class="content">
-    
-<div class="post">
-  <h1 class="post-title">
-    <a href="/post/introducao-as-expressoes-regulares/">Introdução às Expressões Regulares em R</a></h1>
-  <div class="post-meta">
-      
-    <span class="post-date">
-      2020-03-17
-    </span>
-    
-    
-    <span class="post-author">::
-      Joao Pedro Oliveira
-    </span>
+      <div class="post-meta">
+        <span class="post-time"> 2020-03-17 </span>
+        <div class="post-category">
+            <a href="/categories/nlp/"> nlp </a>
+            <a href="/categories/dificuldade-intermediaria/"> dificuldade intermediaria </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
     
   </div>
-
-  
-  <span class="post-tags">
-    
-    #<a href="/tags/nlp/">nlp</a>&nbsp;
-    
-    #<a href="/tags/r/">r</a>&nbsp;
-    
-    #<a href="/tags/regex/">regex</a>&nbsp;
-    
-  </span>
-  
-
-  
-
-  <div class="post-content"><div>
-        
+</div>
+    <div class="post-content">
+      
 
 
 <p><strong>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.</strong></p>
@@ -249,55 +231,112 @@ Fiquem em casa, mantenham a quarentena!</p>
 </div>
 </div>
 
-      </div></div>
-  
-  <div class="pagination">
-    <div class="pagination__title">
-      <span
-        class="pagination__title-h">Read other posts</span>
-      <hr />
     </div>
-    <div class="pagination__buttons">
-      
-      <span class="button previous">
-        <a href="/post/isis-nlp-analysis/">
-          <span class="button__icon">←</span>
-          <span class="button__text">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</span>
-        </a>
-      </span>
-      
-      
-    </div>
-  </div>
-  
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Joao Pedro Oliveira</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-03-18
+        
+    </span>
+  </p>
   
-
+  
 </div>
-
-  </div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/nlp/">nlp</a>
+          <a href="/tags/r/">r</a>
+          <a href="/tags/regex/">regex</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/isis-nlp-analysis/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
 
   
-    <footer class="footer">
-  <div class="footer__inner">
-    
-      <div class="copyright">
-        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
-    
-        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+
+  
+
       </div>
-  </div>
-</footer>
+    </main>
 
-<script src="/assets/main.js"></script>
-<script src="/assets/prism.js"></script>
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://alphabetsigma.netlify.app/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
 
-
-
-
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
   
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">João Pedro Oliveira dos Santos</span>
+  </span>
 </div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+
+
+
+
+
+
+
 
 </body>
 </html>

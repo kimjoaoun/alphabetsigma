@@ -2,41 +2,42 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Alphabet Sigma</title>
-    <link>/</link>
+    <link>https://alphabetsigma.netlify.app/</link>
     <description>Recent content on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
+    <copyright>João Pedro Oliveira dos Santos</copyright>
     <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://alphabetsigma.netlify.app/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</title>
-      <link>/post/isis-nlp-analysis/</link>
+      <link>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/isis-nlp-analysis/</guid>
+      <guid>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</guid>
       <description>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado https://www.kaggle.com/fifthtribe/isis-religious-texts. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
 Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util.</description>
     </item>
     
     <item>
       <title>Introdução às Expressões Regulares em R</title>
-      <link>/post/introducao-as-expressoes-regulares/</link>
+      <link>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/introducao-as-expressoes-regulares/</guid>
+      <guid>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</guid>
       <description>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.
  São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês.</description>
     </item>
     
     <item>
       <title>Sobre</title>
-      <link>/about/</link>
+      <link>https://alphabetsigma.netlify.app/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
-      <guid>/about/</guid>
+      <guid>https://alphabetsigma.netlify.app/about/</guid>
       <description>Olá queridos,
 Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no Twitter! No menu lateral você consegue encontrar outras formas de me contatar, como o LinkedIn e o Github.</description>
     </item>

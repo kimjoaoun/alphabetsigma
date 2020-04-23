@@ -1,75 +1,102 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<?xml-stylesheet type="text/xsl" href="https://alphabetsigma.netlify.app/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>/categories/</loc>
+    <loc>https://alphabetsigma.netlify.app/categories/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/categories/dificuldade-intermedi%C3%A1ria/</loc>
+    <loc>https://alphabetsigma.netlify.app/categories/dificuldade-intermedi%C3%A1ria/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/post/isis-nlp-analysis/</loc>
+    <loc>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/categories/lda/</loc>
+    <loc>https://alphabetsigma.netlify.app/categories/lda/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/categories/nlp/</loc>
+    <loc>https://alphabetsigma.netlify.app/categories/nlp/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/post/</loc>
+    <loc>https://alphabetsigma.netlify.app/post/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/categories/dificuldade-intermediaria/</loc>
+    <loc>https://alphabetsigma.netlify.app/categories/dificuldade-intermediaria/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/post/introducao-as-expressoes-regulares/</loc>
+    <loc>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/tags/nlp/</loc>
+    <loc>https://alphabetsigma.netlify.app/tags/nlp/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/tags/r/</loc>
+    <loc>https://alphabetsigma.netlify.app/tags/r/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/tags/regex/</loc>
+    <loc>https://alphabetsigma.netlify.app/tags/regex/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/tags/</loc>
+    <loc>https://alphabetsigma.netlify.app/tags/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>https://alphabetsigma.netlify.app/</loc>
     <lastmod>2016-05-05T21:48:51-07:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>/about/</loc>
+    <loc>https://alphabetsigma.netlify.app/about/</loc>
     <lastmod>2016-05-05T21:48:51-07:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
 </urlset>
