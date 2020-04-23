@@ -15,7 +15,7 @@ pygmentsCodefences = true
 pygmentsUseClasses = true
 pygmentsCodefencesGuessSyntax = true
 
-hasCJKLanguage = true     # has chinese/japanese/korean ? # 自动检测是否包含 中文\日文\韩文
+hasCJKLanguage = false     # has chinese/japanese/korean ? # 自动检测是否包含 中文\日文\韩文
 paginate = 5                                              # 首页每页显示的文章数
 disqusShortname = ""      # disqus_shortname
 googleAnalytics = ""      # UA-XXXXXXXX-X
@@ -34,30 +34,30 @@ copyright = "João Pedro Oliveira dos Santos"            # default: author.name 
   weight = 10
   identifier = "home"
   url = "/"
-[[menu.main]]
-  name = "Archives"
-  weight = 20
-  identifier = "archives"
-  url = "/post/"
+#[[menu.main]]
+#  name = "Archives"
+#  weight = 20
+#  identifier = "archives"
+#  url = "/post/"
 [[menu.main]]
   name = "Tags"
   weight = 30
   identifier = "tags"
   url = "/tags/"
-[[menu.main]]
-  name = "Categories"
-  weight = 40
-  identifier = "categories"
-  url = "/categories/"
+#[[menu.main]]
+#  name = "Categories"
+#  weight = 40
+#  identifier = "categories"
+#  url = "/categories/"
 
 [params]
   version = "4.x"           # Used to give a friendly message when you have an incompatible update
   debug = false             # If true, load `eruda.min.js`. See https://github.com/liriliri/eruda
 
-  since = "2017"            # Site creation time          # 站点建立时间
+  since = "2020"            # Site creation time          # 站点建立时间
   # use public git repo url to link lastmod git commit, enableGitInfo should be true.
   # 指定 git 仓库地址，可以生成指向最近更新的 git commit 的链接，需要将 enableGitInfo 设置成 true.
-  gitRepo = ""
+  gitRepo = "kimjoaoun/alphabetsigma"
 
   # site info (optional)                                  # 站点信息（可选，不需要的可以直接注释掉）
   logoTitle = "Alphabet Sigma"        # default: the title value    # 默认值: 上面设置的title值
@@ -143,7 +143,7 @@ copyright = "João Pedro Oliveira dos Santos"            # default: author.name 
 
   [params.gitalk]           # Gitalk is a comment system based on GitHub issues. see https://github.com/gitalk/gitalk
     owner = "kimjoaoun"              # Your GitHub ID
-    repo = "https://github.com/kimjoaoun/learning-ts"               # The repo to store comments
+    repo = "kimjoaoun/alphabetsigma"               # The repo to store comments
     clientId = "c1170dfca474e1cb4d6d"           # Your client ID
     clientSecret = "a4c3b39af68c69dcceae407421a673fc09e892ba"       # Your client secret
 
