@@ -1,53 +1,63 @@
 baseurl = "/"
-languageCode = "en"
-title = "Alphabet Sigma"
-theme = "hyde-hyde"
-googleAnalytics = ""
-disqusShortname = ""
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
-
-[permalinks]
-    post = "/:year/:month/:day/:slug/"
-
-[[menu.main]]
-    name = "Inicio"
-    identifier = "home"
-    weight = 1
-    url = "/"
-
-[[menu.main]]
-    name = "About"
-    identifier = "about"
-    weight = 300
-    url = "/about/"
+languageCode = "en-us"
+theme = "hugo-theme-terminal"
+paginate = 5
 
 [params]
-    author = "Joao Pedro Oliveira"
-    
-    #authorimage = "/img/foto.jpg"
-    description = "Um blog sobre números, letras e suas interseções."
+  # dir name of your blog content (default is `content/posts`)
+  contentTypeName = "posts"
 
-    # options for highlight.js (version, additional languages, and theme)
-    highlightjs = true      
-    highlightjsVersion = "9.12.0"
-    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
-    highlightjsLang = ["r"]
-    highlightjsTheme = "github"
+  # ["orange", "blue", "red", "green", "pink"]
+  themeColor = "orange"
 
-    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
-    MathJaxVersion = "2.7.5"
+  # if you set this to 0, only submenu trigger will be visible
+  showMenuItems = 2
 
-    # path to the favicon, under "static"
-    favicon = "favicon.ico"
+  # show selector to switch language
+  showLanguageSelector = false
 
-    [params.logo]
-    url = "logo.png"
-    width = 50
-    height = 50
-    alt = "Logo"
-    
-    [params.social]
-	twitter = "kimjoaoun"
-	github = "kimjoaoun"
-	linkedin = "joaoposantos"
-	stackoverflow = "9829398/john-p-s"
+  # set theme to full screen width
+  fullWidthTheme = false
+
+  # center theme with default width
+  centerTheme = false
+
+  # set a custom favicon (default is a `themeColor` square)
+  # favicon = "favicon.ico"
+
+  # set all headings to their default size (depending on browser settings)
+  # it's set to `true` by default
+  # oneHeadingSize = false
+
+[params.twitter]
+  # set Twitter handles for Twitter cards
+  # see https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#card-and-content-attribution
+  # do not include @
+  creator = "kimjoaoun"
+  site = "https://alphabetsigma.netlify.app/"
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    title = "Alphabet Sigma"
+    subtitle = " Um blog sobre números, letras e suas interseções."
+    owner = "João Pedro Oliveira"
+    keywords = ""
+    copyright = ""
+    menuMore = "Mostrar mais"
+    readMore = "Ler mais"
+    readOtherPosts = "Read other posts"
+
+    [languages.en.params.logo]
+      logoText = "Terminal"
+      logoHomeLink = "/"
+
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "about"
+        name = "Sobre"
+        url = "/about"
+      [[languages.en.menu.main]]
+        identifier = "showcase"
+        name = "Showcase"
+        url = "/showcase"

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Introdução às Expressões Regulares em R :: Alphabet Sigma —  Um blog sobre números, letras e suas interseções.</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.
+ São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/post/introducao-as-expressoes-regulares/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/img/favicon/orange.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  <meta name="twitter:site" content="https://alphabetsigma.netlify.app/" />
+
+<meta name="twitter:creator" content="Joao Pedro Oliveira" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Introdução às Expressões Regulares em R :: Alphabet Sigma">
+<meta property="og:description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares." />
+<meta property="og:url" content="/post/introducao-as-expressoes-regulares/" />
+<meta property="og:site_name" content="Introdução às Expressões Regulares em R" />
+
+  
+    <meta property="og:image" content="/img/favicon/orange.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="nlp" />
+
+  <meta property="article:section" content="dificuldade intermediaria" />
+
+
+  <meta property="article:published_time" content="2020-03-17 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+        
+          <li><a href="/about">Sobre</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+      
+        <li><a href="/about">Sobre</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/post/introducao-as-expressoes-regulares/">Introdução às Expressões Regulares em R</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2020-03-17
+    </span>
+    
+    
+    <span class="post-author">::
+      Joao Pedro Oliveira
+    </span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="/tags/nlp/">nlp</a>&nbsp;
+    
+    #<a href="/tags/r/">r</a>&nbsp;
+    
+    #<a href="/tags/regex/">regex</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  <div class="post-content"><div>
+        
+
+
+<p><strong>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.</strong></p>
+<ul>
+<li>São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.</li>
+</ul>
+<div id="parte-1." class="section level2">
+<h2>Parte 1.</h2>
+<div id="one-reason-why" class="section level3">
+<h3>One Reason Why</h3>
+<p>Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês. Por conta dessa deficiência iniciei este blog.
+Observando a falta de material relacionado ao Processamento de Linguagem Natural (NLP) em R disponível - em português - na internet, inicio este projeto como uma forma de popular o ecossistema de NLP em português.</p>
+<p><em>Antes de tudo aproveito para lembrar ao leitor que blocos de texto no R são chamados de <code>strings</code>. Uma String não é nada mais que uma cadeia de caracteres, que tem como característica principal estar entre aspas simples (’’) ou aspas duplas (&quot;&quot;).</em></p>
+</div>
+</div>
+<div id="expressões-regulares" class="section level2">
+<h2>Expressões Regulares</h2>
+<div id="o-que-são-e-motivos-para-aprender." class="section level3">
+<h3>O que são, e motivos para aprender.</h3>
+<p>A maioria dos leitores deve apreciar um biscoitão caseiro. Sim, um biscoito, aquele que sua mãe fazia nas manhãs de domingo e que você provavelmente tomava com um leite ou algo do tipo. Sua mãe não fazia? Tudo bem, mas ainda assim, esses biscoitos são bons e são intimamente ligados com o assunto desse post.</p>
+<p>Quando um biscoito é feito é comum que usemos de um cortador para que ele fique em um formato agradável, alguns gostam de estrelas, outros da lua, os americanos adoram aquele em formato de boneco. Sempre que pressionar o cortador contra o biscoito, parte do biscoito de solta com os contornos iguais aos do cortador. A melhor coisa disso é que isso pode ser repetido em qualquer superficie de biscoito maior que a forma, gerando biscoitinhos semelhantes ao primeiro.</p>
+<p>Se você substituir o biscoitão por um texto e o <em>cortador</em> por um tipo de pseudo-código feito para fazer abstrações do texto (qual possui o nome técnico de <code>denotations</code>), você já entendeu o que são as expressões regulares.</p>
+<p>Deixando a metáfora de lado, expressões regulares são um conjunto de comandos que possuem como objetivo representar uma construção textual. Estes podem ser usados para diversas operações encontrar um conjunto de palavras em textos de qualquer extensão.</p>
+<pre class="r"><code>frase = &quot;Eu sou um grande apreciador de bolos e sobremesas doces&quot;
+
+stringr::str_extract(string = frase, pattern = &quot;grande\\sapreciador\\sde\\s\\w{5}&quot;)</code></pre>
+<pre><code>## [1] &quot;grande apreciador de bolos&quot;</code></pre>
+<p>Ou substituir um bloco de texto por outro. Não raro encontramos pessoas que não gostam de bolos, tudo bem, existem outras alternativas!</p>
+<pre class="r"><code>frase = &quot;Eu sou um grande apreciador de bolos e sobremesas doces&quot;
+
+stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement = &quot;tortas&quot;)</code></pre>
+<pre><code>## [1] &quot;Eu sou um grande apreciador de tortas e sobremesas doces&quot;</code></pre>
+<p>Mas elas não aparecem somente quando você está lidando com strings, diversas funções aceitam expressões regulares em seus argumentos, como é o caso da função <code>base::list.files()</code>, essa função lista todos os arquivos que estão dentro de um diretório escolhido, mas aceita um argumento chamado “pattern”:</p>
+<pre class="r"><code>list.files(path = R.home(&quot;doc&quot;)) ## Essa função irá listar todos os arquivos do diretório.</code></pre>
+<pre><code>##  [1] &quot;AUTHORS&quot;          &quot;BioC_mirrors.csv&quot; &quot;COPYING&quot;          &quot;COPYRIGHTS&quot;      
+##  [5] &quot;CRAN_mirrors.csv&quot; &quot;FAQ&quot;              &quot;html&quot;             &quot;KEYWORDS&quot;        
+##  [9] &quot;KEYWORDS.db&quot;      &quot;manual&quot;           &quot;NEWS&quot;             &quot;NEWS.0&quot;          
+## [13] &quot;NEWS.1&quot;           &quot;NEWS.2&quot;           &quot;NEWS.pdf&quot;         &quot;NEWS.rds&quot;        
+## [17] &quot;RESOURCES&quot;        &quot;THANKS&quot;</code></pre>
+<pre class="r"><code>list.files(path = R.home(&quot;doc&quot;), pattern = &quot;.\\d$&quot;) ## Essa função irá listar todos os arquivos do diretório que terminem com &quot;.[NUMERO]&quot;</code></pre>
+<pre><code>## [1] &quot;NEWS.0&quot; &quot;NEWS.1&quot; &quot;NEWS.2&quot;</code></pre>
+<p>Hora do Break para explicações:</p>
+<p><em>Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:</em></p>
+<ul>
+<li><p>list.files - <em>A função list.files() lista os arquivos que estão dentro de uma determinada pasta do seu computador. No exemplo, estão preenchidos dois argumentos <code>path</code> e <code>pattern</code>. O primeiro é o endereço da pasta qual você deseja saber quais arquivos tem dentro. O pattern é a expressão regular relacionada aos arquivos que você deseja obter.</em></p></li>
+<li><p>R.home - <em>A função R.home() retorna ao usuário a pasta onde o R está instalado naquele computador. Aqui usamos ela como exemplo pois é reprodutivel em todo computador.</em></p></li>
+</ul>
+<p>Continuando…</p>
+<p>Como é possível observar nos três exemplos acima, a operação é feita somente na parte do texto que a expressão é compatível e essa é a beleza das Expressões Regulares. Porém, como saber o que significa uma expressão regular, e mais do que isso, como escrever uma? No bloco seguinte tento explicar um pouco da lógica por trás das expressões regulares.</p>
+</div>
+<div id="o-básico" class="section level3">
+<h3>O Básico</h3>
+<p>Antes de tudo acho necessário recomendar a <em>cheatsheet</em> <a href="https://github.com/rstudio/cheatsheets/raw/master/strings.pdf" title="Work with Strings Cheatsheet (Irá baixar um arquivo .pdf)">Work with Strings</a>, que foi feita pelos anjos da RStudio. A Work with Strings é um material valioso para se ter à mão, mesmo que você não tenha conhecimentos avançados da lingua inglesa, visto que ela tem ilustrações demonstrando o funcionamento de cada comando de expressão regular. Qualquer dúvida pode ser solucionada por ela, que também serve como material para que se possa aprender mais.</p>
+<p>Iremos estudar expressões regulares por meio de um parágrafo do livro que estou lendo durante esta infame quarentena forçada pelo Covid-19. O nome da obra é “A Ditadura Envergonhada”, escrito por Elio Gaspari (p. 137, 2003), usando ela, iremos explorar as opções disponíveis para extração e substituição de texto.</p>
+<pre class="r"><code>frase_eg = &quot;Castello queria um ato institucional que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Exxxecutivo.&quot;</code></pre>
+<div id="sem-operadores" class="section level4">
+<h4>1. Sem operadores!</h4>
+<p>Vale lembrar que não é necessário que usemos operadores para que uma expressão regular seja válida - <a href="https://pt.wikipedia.org/wiki/Express%C3%A3o_regular">Os critérios técnicos que precisam ser atendidos para uma RegEx ser valida podem ser encontrados aqui</a>. Qualquer palavra pode ser uma expressão regular. Na frase acima, se eu desejar substituir o nome “Castello” por “Barraco”, eu só preciso usar a função <code>stringr::str_replace()</code> para efetuar a substituição.</p>
+<pre class="r"><code>(frase_eg = stringr::str_replace(string = frase_eg, pattern = &quot;Castello&quot; , replacement = &quot;Barraco&quot;))</code></pre>
+<pre><code>## [1] &quot;Barraco queria um ato institucional que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Exxxecutivo.&quot;</code></pre>
+<p>E voilá, temos um ditador com nome popular, e uma Expressão Regular que funciona.</p>
+</div>
+<div id="o-operador-ou" class="section level4">
+<h4>2. O operador “OU”</h4>
+<p>Contudo, pode ser de interesse do leitor remover mais de um termo ao mesmo tempo. E para isso é necessário o uso de parentesis <code>()</code> e do operador “ou” <code>|</code>. O parêntesis é necessário para que se evite confusões e que o R saiba qual a ordem das operações e qual a abrangência delas, o “ou” diz quais são as opções. Agora, removeremos trechos do texto usando a função <code>stringr::str_remove()</code>*.</p>
+<p>Caso meu objetivo seja remover as palavras “institucional” e “complementares” pois já sei sobre quasi atos estamos falando, pode-se usar o operador, dentro de parentesis com as expressões desejadas.</p>
+<pre class="r"><code>(frase_eg = stringr::str_remove(string = frase_eg, pattern = &quot;(institucional|complementares)&quot;))</code></pre>
+<pre><code>## [1] &quot;Barraco queria um ato  que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Exxxecutivo.&quot;</code></pre>
+<ul>
+<li>Vale notar que <code>str_remove(string = x, pattern = y)</code> e <code>str_replace(string = x, pattern = y, replacement= &quot;&quot;)</code> possuem efeitos idênticos, porém é recomendável o uso da primeira por questões de legibilidade.</li>
+</ul>
+</div>
+<div id="operador-de-repetições" class="section level4">
+<h4>3. Operador de Repetições</h4>
+<p>Algumas vezes nós queremos representar por meio de expressões regulares coisas que se repetem. Voltando a nossa frase favorita, percebi que na hora de transcrever ela do livro para o computador cometi um pequeno erro: na última palavra, “executivo” tem 3 vezes a letra “x”; Está escrito “exxxecutivo”. OK, agora eu preciso resolver isso, mas tem solução usando a função <code>stringr::str_replace()</code>. Existem duas possibilidades, a subótima e a ótima. Comecemos com a primeira:</p>
+<pre class="r"><code>(frase_eg = stringr::str_replace(string = frase_eg, pattern = &quot;xxx&quot;, replacement = &quot;x&quot;))</code></pre>
+<pre><code>## [1] &quot;Barraco queria um ato  que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Executivo.&quot;</code></pre>
+<p>No exemplo acima, é possível ver que o <code>pattern = &quot;xxx&quot;</code> funciona e faz o trabalho desejado, porém, esse tipo de construção é confusa e existe uma alternativa melhor. A melhor forma de as chaves, que são um operador de repetições. Ou seja, usando <code>{}</code> é possivel determinar quantas vezes um padrão aparece, ou pode aparecer.</p>
+<pre class="r"><code>(frase_eg = stringr::str_replace(string = frase_eg, pattern = &quot;x{3}&quot;, replacement = &quot;x&quot;))</code></pre>
+<pre><code>## [1] &quot;Barraco queria um ato  que durasse só três meses. Assinou três. Queria que as cassações se limitasse a uma ou duas dezenas de dirigentes do regime deposto. Cassou cerca de quinhentas pessoas e demitiu 2 mil. Seu governo durou 32 meses, 23 dos quais sobre a vigência de outros 37 atos complementares, seis deles associados aos poderes de baraço e cutelo do Executivo.&quot;</code></pre>
+<p>Aqui é possível ver que eu usei <code>{3}</code> para indicar que o x apareceria três vezes. Caso eu queira indicar que é para substituir por <code>x</code> caso o padrão apareça de 1 até 4 vezes, pode-se passar dois argumentos no operador <code>x{j,k}</code>: onde <code>j</code> indica o minimo de vezes que a menor quantidade de vezes que <code>x</code> irá aparecer, e <code>k</code> a maior quantidade de vezes.</p>
+<pre class="r"><code>poder = c(&#39;exxxecutivo&#39;, &#39;exxecutivo&#39;, &#39;exxxxxecutivo&#39;)
+
+(frase_eg = stringr::str_replace(string = poder, pattern = &quot;x{2,5}&quot;, replacement = &quot;x&quot;))</code></pre>
+<pre><code>## [1] &quot;executivo&quot; &quot;executivo&quot; &quot;executivo&quot;</code></pre>
+<p>E olha só, nesse último exemplo aprendemos uma coisa nova, as funções do pacote <code>stringr</code> são todas vetorizadas, ou seja, ele realiza operações em vetores sem a necessidade de loops!</p>
+<p>Com isso, termino esse primeiro post, já confirmando que haverá uma continuação. Nela abordarei operações em data.frames e o uso de Expressões Regulares dentro de uma Pipeline do Tidyverse. A continuação será publicada no dia 20/03/2020, sexta-feira. Irei colocar o link abaixo assim que publicá-la.</p>
+<p>Abraços,
+Fiquem em casa, mantenham a quarentena!</p>
+</div>
+</div>
+</div>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      <span class="button previous">
+        <a href="/post/isis-nlp-analysis/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</span>
+        </a>
+      </span>
+      
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    
-    
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Introdução às Expressões Regulares em R - Alphabet Sigma</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    <head>
-    <link href="https://gmpg.org/xfn/11" rel="profile">
-    <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Cache-Control" content="public" />
-<!-- Enable responsiveness on mobile devices -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.67.1" />
-
-    
-    
-    
-
-<title>Introdução às Expressões Regulares em R • Alphabet Sigma</title>
+<meta name="author" content="Joao Pedro Oliveira" /><meta name="description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares." />
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Introdução às Expressões Regulares em R"/>
-<meta name="twitter:description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares."/>
+
+
+
+
+<meta name="generator" content="Hugo 0.67.1 with theme even" />
+
+
+<link rel="canonical" href="/2020/03/17/introducao-as-expressoes-regulares/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+
+
 
 <meta property="og:title" content="Introdução às Expressões Regulares em R" />
 <meta property="og:description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares." />
@@ -30,173 +45,86 @@
 <meta property="og:url" content="/2020/03/17/introducao-as-expressoes-regulares/" />
 <meta property="article:published_time" content="2020-03-17T00:00:00+00:00" />
 <meta property="article:modified_time" content="2020-03-18T12:46:24-03:00" />
-
-
-    
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
-
-
+<meta itemprop="name" content="Introdução às Expressões Regulares em R">
+<meta itemprop="description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares.">
+<meta itemprop="datePublished" content="2020-03-17T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-03-18T12:46:24-03:00" />
+<meta itemprop="wordCount" content="1755">
 
 
 
+<meta itemprop="keywords" content="nlp,r,regex," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Introdução às Expressões Regulares em R"/>
+<meta name="twitter:description" content="Nesse primeiro bloco de um tutorial em duas partes explico o básico sobre manipulação de texto em R, o que é uma string, como usar o pacote Stringr para fazer operações simples, além de (claro) operadores básicos das expressões regulares."/>
 
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-
-<link rel="stylesheet" href="/scss/hyde-hyde.3081c4981fb69a2783dd36ecfdd0e6ba7a158d4cbfdd290ebce8f78ba0469fc6.css" integrity="sha256-MIHEmB&#43;2mieD3Tbs/dDmunoVjUy/3SkOvOj3i6BGn8Y=">
-
-
-<link rel="stylesheet" href="/scss/print.2744dcbf8a0b2e74f8a50e4b34e5f441be7cf93cc7de27029121c6a09f9e77bc.css" integrity="sha256-J0Tcv4oLLnT4pQ5LNOX0Qb58&#43;TzH3icCkSHGoJ&#43;ed7w=" media="print">
-
-
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- Icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-    <link rel="shortcut icon" href="/favicon.png">
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
 
 </head>
-
-
-    <body class=" ">
-    
-<div class="sidebar">
-  <div class="container ">
-    <div class="sidebar-about">
-      <span class="site__title">
-        <a href="/">Alphabet Sigma</a>
-      </span>
-      
-      
-      <p class="site__description">
-         Um blog sobre números, letras e suas interseções. 
-      </p>
-    </div>
-    <div class="collapsible-menu">
-      <input type="checkbox" id="menuToggle">
-      <label for="menuToggle">Alphabet Sigma</label>
-      <div class="menu-content">
-        <div>
-	<ul class="sidebar-nav">
-		 
-		 
-			 
-				<li>
-					<a href="/">
-						<span>Inicio</span>
-					</a>
-				</li>
-			 
-		 
-			 
-				<li>
-					<a href="/about/">
-						<span>About</span>
-					</a>
-				</li>
-			 
-		
-	</ul>
-</div>
-
-        <section class="social">
-	
-	<a href="https://twitter.com/kimjoaoun" rel="me"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a>
-	
-	
-	
-	<a href="https://github.com/kimjoaoun" rel="me"><i class="fab fa-github fa-lg" aria-hidden="true"></i></a>
-	
-	
-	
-	
-	
-	
-	
-	<a href="https://linkedin.com/in/joaoposantos" rel="me"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a>
-	
-	
-	<a href="https://stackoverflow.com/users/9829398/john-p-s" rel="me"><i class="fab fa-stack-overflow fa-lg" aria-hidden="true"></i></a>
-	
-	
-	
-	
-	
-	
-	
-</section>
-
-      </div>
-    </div>
-    
-
-
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Alphabet Sigma</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 </div>
-
-        <div class="content container">
-            
-    
-<article>
-  <header>
-    <h1>Introdução às Expressões Regulares em R</h1>
-    
-    
-<div class="post__meta">
-    
-    
-      <i class="fas fa-calendar-alt"></i> Mar 17, 2020
-    
-    
-    
-      
-      
-          in
-          
-          
-              <a class="badge badge-category" href="/categories/dificuldade-intermediaria">DIFICULDADE INTERMEDIARIA</a>
-              •
-          
-              <a class="badge badge-category" href="/categories/nlp">NLP</a>
-              
-          
-      
-    
-    
-    
-      
-      
-          <br/>
-           <i class="fas fa-tags"></i>
-          
-          <a class="badge badge-tag" href="/tags/nlp">nlp</a>
-           
-      
-          <a class="badge badge-tag" href="/tags/r">r</a>
-           
-      
-          <a class="badge badge-tag" href="/tags/regex">regex</a>
-          
-      
-    
-    
-    <br/>
-    <i class="fas fa-clock"></i> 9 min read
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Inicio</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Alphabet Sigma</a>
 </div>
 
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Inicio</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-  </header>
-  
-  
-  <div class="post">
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
+    <header class="post-header">
+      <h1 class="post-title">Introdução às Expressões Regulares em R</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-03-17 </span>
+        <div class="post-category">
+            <a href="/categories/nlp/"> nlp </a>
+            <a href="/categories/dificuldade-intermediaria/"> dificuldade intermediaria </a>
+            </div>
+        
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      
 
 
 <p><strong>ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.</strong></p>
@@ -290,42 +218,86 @@ Fiquem em casa, mantenham a quarentena!</p>
 </div>
 </div>
 
-  </div>
-  
+    </div>
 
-<div class="navigation navigation-single">
     
-    
-    <a href="/2020/04/22/isis-nlp-analysis/" class="navigation-next">
-      <span class="navigation-tittle">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</span>
-      <i aria-hidden="true" class="fa fa-chevron-right"></i>
-    </a>
-    
-</div>
-
-
-  
-
-  
-    
-
-
-</article>
-
-
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/nlp/">nlp</a>
+          <a href="/tags/r/">r</a>
+          <a href="/tags/regex/">regex</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2020/04/22/isis-nlp-analysis/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+      </nav>
+    </footer>
+  </article>
         </div>
         
-    
 
-<script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="kimjoaoun" class="iconfont icon-thub" title="thub"></a>
+      <a href="joaoposantos" class="iconfont icon-nkedin" title="nkedin"></a>
+      <a href="9829398/john-p-s" class="iconfont icon-ackoverflow" title="ackoverflow"></a>
+      <a href="kimjoaoun" class="iconfont icon-itter" title="itter"></a>
+  <a href="/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+     - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"></span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  <script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+  
+
+
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
 
 
 
 
 
-    
 
 
 
-    </body>
+</body>
 </html>

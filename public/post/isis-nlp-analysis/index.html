@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Escola ISIS de Radicalização Religiosa: Uma Análise com NLP :: Alphabet Sigma —  Um blog sobre números, letras e suas interseções.</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado https://www.kaggle.com/fifthtribe/isis-religious-texts. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
+Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/post/isis-nlp-analysis/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/img/favicon/orange.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  <meta name="twitter:site" content="https://alphabetsigma.netlify.app/" />
+
+<meta name="twitter:creator" content="João Pedro Oliveira" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Escola ISIS de Radicalização Religiosa: Uma Análise com NLP :: Alphabet Sigma">
+<meta property="og:description" content="Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política." />
+<meta property="og:url" content="/post/isis-nlp-analysis/" />
+<meta property="og:site_name" content="Escola ISIS de Radicalização Religiosa: Uma Análise com NLP" />
+
+  
+    <meta property="og:image" content="/img/favicon/orange.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="nlp" />
+
+  <meta property="article:section" content="LDA" />
+
+  <meta property="article:section" content="dificuldade intermediária" />
+
+
+  <meta property="article:published_time" content="2020-04-22 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+        
+          <li><a href="/about">Sobre</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+      
+        <li><a href="/about">Sobre</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/post/isis-nlp-analysis/">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2020-04-22
+    </span>
+    
+    
+    <span class="post-author">::
+      João Pedro Oliveira
+    </span>
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        
+
+
+<p>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado <a href="AQUI">https://www.kaggle.com/fifthtribe/isis-religious-texts</a>. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.</p>
+<p>Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util. Você pode conferir melhor suas funcionalidades nessa publicação <a href="AQUI%20(em%20inglês)">https://www.tidyverse.org/blog/2018/03/rlang-0.2.0/</a>, feita pelo time de desenvolvedores do Tidyverse.</p>
+<pre class="r"><code>library(tidyverse) # É uma meta-biblioteca, isto é, uma bib. que contém outras bibliotecas.
+library(tm) # Text mining no geral, faz de tudo um pouco.
+library(topicmodels) # Para criar o modelo LDA.
+library(tidytext) # Ferramentas de tidy NLP.
+library(SnowballC) # Para o stemming!
+library(magrittr) # NEW TOOLS!
+library(rlang)
+library(forcats)</code></pre>
+<p>Então vamos carregar os dados na memória, usando o <code>{readr}</code>, que já vem incluso na meta-biblioteca <code>{tidyverse}</code>. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o <a href="encoding">https://en.wikipedia.org/wiki/Character_encoding</a> da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a <code>{tm}</code>). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste – embora tenha um motivo claro, e preventivo, neste dataset – pode ser útil em outros contextos também.</p>
+<pre class="r"><code>dataset = readr::read_csv(&#39;../../data/ISIS Religious Texts v1.csv&#39;) # Carrega os dados
+
+dataset$Quote = iconv(dataset$Quote, &quot;ASCII&quot;, &quot;UTF-8&quot;, sub=&quot;byte&quot;) # Altera o encoding
+
+head(dataset)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   Magazine Issue Date   Type  Source   Quote           Purpose `Article Name`   
+##   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;            
+## 1 Dabiq        1 Jun-14 Jiha… Abu Mus… The spark has … Support First Page       
+## 2 Dabiq        1 Jun-14 Hadi… Sahih M… &lt;93&gt;The Hour w… Support Introduction     
+## 3 Dabiq        1 Jun-14 Jiha… Abu Mus… &lt;93&gt;The spark … Support Introduction     
+## 4 Dabiq        1 Jun-14 Jiha… Abu Bak… &lt;93&gt;O Muslims … Support Khilafah Declared
+## 5 Dabiq        1 Jun-14 Jiha… Abu Bak… &lt;93&gt;O Ummah of… Support The World has Di…
+## 6 Dabiq        1 Jun-14 Jiha… Abu Bak… &lt;93&gt;Therefore,… Support A Call to Hijrah</code></pre>
+<p>Ao observar o dataset vemos que ele possui 8 colunas e aproximadamente 2.700 linhas. Informações como data (2014-2016), revista, tipo e propósito são insumos valiosos, e não serão usadas aqui para mantermos esta publicação em um tamanho restrito. Uma ideia que não será abordada nessa publicação é observarmos se há alteração do discurso conforme a situação política do ISIS se agrava, será que o tom passou a ser mais messiânico? Não sei, fica o exercicio ao leitor.</p>
+<p>Enfim, passemos ao código…</p>
+<p>Como sempre começamos com uma função, dessa vez crio uma chamada <code>cleaner_impurities</code>, o que ela faz é simples. Ela passa o texto pela função <code>stringr::str_replace_all()</code>, que substitui um elemento expresso por meio de expressão regular, por outro. No código abaixo, entra texto, que é passado pela função anteriormente descrita, e então retornado sem pontuação, com um espaço no lugar.</p>
+<pre class="r"><code>cleaner_impurities = function(text){
+  text %&gt;% 
+    stringr::str_replace_all(&quot;[[:punct:]]&quot;, &quot; &quot;) 
+  text
+}</code></pre>
+<p>Mas calma… Você, pessoa bonita e atenta, poderia me chamar atenção ao fato de que existe a função <code>tm::map(removePunctuation)</code>, que ao passarmos no <a href="Corpus">https://en.wikipedia.org/wiki/Text_corpus</a> atinge o mesmo objetivo. Concordo, mas estava afim de brincar com o <code>rlang</code>, e também, a função também dá uma utilidade às <a href="expressões%20regulares,%20que%20vimos%20no%20post%20anterior">https://alphabetsigma.netlify.app/2020/03/17/introducao-as-expressoes-regulares/</a>.</p>
+<pre class="r"><code>treat = function(data, texto_col= Quote){
+  
+ data %&gt;%
+    mutate({{ texto_col }} := cleaner_impurities({{ texto_col }})) %&gt;% 
+    pull({{ texto_col }}) -&gt; data_res
+  
+  data_res
+}</code></pre>
+<p>A sintaxe da função acima pode ser um pouco nova para alguns, os operadores <code>{{ }}</code> (lê-se Curly-Curly) e <code>:=</code> nos permitem utilizarmos os nomes das colunas dos dataframes como argumentos, sem precisarmos recorrer a construções de código obscuras, como é possível ver nesta <a href="publicação%20do%20Bruno%20Rodrigues,%20em%20seu%20blog">https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/</a>.</p>
+<p>Mas, o que essa função faz é bem simples. A função aceita dois argumentos, <code>data</code> e <code>texto_col</code>, a primeira corresponde ao data.frame/tibble que contém os dados a serem tratados, a última corresponde ao nome da coluna qual está o texto desejado. Altera a coluna ‘Quote’, passando-a pela função <code>cleaner_impurities</code>, e então retorna ela como um <strong>vetor</strong>.</p>
+<p>Preste atenção ao fato de que a informação do nome da coluna não deve ser inserida como uma <code>'string'</code>, e sim como se fosse um <code>objeto</code>, <a href="caso%20contrário,%20teremos%20um%20resultado%20inesperado">https://stackoverflow.com/questions/61377657/tidy-evaluation-not-working-with-mutate-and-stringr</a>.</p>
+<pre class="r"><code>topTerms = function(text, n_topics=3){
+  
+   text %&gt;%
+    SnowballC::wordStem(language= &#39;english&#39;) %&gt;% 
+    tm::VectorSource() %&gt;% # Interpreta cada vetor como um documento.
+    tm::Corpus() %&gt;%  # Cria um corpus com os documentos
+    tm::tm_map(tolower) %&gt;%  # Transforma todos os documentos em letras minusculas
+    tm::tm_map(removePunctuation) %&gt;% 
+    tm::tm_map(removeNumbers) %&gt;% # Remove os números
+    tm::tm_map(removeWords, stopwords(&#39;english&#39;)) %&gt;% # Remove palavras frequentes e que são vazias de significado (the, it, as, etc.)
+    tm::DocumentTermMatrix() -&gt; DTM # Transforma em uma Document Term Matrix.
+  
+  indices_unicos &lt;- unique(DTM$i) # index de cada valor único.
+  DTM &lt;- DTM[indices_unicos, ] # pega um subset desses indexs
+  
+  topterms &lt;- topicmodels::LDA(DTM, k = n_topics) %&gt;%  #Roda o LDA com 3 tópicos
+    tidytext::tidy(matrix= &#39;beta&#39;) %&gt;% # Transforma o resultado do modelo em um objeto &#39;tidy&#39;, manipulável.
+    group_by(topic) %&gt;% 
+    top_n(20, beta) %&gt;% # Seleciona os 15 maiores betas.
+    ungroup %&gt;% 
+    arrange(topic, -beta)
+  
+  topterms # Retorna.
+
+}
+
+res = dataset %&gt;% 
+  treat() %&gt;% 
+  topTerms()
+
+    
+res</code></pre>
+<pre><code>## # A tibble: 60 x 3
+##    topic term         beta
+##    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
+##  1     1 said      0.0512 
+##  2     1 ibn       0.0225 
+##  3     1 allah     0.0201 
+##  4     1 messenger 0.0155 
+##  5     1 allahs    0.0138 
+##  6     1 will      0.0121 
+##  7     1 prophet   0.0106 
+##  8     1 people    0.00878
+##  9     1 one       0.00802
+## 10     1 alayhi    0.00741
+## # … with 50 more rows</code></pre>
+<p>O trecho acima é bem auto-explicativo, até mesmo devido aos comentários no código. Informações extras podem ser encontradas na documentação das funções.</p>
+<p>Vamos plotar as informações que conseguimos, assim é possível visualizarmos melhor o resultado.</p>
+<pre class="r"><code> plt = res %&gt;% # take the top terms
+          mutate(term = reorder(term, beta)) %&gt;%
+          ggplot(aes(term, beta, fill = factor(topic))) + 
+          geom_col(show.legend = FALSE) + 
+          facet_wrap(~ topic, scales = &quot;free&quot;) + 
+          labs(x = NULL, y = &quot;Beta&quot;) +  
+          coord_flip()
+  
+plt</code></pre>
+<p><img src="/post/2020-04-22-escola-isis-de-radicalizacao-religiosa-uma-analise-com-nlp_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Como esperado, temos quatro grupos, porém, ainda temos muita poluição nos dados. Irei adicionar alguns passos adicionais, e tentaremos ter um resultado mais limpo.</p>
+<pre class="r"><code>cleaned_docs = function(data){
+  data %&gt;% 
+    pull({{ Quote }}) %&gt;% 
+    cleaner_impurities %&gt;% 
+    VectorSource() %&gt;% 
+    Corpus() %&gt;% 
+    DocumentTermMatrix() %&gt;% 
+    tidy() %&gt;% 
+    anti_join(stop_words, by = c(&#39;term&#39;= &#39;word&#39;)) %&gt;% 
+    group_by(document) %&gt;% 
+    mutate(terms = toString(rep(term, count))) %&gt;% 
+    select(document,terms) %&gt;% 
+    unique()
+}
+
+final = topTerms(res) %&gt;% 
+  mutate(term = reorder(term, beta)) %&gt;%
+  ggplot(aes(term, beta, fill = factor(topic))) + 
+  geom_col(show.legend = FALSE) + 
+  facet_wrap(~ topic, scales = &quot;free&quot;) + 
+  labs(x = NULL, y = &quot;Beta&quot;) +  
+  coord_flip()</code></pre>
+<pre><code>## Warning in tm_map.SimpleCorpus(., tolower): transformation drops documents</code></pre>
+<pre><code>## Warning in tm_map.SimpleCorpus(., removePunctuation): transformation drops
+## documents</code></pre>
+<pre><code>## Warning in tm_map.SimpleCorpus(., removeNumbers): transformation drops documents</code></pre>
+<pre><code>## Warning in tm_map.SimpleCorpus(., removeWords, stopwords(&quot;english&quot;)):
+## transformation drops documents</code></pre>
+<pre class="r"><code>final</code></pre>
+<p><img src="/post/2020-04-22-escola-isis-de-radicalizacao-religiosa-uma-analise-com-nlp_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Ok, temos algo melhor. Observando os gráficos na ordem, podemos ter ideia do que cada um dos 4 tópicos abordam, porém não temos nenhuma surpresa advinda deste dataset. Todos nós temos nossos conhecimentos de grupos terroristas, sabemos muito bem como o discurso funciona, devido ao nosso extenso aprendizado com Call of Duty e filmes americanos.</p>
+<p>No terceiro, as mensagens tem relação mais intima com assuntos estritamente religiosos. Palavras como <code>Allah, messenger, prophet</code> são de cunho religioso, o que indica que provavelmente esses textos estariam classificados como “Quran”, no dataset. Também mostra que é possível traçar uma distinção entre textos que tratam exclusivamente de religião, é possível acreditar que, por serem textos utilizados por grupos terroristas, estejam relacionados a uma suposta glória da causa.</p>
+<p>Em segundo lugar, temos, também, uma infinidade de termos religiosos. Atenção nas palavras <code>people, security, syrian, isis, iraq, jihd (jihad)</code>. Por esses termos, podemos imaginar que aqui o tema deixa de ser estritamente a religião, e passa a ser as motivações religiosas que são usadas como desculpa para o fazer a guerra, com especial foco à Síria.</p>
+<p>Na primeira coluna, temos palavras importantes, dando destaque à <code>attawbah</code>, esta é a nona Surata do Alcorão, e trata de reparação e trata do balanço e dos problemas da harmonia e da guerra. O grupo de documentos parece ter relação com o sacrificio necessário pela guerra.</p>
+<div id="conclusão" class="section level3">
+<h3>Conclusão</h3>
+<p>No fim, concluo que talvez usar o LDA nesse grupo de documentos não tenha sido a melhor escolha. Voltarei a este dataset no futuro, porém, talvez usando TF-IDF para fazer a análise, espero ter resultados mais satisfatórios. O fato de todos os textos possuirem uma densa carga de discurso religioso pode ter atrapalhado os resultados do modelo, o tamanho dos textos também é um problema, o LDA performa mal em textos curtos. Fica o aprendizado.</p>
+</div>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/post/introducao-as-expressoes-regulares/">
+          <span class="button__text">Introdução às Expressões Regulares em R</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
