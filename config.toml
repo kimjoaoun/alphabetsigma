@@ -22,7 +22,7 @@ googleAnalytics = ""      # UA-XXXXXXXX-X
 copyright = "João Pedro Oliveira dos Santos"            # default: author.name ↓        # 默认为下面配置的author.name ↓
 
 [author]                  # essential                     # 必需
-  name = "João Pedor Oliveira"
+  name = "João Pedro Oliveira"
 
 [sitemap]                 # essential                     # 必需
   changefreq = "weekly"
