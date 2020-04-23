@@ -142,10 +142,10 @@ copyright = "João Pedro Oliveira dos Santos"            # default: author.name 
     repo = ""               # The repo to store comments
 
   [params.gitalk]           # Gitalk is a comment system based on GitHub issues. see https://github.com/gitalk/gitalk
-    owner = ""              # Your GitHub ID
-    repo = ""               # The repo to store comments
-    clientId = ""           # Your client ID
-    clientSecret = ""       # Your client secret
+    owner = "kimjoaoun"              # Your GitHub ID
+    repo = "kimjoaoun/learning-ts"               # The repo to store comments
+    clientId = "c1170dfca474e1cb4d6d"           # Your client ID
+    clientSecret = "a4c3b39af68c69dcceae407421a673fc09e892ba"       # Your client secret
 
   # Valine.
   # You can get your appid and appkey from https://leancloud.cn
@@ -180,21 +180,21 @@ copyright = "João Pedro Oliveira dos Santos"            # default: author.name 
     alipay = "/path/to/your/alipay-qr-code.png"           # 支付宝二维码
 
   [params.social]                                         # 社交链接
-    a-email = "mailto:your@email.com"
-    b-stack-overflow = "http://localhost:1313"
-    c-twitter = "http://localhost:1313"
-    d-facebook = "http://localhost:1313"
-    e-linkedin = "http://localhost:1313"
-    f-google = "http://localhost:1313"
-    g-github = "http://localhost:1313"
-    h-weibo = "http://localhost:1313"
-    i-zhihu = "http://localhost:1313"
-    j-douban = "http://localhost:1313"
-    k-pocket = "http://localhost:1313"
-    l-tumblr = "http://localhost:1313"
-    m-instagram = "http://localhost:1313"
-    n-gitlab = "http://localhost:1313"
-    o-bilibili = "http://localhost:1313"
+  #  a-email = "mailto:your@email.com"
+    b-stack-overflow = "https://stackoverflow.com/users/9829398/john-p-s"
+    c-twitter = "http://www.twitter.com/kimjoaoun"
+  #  d-facebook = "http://localhost:1313"
+    e-linkedin = "https://www.linkedin.com/in/joaoposantos/"
+ #   f-google = "http://localhost:1313"
+    g-github = "http://www.github.com/kimjoaoun"
+#    h-weibo = "http://localhost:1313"
+ #   i-zhihu = "http://localhost:1313"
+  #  j-douban = "http://localhost:1313"
+#    k-pocket = "http://localhost:1313"
+ #   l-tumblr = "http://localhost:1313"
+  #  m-instagram = "http://localhost:1313"
+#    n-gitlab = "http://localhost:1313"
+ #   o-bilibili = "http://localhost:1313"
 
 # See https://gohugo.io/about/hugo-and-gdpr/
 [privacy]
