@@ -12,12 +12,13 @@
     
     
     <item>
-      <title>Entendendo funções em 5 minutos</title>
-      <link>/2020/03/18/entendendo-funcoes-cinco-minutos/</link>
-      <pubDate>Wed, 18 Mar 2020 00:00:00 +0000</pubDate>
+      <title>Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</title>
+      <link>/2020/04/22/isis-nlp-analysis/</link>
+      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/03/18/entendendo-funcoes-cinco-minutos/</guid>
-      <description>Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.</description>
+      <guid>/2020/04/22/isis-nlp-analysis/</guid>
+      <description>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado https://www.kaggle.com/fifthtribe/isis-religious-texts. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
+Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util.</description>
     </item>
     
     <item>
@@ -37,7 +38,7 @@
       
       <guid>/about/</guid>
       <description>Olá queridos,
-Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no Twitter! No menu lateral você consegue encontrar outras formas de me contactar, com oo LinkedIn e o Github.</description>
+Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no Twitter! No menu lateral você consegue encontrar outras formas de me contatar, como o LinkedIn e o Github.</description>
     </item>
     
   </channel>

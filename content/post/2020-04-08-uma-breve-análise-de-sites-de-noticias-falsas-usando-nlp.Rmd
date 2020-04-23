@@ -1,0 +1,32 @@
+---
+title: Uma breve análise de sites de noticias falsas usando NLP
+author: João Pedro Oliveira
+date: '2020-04-08'
+slug: uma-breve-análise-de-sites-de-noticias-falsas-usando-nlp
+categories:
+  - NLP
+tags: []
+lastmod: '2020-04-08T01:49:49-03:00'
+layout: post
+type: post
+highlight: yes
+draft: yes
+---
+
+```{r Bibliotecas, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(wordcloud)
+```
+
+
+```{r}
+dados = readr::read_csv('/home/joaopsantos/Desktop/monografia_tcc/bases_de_dados/news_and_sent_2.csv')
+
+table(dados$vote)
+```
+
+```{r}
+tidy_data = dados %>%
+  filter(nchar(texto) > 30)
+```
+

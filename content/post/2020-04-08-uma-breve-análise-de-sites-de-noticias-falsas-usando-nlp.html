@@ -1,0 +1,41 @@
+---
+title: Uma breve análise de sites de noticias falsas usando NLP
+author: João Pedro Oliveira
+date: '2020-04-08'
+slug: uma-breve-análise-de-sites-de-noticias-falsas-usando-nlp
+categories:
+  - NLP
+tags: []
+lastmod: '2020-04-08T01:49:49-03:00'
+layout: post
+type: post
+highlight: yes
+draft: yes
+---
+
+
+
+<pre class="r"><code>library(tidyverse)
+library(wordcloud)</code></pre>
+<pre class="r"><code>dados = readr::read_csv(&#39;/home/joaopsantos/Desktop/monografia_tcc/bases_de_dados/news_and_sent_2.csv&#39;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   titulo = col_character(),
+##   texto = col_character(),
+##   element_id = col_double(),
+##   sentence_id = col_double(),
+##   score = col_double(),
+##   comparative = col_double(),
+##   vote = col_character(),
+##   numwords = col_double(),
+##   numhits = col_double(),
+##   date = col_date(format = &quot;&quot;),
+##   semester = col_double(),
+##   date_hour = col_datetime(format = &quot;&quot;)
+## )</code></pre>
+<pre class="r"><code>table(dados$vote)</code></pre>
+<pre><code>## 
+## negative  neutral positive 
+##    13132    57584    13063</code></pre>
+<pre class="r"><code>tidy_data = dados %&gt;%
+  filter(nchar(texto) &gt; 30)</code></pre>
