@@ -141,8 +141,8 @@
       
 
 
-<p>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado (<a href="https://www.kaggle.com/fifthtribe/isis-religious-texts" class="uri">https://www.kaggle.com/fifthtribe/isis-religious-texts</a>)[AQUI]. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.</p>
-<p>Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util. Você pode conferir melhor suas funcionalidades nessa publicação (<a href="https://www.tidyverse.org/blog/2018/03/rlang-0.2.0/" class="uri">https://www.tidyverse.org/blog/2018/03/rlang-0.2.0/</a>)[AQUI (em inglês)], feita pelo time de desenvolvedores do Tidyverse.</p>
+<p>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado <a href="https://www.kaggle.com/fifthtribe/isis-religious-texts">AQUI</a>. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.</p>
+<p>Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util. Você pode conferir melhor suas funcionalidades nessa publicação <a href="https://www.tidyverse.org/blog/2018/03/rlang-0.2.0/">AQUI (em inglês)</a>, feita pelo time de desenvolvedores do Tidyverse.</p>
 <pre class="r"><code>library(tidyverse) # É uma meta-biblioteca, isto é, uma bib. que contém outras bibliotecas.
 library(tm) # Text mining no geral, faz de tudo um pouco.
 library(topicmodels) # Para criar o modelo LDA.
@@ -151,7 +151,7 @@ library(SnowballC) # Para o stemming!
 library(magrittr) # NEW TOOLS!
 library(rlang)
 library(forcats)</code></pre>
-<p>Então vamos carregar os dados na memória, usando o <code>{readr}</code>, que já vem incluso na meta-biblioteca <code>{tidyverse}</code>. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o (<a href="https://en.wikipedia.org/wiki/Character_encoding" class="uri">https://en.wikipedia.org/wiki/Character_encoding</a>)[encoding] da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a <code>{tm}</code>). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste – embora tenha um motivo claro, e preventivo, neste dataset – pode ser útil em outros contextos também.</p>
+<p>Então vamos carregar os dados na memória, usando o <code>{readr}</code>, que já vem incluso na meta-biblioteca <code>{tidyverse}</code>. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o <a href="https://en.wikipedia.org/wiki/Character_encoding">encoding</a> da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a <code>{tm}</code>). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste – embora tenha um motivo claro, e preventivo, neste dataset – pode ser útil em outros contextos também.</p>
 <pre class="r"><code>dataset = readr::read_csv(&#39;../../data/ISIS Religious Texts v1.csv&#39;) # Carrega os dados
 
 dataset$Quote = iconv(dataset$Quote, &quot;ASCII&quot;, &quot;UTF-8&quot;, sub=&quot;byte&quot;) # Altera o encoding
@@ -174,7 +174,7 @@ head(dataset)</code></pre>
     stringr::str_replace_all(&quot;[[:punct:]]&quot;, &quot; &quot;) 
   text
 }</code></pre>
-<p>Mas calma… Você, pessoa bonita e atenta, poderia me chamar atenção ao fato de que existe a função <code>tm::map(removePunctuation)</code>, que ao passarmos no (<a href="https://en.wikipedia.org/wiki/Text_corpus" class="uri">https://en.wikipedia.org/wiki/Text_corpus</a>)[Corpus] atinge o mesmo objetivo. Concordo, mas estava afim de brincar com o <code>rlang</code>, e também, a função também dá uma utilidade às (<a href="https://alphabetsigma.netlify.app/2020/03/17/introducao-as-expressoes-regulares/" class="uri">https://alphabetsigma.netlify.app/2020/03/17/introducao-as-expressoes-regulares/</a>)[expressões regulares, que vimos no post anterior].</p>
+<p>Mas calma… Você, pessoa bonita e atenta, poderia me chamar atenção ao fato de que existe a função <code>tm::map(removePunctuation)</code>, que ao passarmos no <a href="https://en.wikipedia.org/wiki/Text_corpus">Corpus</a> atinge o mesmo objetivo. Concordo, mas estava afim de brincar com o <code>rlang</code>, e também, a função também dá uma utilidade às <a href="https://alphabetsigma.netlify.app/2020/03/17/introducao-as-expressoes-regulares/">expressões regulares, que vimos no post anterior</a>.</p>
 <pre class="r"><code>treat = function(data, texto_col= Quote){
   
  data %&gt;%
@@ -183,9 +183,9 @@ head(dataset)</code></pre>
   
   data_res
 }</code></pre>
-<p>A sintaxe da função acima pode ser um pouco nova para alguns, os operadores <code>{{ }}</code> (lê-se Curly-Curly) e <code>:=</code> nos permitem utilizarmos os nomes das colunas dos dataframes como argumentos, sem precisarmos recorrer a construções de código obscuras, como é possível ver nesta (<a href="https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/" class="uri">https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/</a>)[publicação do Bruno Rodrigues, em seu blog].</p>
+<p>A sintaxe da função acima pode ser um pouco nova para alguns, os operadores <code>{{ }}</code> (lê-se Curly-Curly) e <code>:=</code> nos permitem utilizarmos os nomes das colunas dos dataframes como argumentos, sem precisarmos recorrer a construções de código obscuras, como é possível ver nesta <a href="https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/">publicação do Bruno Rodrigues, em seu blog</a>.</p>
 <p>Mas, o que essa função faz é bem simples. A função aceita dois argumentos, <code>data</code> e <code>texto_col</code>, a primeira corresponde ao data.frame/tibble que contém os dados a serem tratados, a última corresponde ao nome da coluna qual está o texto desejado. Altera a coluna ‘Quote’, passando-a pela função <code>cleaner_impurities</code>, e então retorna ela como um <strong>vetor</strong>.</p>
-<p>Preste atenção ao fato de que a informação do nome da coluna não deve ser inserida como uma <code>'string'</code>, e sim como se fosse um <code>objeto</code>, (<a href="https://stackoverflow.com/questions/61377657/tidy-evaluation-not-working-with-mutate-and-stringr" class="uri">https://stackoverflow.com/questions/61377657/tidy-evaluation-not-working-with-mutate-and-stringr</a>)[caso contrário, teremos um resultado inesperado].</p>
+<p>Preste atenção ao fato de que a informação do nome da coluna não deve ser inserida como uma <code>'string'</code>, e sim como se fosse um <code>objeto</code>, <a href="https://stackoverflow.com/questions/61377657/tidy-evaluation-not-working-with-mutate-and-stringr">caso contrário, teremos um resultado inesperado</a>.</p>
 <pre class="r"><code>topTerms = function(text, n_topics=3){
   
    text %&gt;%
@@ -221,16 +221,16 @@ res</code></pre>
 <pre><code>## # A tibble: 60 x 3
 ##    topic term         beta
 ##    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
-##  1     1 allah     0.0500 
-##  2     1 said      0.0352 
-##  3     1 will      0.0205 
-##  4     1 messenger 0.0138 
-##  5     1 ibn       0.0133 
-##  6     1 indeed    0.0109 
-##  7     1 people    0.00999
-##  8     1 allahs    0.00875
-##  9     1 one       0.00780
-## 10     1 upon      0.00724
+##  1     1 allah     0.0448 
+##  2     1 said      0.0337 
+##  3     1 messenger 0.0137 
+##  4     1 will      0.0128 
+##  5     1 ibn       0.0128 
+##  6     1 allahs    0.00849
+##  7     1 one       0.00805
+##  8     1 people    0.00742
+##  9     1 indeed    0.00725
+## 10     1 upon      0.00656
 ## # … with 50 more rows</code></pre>
 <p>O trecho acima é bem auto-explicativo, até mesmo devido aos comentários no código. Informações extras podem ser encontradas na documentação das funções.</p>
 <p>Vamos plotar as informações que conseguimos, assim é possível visualizarmos melhor o resultado.</p>

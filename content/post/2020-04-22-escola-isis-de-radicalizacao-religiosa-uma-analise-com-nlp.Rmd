@@ -12,9 +12,9 @@ highlight: yes
 Description: 'Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política.'
 ---
 
-Nesse post nós iremos fazer uma simples (e rápida) análise do dataset "ISIS Religious Texts v1", que pode ser encontrado (https://www.kaggle.com/fifthtribe/isis-religious-texts)[AQUI]. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a "Dabiq" e a "Rumyiah", que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
+Nesse post nós iremos fazer uma simples (e rápida) análise do dataset "ISIS Religious Texts v1", que pode ser encontrado [AQUI](https://www.kaggle.com/fifthtribe/isis-religious-texts). Essa base de dados contém textos de duas revistas do ISIS, estas sendo a "Dabiq" e a "Rumyiah", que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
 
-Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util. Você pode conferir melhor suas funcionalidades nessa publicação (https://www.tidyverse.org/blog/2018/03/rlang-0.2.0/)[AQUI (em inglês)], feita pelo time de desenvolvedores do Tidyverse.
+Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util. Você pode conferir melhor suas funcionalidades nessa publicação [AQUI (em inglês)](https://www.tidyverse.org/blog/2018/03/rlang-0.2.0/), feita pelo time de desenvolvedores do Tidyverse.
 
 
 ```{r message=FALSE, warning=FALSE}
@@ -28,7 +28,7 @@ library(rlang)
 library(forcats)
 ```
 
-Então vamos carregar os dados na memória, usando o `{readr}`, que já vem incluso na meta-biblioteca `{tidyverse}`. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o (https://en.wikipedia.org/wiki/Character_encoding)[encoding] da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a `{tm}`). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste -- embora tenha um motivo claro, e preventivo, neste dataset -- pode ser útil em outros contextos também.
+Então vamos carregar os dados na memória, usando o `{readr}`, que já vem incluso na meta-biblioteca `{tidyverse}`. Contudo, para evitar problemas de compatibilidade de caracteres, visto que podemos ter texto em árabe, já me antecipo e altero o [encoding](https://en.wikipedia.org/wiki/Character_encoding) da coluna que contém o texto para UTF-8, que é o ideal para as bibliotecas de análise de texto que serão usadas (especialmente a `{tm}`). Em diversas situações, podem ocorrer erros durante a análise devido ao texto estar no encoding errado, a alteração deste -- embora tenha um motivo claro, e preventivo, neste dataset -- pode ser útil em outros contextos também.
 
 ```{r message=FALSE, warning=FALSE}
 dataset = readr::read_csv('../../data/ISIS Religious Texts v1.csv') # Carrega os dados
@@ -52,7 +52,7 @@ cleaner_impurities = function(text){
 }
 ```
 
-Mas calma... Você, pessoa bonita e atenta, poderia me chamar atenção ao fato de que existe a função `tm::map(removePunctuation)`, que ao passarmos no (https://en.wikipedia.org/wiki/Text_corpus)[Corpus] atinge o mesmo objetivo. Concordo, mas estava afim de brincar com o `rlang`, e também, a função também dá uma utilidade às (https://alphabetsigma.netlify.app/2020/03/17/introducao-as-expressoes-regulares/)[expressões regulares, que vimos no post anterior].
+Mas calma... Você, pessoa bonita e atenta, poderia me chamar atenção ao fato de que existe a função `tm::map(removePunctuation)`, que ao passarmos no [Corpus](https://en.wikipedia.org/wiki/Text_corpus) atinge o mesmo objetivo. Concordo, mas estava afim de brincar com o `rlang`, e também, a função também dá uma utilidade às [expressões regulares, que vimos no post anterior](https://alphabetsigma.netlify.app/2020/03/17/introducao-as-expressoes-regulares/).
 
 ```{r}
 treat = function(data, texto_col= Quote){
@@ -65,11 +65,11 @@ treat = function(data, texto_col= Quote){
 }
 ```
 
-A sintaxe da função acima pode ser um pouco nova para alguns, os operadores `{{ }}` (lê-se Curly-Curly) e `:=` nos permitem utilizarmos os nomes das colunas dos dataframes como argumentos, sem precisarmos recorrer a construções de código obscuras, como é possível ver nesta (https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/)[publicação do Bruno Rodrigues, em seu blog].
+A sintaxe da função acima pode ser um pouco nova para alguns, os operadores `{{ }}` (lê-se Curly-Curly) e `:=` nos permitem utilizarmos os nomes das colunas dos dataframes como argumentos, sem precisarmos recorrer a construções de código obscuras, como é possível ver nesta [publicação do Bruno Rodrigues, em seu blog](https://www.brodrigues.co/blog/2019-06-20-tidy_eval_saga/).
 
 Mas, o que essa função faz é bem simples. A função aceita dois argumentos, `data` e `texto_col`, a primeira corresponde ao data.frame/tibble que contém os dados a serem tratados, a última corresponde ao nome da coluna qual está o texto desejado. Altera a coluna 'Quote', passando-a pela função `cleaner_impurities`, e então retorna ela como um **vetor**. 
 
-Preste atenção ao fato de que a informação do nome da coluna não deve ser inserida como uma `'string'`, e sim como se fosse um `objeto`, (https://stackoverflow.com/questions/61377657/tidy-evaluation-not-working-with-mutate-and-stringr)[caso contrário, teremos um resultado inesperado].
+Preste atenção ao fato de que a informação do nome da coluna não deve ser inserida como uma `'string'`, e sim como se fosse um `objeto`, [caso contrário, teremos um resultado inesperado](https://stackoverflow.com/questions/61377657/tidy-evaluation-not-working-with-mutate-and-stringr).
 
 ```{r warning=FALSE}
 topTerms = function(text, n_topics=3){
