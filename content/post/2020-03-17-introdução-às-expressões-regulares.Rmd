@@ -24,7 +24,6 @@ highlight: yes
   
 ---
 
-**ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.**
 
 * São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.
 
@@ -149,6 +148,7 @@ Com isso, termino esse primeiro post, já confirmando que haverá uma continuaç
 Abraços,
 Fiquem em casa, mantenham a quarentena!
 
+**ATENÇÃO: Esse post possuirá 2 partes que serão publicadas em datas diferentes.**
 
 
 
