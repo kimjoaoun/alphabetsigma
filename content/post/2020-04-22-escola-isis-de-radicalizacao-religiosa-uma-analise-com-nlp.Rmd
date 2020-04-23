@@ -9,7 +9,7 @@ lastmod: '2020-04-22T19:35:15-03:00'
 layout: post
 type: post
 highlight: yes
-Description: 'Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política.'
+description: 'Nessa publicação aplico o modelo LDA em um dataset que contém artigos de revista utilizados pelo Estado Islâmico em sua propaganda política.'
 ---
 
 Nesse post nós iremos fazer uma simples (e rápida) análise do dataset "ISIS Religious Texts v1", que pode ser encontrado [AQUI](https://www.kaggle.com/fifthtribe/isis-religious-texts). Essa base de dados contém textos de duas revistas do ISIS, estas sendo a "Dabiq" e a "Rumyiah", que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
