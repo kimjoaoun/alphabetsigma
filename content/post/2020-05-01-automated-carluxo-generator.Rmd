@@ -38,7 +38,12 @@ Cada uma tem uma funcionalidade:
 
 - `tictoc`: será utilizada para marcarmos tempo, *não é necessária para o funcionamento do modelo*.
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(kableExtra)
+```
+
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(rtweet)
 library(markovchain)
@@ -47,12 +52,12 @@ library(tictoc)
 
 Carregadas as bibliotecas, vamos fazer o login na API do twitter. Se você não possui as credenciais necessárias, sem problemas é bem fácil criar, e - descontado o tempo que o Twitter levar demorar para liberar sua conta de desenvolvedor - não deve demorar mais de 10 minutos. [Tem um videozinho aqui explicando](https://www.youtube.com/watch?v=OKfUBNccLRo), é em inglês, mas pode ser assistido sem som, nada essencial de ser ouvido.
 
-```{r}
-rtweet::create_token(consumer_key = 'IeJNAZGSI4tllPIVcxvET3XD7',
-                     consumer_secret = 'lBUizFufSsLcRkGDbccOLqwnKzZwlQQkiFd9iqLNH2YiOs1mrK',
-                     access_token = '1191556232701714433-POH16GqS5emhcznq9t6LxFLeNEqvPd',
-                     access_secret = 'yf6MAn2o7dAOJ72v4bsXnYzU3ZInlPZpd8e3wrDxDYAgI',
-                     app = 'carluxobot')
+```{r message=FALSE, warning=FALSE}
+rtweet::create_token(consumer_key = 'CKQPkCiBAoiluqzi33PMTYV6p',
+                     consumer_secret = 'GyCA2voQW1lSxgA8EG1FCdpeCKkxAM6eZfROvlg5HoPeKw30vJ',
+                     access_token = '1191556232701714433-qQpNy6b7TZTPrjGpkqJmg8J3dmYLHY',
+                     access_secret = 'PxWPn7YvudptAJuZXEfnO840Ov5nSgdRrcE1feOQvCWdC',
+                     app = 'carluxobot') # essas keys foram invalidadas :)
 
 
 tweets_carluxo <- rtweet::get_timeline('carlosbolsonaro', n = 3200)
@@ -63,7 +68,7 @@ No código acima temos duas funções, a primeira é a que faz o Login na API do
 Isso vai nos retornar um dataframe bem grande, qual só iremos utilizar uma coluna, mas o leitor é livre para explorá-lo e encontrar outras utilidades. Veja-o.
 
 ```{r echo=FALSE}
-head(tweets_carluxo)
+head(tweets_carluxo) %>% kable() %>% kable_styling()
 ```
 
 Bonito, né? A API do Twitter nos retorna diversas informações que podem ser utilizadas para vários tipos de análises diferentes, vale a pena dar uma olhada no que o pessoal da [DAPP/FGV tem feito com eles](http://observademocraciadigital.org/). Mas só a coluna `text` será utilizada por nós. Passemos ao código...
@@ -111,19 +116,16 @@ Então, temos uma segunda função, a `treat`, o que ela faz é receber nosso da
 Por fim, passo os nossos dados pelas funções que criamos, e... Voilá!
 
 ```{r echo=FALSE, warning=FALSE}
-head(dados)
+head(dados) %>% kable() %>% kable_styling()
 ```
 
 
 ```{r}
-
 model_it <- dados %>%  #remove pontuação
   pull(text) %>% #puxa a coluna que contem o texto dos tweets.
   str_split(' ') %>%  #quebra a coluna, cada palavra vira um elemento de lista
   unlist %>% # remove os caracteres das listas que a função anterior retorna
   na.omit() # remove caracteres missing (NA), não deve haver nenhum, mas só por precaução.
-
-
 ```
 
 Passando agora os preparativos finais, é importante que o objeto inserido na função que calculará o modelo seja: 
@@ -187,8 +189,6 @@ A função acima faz o seguinte:
 - Caso a string não seja maior ou igual, portanto maior, que 280 caracteres, irá exibir a mensagem de nova tentativa, e executará novamente nossa função por meio de uma recursão. Peço cuidado aqui, colocar um valor muito grande no `n` da função `markovchainSequence()` pode gerar uma recursão infinita, o que é indesejado.
 
 Enfim, rodamos nosso modelo, se tudo deu certo, ele deve exibir uma mensagem de sucesso, e seu tweet foi feito!
-
-
 
 É isso, essa postagem ficou um pouco longo, mas queria mostrar que é possível nos divertirmos pouco esforço. :)
 

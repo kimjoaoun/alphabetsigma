@@ -27,6 +27,7 @@ sequenceDiagrams:
   options: ''
 ---
 
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 <div id="TOC">
 no
@@ -40,86 +41,1941 @@ Cada uma tem uma funcionalidade:</p>
 <li><p><code>markovchain</code>: é a biblioteca que implementa em <code>R</code> o algoritmo que será utilizado para a geração do texto. Eu poderia fazer explicações acerca da lógica que está por trás, porém, existem excelentes explicações onlines como <a href="https://setosa.io/ev/markov-chains/">1. esta explicação visual (caso você goste de imagens)</a>; e <a href="https://www.cs.princeton.edu/courses/archive/spring05/cos126/assignments/markov.html">2. essa mais teórica, feita por acadêmicos de Princeton</a>.</p></li>
 <li><p><code>tictoc</code>: será utilizada para marcarmos tempo, <em>não é necessária para o funcionamento do modelo</em>.</p></li>
 </ul>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ───────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.3.0     ✓ purrr   0.3.4
-## ✓ tibble  3.0.1     ✓ dplyr   0.8.5
-## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## ── Conflicts ──────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(rtweet)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;rtweet&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     flatten</code></pre>
-<pre class="r"><code>library(markovchain)</code></pre>
-<pre><code>## Package:  markovchain
-## Version:  0.8.4
-## Date:     2020-03-12
-## BugReport: http://github.com/spedygiorgio/markovchain/issues</code></pre>
-<pre class="r"><code>library(tictoc)</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(rtweet)
+library(markovchain)
+library(tictoc)</code></pre>
 <p>Carregadas as bibliotecas, vamos fazer o login na API do twitter. Se você não possui as credenciais necessárias, sem problemas é bem fácil criar, e - descontado o tempo que o Twitter levar demorar para liberar sua conta de desenvolvedor - não deve demorar mais de 10 minutos. <a href="https://www.youtube.com/watch?v=OKfUBNccLRo">Tem um videozinho aqui explicando</a>, é em inglês, mas pode ser assistido sem som, nada essencial de ser ouvido.</p>
-<pre class="r"><code>rtweet::create_token(consumer_key = &#39;IeJNAZGSI4tllPIVcxvET3XD7&#39;,
-                     consumer_secret = &#39;lBUizFufSsLcRkGDbccOLqwnKzZwlQQkiFd9iqLNH2YiOs1mrK&#39;,
-                     access_token = &#39;1191556232701714433-POH16GqS5emhcznq9t6LxFLeNEqvPd&#39;,
-                     access_secret = &#39;yf6MAn2o7dAOJ72v4bsXnYzU3ZInlPZpd8e3wrDxDYAgI&#39;,
-                     app = &#39;carluxobot&#39;)</code></pre>
+<pre class="r"><code>rtweet::create_token(consumer_key = &#39;CKQPkCiBAoiluqzi33PMTYV6p&#39;,
+                     consumer_secret = &#39;GyCA2voQW1lSxgA8EG1FCdpeCKkxAM6eZfROvlg5HoPeKw30vJ&#39;,
+                     access_token = &#39;1191556232701714433-qQpNy6b7TZTPrjGpkqJmg8J3dmYLHY&#39;,
+                     access_secret = &#39;PxWPn7YvudptAJuZXEfnO840Ov5nSgdRrcE1feOQvCWdC&#39;,
+                     app = &#39;carluxobot&#39;) # essas keys foram invalidadas :)</code></pre>
 <pre><code>## &lt;Token&gt;
 ## &lt;oauth_endpoint&gt;
 ##  request:   https://api.twitter.com/oauth/request_token
 ##  authorize: https://api.twitter.com/oauth/authenticate
 ##  access:    https://api.twitter.com/oauth/access_token
 ## &lt;oauth_app&gt; carluxobot
-##   key:    IeJNAZGSI4tllPIVcxvET3XD7
+##   key:    CKQPkCiBAoiluqzi33PMTYV6p
 ##   secret: &lt;hidden&gt;
 ## &lt;credentials&gt; oauth_token, oauth_token_secret
 ## ---</code></pre>
 <pre class="r"><code>tweets_carluxo &lt;- rtweet::get_timeline(&#39;carlosbolsonaro&#39;, n = 3200)</code></pre>
 <p>No código acima temos duas funções, a primeira é a que faz o Login na API do twitter, utilizando os dados que pegamos lá no app que criamos. A partir disso, nós usamos a função <code>get_timeline</code>, do <code>{rtweet}</code>, para coletar os últimos 3200 tweets feitos pelo Vereador Federal Carlos Bolsonaro. Este número, 3200, não foi escolhido por acaso, ele é o número máximo de tweets passíveis de serem coletados por 1 requisição, isso na versão gratuita da API do Twitter.</p>
 <p>Isso vai nos retornar um dataframe bem grande, qual só iremos utilizar uma coluna, mas o leitor é livre para explorá-lo e encontrar outras utilidades. Veja-o.</p>
-<pre><code>## # A tibble: 6 x 90
-##   user_id status_id created_at          screen_name text  source
-##   &lt;chr&gt;   &lt;chr&gt;     &lt;dttm&gt;              &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; 
-## 1 687125… 12563357… 2020-05-01 21:32:32 CarlosBols… - @g… Twitt…
-## 2 687125… 12562069… 2020-05-01 13:00:46 CarlosBols… http… Twitt…
-## 3 687125… 12561227… 2020-05-01 07:26:19 CarlosBols… @Mar… Twitt…
-## 4 687125… 12561196… 2020-05-01 07:14:04 CarlosBols… @Cla… Twitt…
-## 5 687125… 12561073… 2020-05-01 06:25:10 CarlosBols… @kim… Twitt…
-## 6 687125… 12560785… 2020-05-01 04:30:39 CarlosBols… Belo… Twitt…
-## # … with 84 more variables: display_text_width &lt;dbl&gt;, reply_to_status_id &lt;chr&gt;,
-## #   reply_to_user_id &lt;chr&gt;, reply_to_screen_name &lt;chr&gt;, is_quote &lt;lgl&gt;,
-## #   is_retweet &lt;lgl&gt;, favorite_count &lt;int&gt;, retweet_count &lt;int&gt;,
-## #   quote_count &lt;int&gt;, reply_count &lt;int&gt;, hashtags &lt;list&gt;, symbols &lt;list&gt;,
-## #   urls_url &lt;list&gt;, urls_t.co &lt;list&gt;, urls_expanded_url &lt;list&gt;,
-## #   media_url &lt;list&gt;, media_t.co &lt;list&gt;, media_expanded_url &lt;list&gt;,
-## #   media_type &lt;list&gt;, ext_media_url &lt;list&gt;, ext_media_t.co &lt;list&gt;,
-## #   ext_media_expanded_url &lt;list&gt;, ext_media_type &lt;chr&gt;,
-## #   mentions_user_id &lt;list&gt;, mentions_screen_name &lt;list&gt;, lang &lt;chr&gt;,
-## #   quoted_status_id &lt;chr&gt;, quoted_text &lt;chr&gt;, quoted_created_at &lt;dttm&gt;,
-## #   quoted_source &lt;chr&gt;, quoted_favorite_count &lt;int&gt;,
-## #   quoted_retweet_count &lt;int&gt;, quoted_user_id &lt;chr&gt;, quoted_screen_name &lt;chr&gt;,
-## #   quoted_name &lt;chr&gt;, quoted_followers_count &lt;int&gt;,
-## #   quoted_friends_count &lt;int&gt;, quoted_statuses_count &lt;int&gt;,
-## #   quoted_location &lt;chr&gt;, quoted_description &lt;chr&gt;, quoted_verified &lt;lgl&gt;,
-## #   retweet_status_id &lt;chr&gt;, retweet_text &lt;chr&gt;, retweet_created_at &lt;dttm&gt;,
-## #   retweet_source &lt;chr&gt;, retweet_favorite_count &lt;int&gt;,
-## #   retweet_retweet_count &lt;int&gt;, retweet_user_id &lt;chr&gt;,
-## #   retweet_screen_name &lt;chr&gt;, retweet_name &lt;chr&gt;,
-## #   retweet_followers_count &lt;int&gt;, retweet_friends_count &lt;int&gt;,
-## #   retweet_statuses_count &lt;int&gt;, retweet_location &lt;chr&gt;,
-## #   retweet_description &lt;chr&gt;, retweet_verified &lt;lgl&gt;, place_url &lt;chr&gt;,
-## #   place_name &lt;chr&gt;, place_full_name &lt;chr&gt;, place_type &lt;chr&gt;, country &lt;chr&gt;,
-## #   country_code &lt;chr&gt;, geo_coords &lt;list&gt;, coords_coords &lt;list&gt;,
-## #   bbox_coords &lt;list&gt;, status_url &lt;chr&gt;, name &lt;chr&gt;, location &lt;chr&gt;,
-## #   description &lt;chr&gt;, url &lt;chr&gt;, protected &lt;lgl&gt;, followers_count &lt;int&gt;,
-## #   friends_count &lt;int&gt;, listed_count &lt;int&gt;, statuses_count &lt;int&gt;,
-## #   favourites_count &lt;int&gt;, account_created_at &lt;dttm&gt;, verified &lt;lgl&gt;,
-## #   profile_url &lt;chr&gt;, profile_expanded_url &lt;chr&gt;, account_lang &lt;lgl&gt;,
-## #   profile_banner_url &lt;chr&gt;, profile_background_url &lt;chr&gt;,
-## #   profile_image_url &lt;chr&gt;</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+user_id
+</th>
+<th style="text-align:left;">
+status_id
+</th>
+<th style="text-align:left;">
+created_at
+</th>
+<th style="text-align:left;">
+screen_name
+</th>
+<th style="text-align:left;">
+text
+</th>
+<th style="text-align:left;">
+source
+</th>
+<th style="text-align:right;">
+display_text_width
+</th>
+<th style="text-align:left;">
+reply_to_status_id
+</th>
+<th style="text-align:left;">
+reply_to_user_id
+</th>
+<th style="text-align:left;">
+reply_to_screen_name
+</th>
+<th style="text-align:left;">
+is_quote
+</th>
+<th style="text-align:left;">
+is_retweet
+</th>
+<th style="text-align:right;">
+favorite_count
+</th>
+<th style="text-align:right;">
+retweet_count
+</th>
+<th style="text-align:right;">
+quote_count
+</th>
+<th style="text-align:right;">
+reply_count
+</th>
+<th style="text-align:left;">
+hashtags
+</th>
+<th style="text-align:left;">
+symbols
+</th>
+<th style="text-align:left;">
+urls_url
+</th>
+<th style="text-align:left;">
+urls_t.co
+</th>
+<th style="text-align:left;">
+urls_expanded_url
+</th>
+<th style="text-align:left;">
+media_url
+</th>
+<th style="text-align:left;">
+media_t.co
+</th>
+<th style="text-align:left;">
+media_expanded_url
+</th>
+<th style="text-align:left;">
+media_type
+</th>
+<th style="text-align:left;">
+ext_media_url
+</th>
+<th style="text-align:left;">
+ext_media_t.co
+</th>
+<th style="text-align:left;">
+ext_media_expanded_url
+</th>
+<th style="text-align:left;">
+ext_media_type
+</th>
+<th style="text-align:left;">
+mentions_user_id
+</th>
+<th style="text-align:left;">
+mentions_screen_name
+</th>
+<th style="text-align:left;">
+lang
+</th>
+<th style="text-align:left;">
+quoted_status_id
+</th>
+<th style="text-align:left;">
+quoted_text
+</th>
+<th style="text-align:left;">
+quoted_created_at
+</th>
+<th style="text-align:left;">
+quoted_source
+</th>
+<th style="text-align:right;">
+quoted_favorite_count
+</th>
+<th style="text-align:right;">
+quoted_retweet_count
+</th>
+<th style="text-align:left;">
+quoted_user_id
+</th>
+<th style="text-align:left;">
+quoted_screen_name
+</th>
+<th style="text-align:left;">
+quoted_name
+</th>
+<th style="text-align:right;">
+quoted_followers_count
+</th>
+<th style="text-align:right;">
+quoted_friends_count
+</th>
+<th style="text-align:right;">
+quoted_statuses_count
+</th>
+<th style="text-align:left;">
+quoted_location
+</th>
+<th style="text-align:left;">
+quoted_description
+</th>
+<th style="text-align:left;">
+quoted_verified
+</th>
+<th style="text-align:left;">
+retweet_status_id
+</th>
+<th style="text-align:left;">
+retweet_text
+</th>
+<th style="text-align:left;">
+retweet_created_at
+</th>
+<th style="text-align:left;">
+retweet_source
+</th>
+<th style="text-align:right;">
+retweet_favorite_count
+</th>
+<th style="text-align:right;">
+retweet_retweet_count
+</th>
+<th style="text-align:left;">
+retweet_user_id
+</th>
+<th style="text-align:left;">
+retweet_screen_name
+</th>
+<th style="text-align:left;">
+retweet_name
+</th>
+<th style="text-align:right;">
+retweet_followers_count
+</th>
+<th style="text-align:right;">
+retweet_friends_count
+</th>
+<th style="text-align:right;">
+retweet_statuses_count
+</th>
+<th style="text-align:left;">
+retweet_location
+</th>
+<th style="text-align:left;">
+retweet_description
+</th>
+<th style="text-align:left;">
+retweet_verified
+</th>
+<th style="text-align:left;">
+place_url
+</th>
+<th style="text-align:left;">
+place_name
+</th>
+<th style="text-align:left;">
+place_full_name
+</th>
+<th style="text-align:left;">
+place_type
+</th>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:left;">
+country_code
+</th>
+<th style="text-align:left;">
+geo_coords
+</th>
+<th style="text-align:left;">
+coords_coords
+</th>
+<th style="text-align:left;">
+bbox_coords
+</th>
+<th style="text-align:left;">
+status_url
+</th>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+location
+</th>
+<th style="text-align:left;">
+description
+</th>
+<th style="text-align:left;">
+url
+</th>
+<th style="text-align:left;">
+protected
+</th>
+<th style="text-align:right;">
+followers_count
+</th>
+<th style="text-align:right;">
+friends_count
+</th>
+<th style="text-align:right;">
+listed_count
+</th>
+<th style="text-align:right;">
+statuses_count
+</th>
+<th style="text-align:right;">
+favourites_count
+</th>
+<th style="text-align:left;">
+account_created_at
+</th>
+<th style="text-align:left;">
+verified
+</th>
+<th style="text-align:left;">
+profile_url
+</th>
+<th style="text-align:left;">
+profile_expanded_url
+</th>
+<th style="text-align:left;">
+account_lang
+</th>
+<th style="text-align:left;">
+profile_banner_url
+</th>
+<th style="text-align:left;">
+profile_background_url
+</th>
+<th style="text-align:left;">
+profile_image_url
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+68712576
+</td>
+<td style="text-align:left;">
+1256335722052648960
+</td>
+<td style="text-align:left;">
+1588368752
+</td>
+<td style="text-align:left;">
+CarlosBolsonaro
+</td>
+<td style="text-align:left;">
+<ul>
+<li><span class="citation">@govbr</span> <span class="citation">@minsaude</span> <a href="https://t.co/tgRoWDQwIc" class="uri">https://t.co/tgRoWDQwIc</a>
+</td>
+<td style="text-align:left;">
+Twitter for Android
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+5112
+</td>
+<td style="text-align:right;">
+1018
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/media/EW9mk1XWoAIm3nW.jpg" class="uri">http://pbs.twimg.com/media/EW9mk1XWoAIm3nW.jpg</a>
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/tgRoWDQwIc" class="uri">https://t.co/tgRoWDQwIc</a>
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256335722052648960/photo/1" class="uri">https://twitter.com/CarlosBolsonaro/status/1256335722052648960/photo/1</a>
+</td>
+<td style="text-align:left;">
+photo
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/media/EW9mk1XWoAIm3nW.jpg" class="uri">http://pbs.twimg.com/media/EW9mk1XWoAIm3nW.jpg</a>
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/tgRoWDQwIc" class="uri">https://t.co/tgRoWDQwIc</a>
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256335722052648960/photo/1" class="uri">https://twitter.com/CarlosBolsonaro/status/1256335722052648960/photo/1</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(“861707648584085504”, “37717107”)
+</td>
+<td style="text-align:left;">
+c(“govbr”, “minsaude”)
+</td>
+<td style="text-align:left;">
+und
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA, NA, NA, NA, NA, NA, NA)
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256335722052648960" class="uri">https://twitter.com/CarlosBolsonaro/status/1256335722052648960</a>
+</td>
+<td style="text-align:left;">
+Carlos Bolsonaro
+</td>
+<td style="text-align:left;">
+Rio de Janeiro-RJ
+</td>
+<td style="text-align:left;">
+Vereador da cidade do Rio de Janeiro (ainda podendo opinar sobre o que achar pertinente).
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1790529
+</td>
+<td style="text-align:right;">
+510
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:right;">
+15351
+</td>
+<td style="text-align:right;">
+4127
+</td>
+<td style="text-align:left;">
+1251212007
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+<a href="http://www.carlosbolsonaro.com.br" class="uri">http://www.carlosbolsonaro.com.br</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://pbs.twimg.com/profile_banners/68712576/1575806653" class="uri">https://pbs.twimg.com/profile_banners/68712576/1575806653</a>
+</td>
+<td style="text-align:left;">
+<a href="http://abs.twimg.com/images/themes/theme1/bg.png" class="uri">http://abs.twimg.com/images/themes/theme1/bg.png</a>
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg" class="uri">http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+68712576
+</td>
+<td style="text-align:left;">
+1256206931460587522
+</td>
+<td style="text-align:left;">
+1588338046
+</td>
+<td style="text-align:left;">
+CarlosBolsonaro
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/GcdJFTYEgY" class="uri">https://t.co/GcdJFTYEgY</a>
+</td>
+<td style="text-align:left;">
+Twitter for Android
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+20218
+</td>
+<td style="text-align:right;">
+3309
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/ext_tw_video_thumb/1256206860748828676/pu/img/0zd0Mn48lBIBpbv7.jpg" class="uri">http://pbs.twimg.com/ext_tw_video_thumb/1256206860748828676/pu/img/0zd0Mn48lBIBpbv7.jpg</a>
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/GcdJFTYEgY" class="uri">https://t.co/GcdJFTYEgY</a>
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256206931460587522/video/1" class="uri">https://twitter.com/CarlosBolsonaro/status/1256206931460587522/video/1</a>
+</td>
+<td style="text-align:left;">
+photo
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/ext_tw_video_thumb/1256206860748828676/pu/img/0zd0Mn48lBIBpbv7.jpg" class="uri">http://pbs.twimg.com/ext_tw_video_thumb/1256206860748828676/pu/img/0zd0Mn48lBIBpbv7.jpg</a>
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/GcdJFTYEgY" class="uri">https://t.co/GcdJFTYEgY</a>
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256206931460587522/video/1" class="uri">https://twitter.com/CarlosBolsonaro/status/1256206931460587522/video/1</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+und
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA, NA, NA, NA, NA, NA, NA)
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256206931460587522" class="uri">https://twitter.com/CarlosBolsonaro/status/1256206931460587522</a>
+</td>
+<td style="text-align:left;">
+Carlos Bolsonaro
+</td>
+<td style="text-align:left;">
+Rio de Janeiro-RJ
+</td>
+<td style="text-align:left;">
+Vereador da cidade do Rio de Janeiro (ainda podendo opinar sobre o que achar pertinente).
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1790529
+</td>
+<td style="text-align:right;">
+510
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:right;">
+15351
+</td>
+<td style="text-align:right;">
+4127
+</td>
+<td style="text-align:left;">
+1251212007
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+<a href="http://www.carlosbolsonaro.com.br" class="uri">http://www.carlosbolsonaro.com.br</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://pbs.twimg.com/profile_banners/68712576/1575806653" class="uri">https://pbs.twimg.com/profile_banners/68712576/1575806653</a>
+</td>
+<td style="text-align:left;">
+<a href="http://abs.twimg.com/images/themes/theme1/bg.png" class="uri">http://abs.twimg.com/images/themes/theme1/bg.png</a>
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg" class="uri">http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+68712576
+</td>
+<td style="text-align:left;">
+1256122766815870976
+</td>
+<td style="text-align:left;">
+1588317979
+</td>
+<td style="text-align:left;">
+CarlosBolsonaro
+</td>
+<td style="text-align:left;">
+<span class="citation">@MarcosQuezado1</span> Se vi essa mulher na casa do meu pai 4 vezes foi muito. O que todos viam era alguém mais preocupada em se filmar em eventos públicos ao lado de Jair Bolsonaro para se promover e depois fazer o que fez, como muitos. Minha irmã!? É muito cara de pau, Meu Deus!
+</td>
+<td style="text-align:left;">
+Twitter for iPhone
+</td>
+<td style="text-align:right;">
+258
+</td>
+<td style="text-align:left;">
+1256113381943193607
+</td>
+<td style="text-align:left;">
+1148318806303027205
+</td>
+<td style="text-align:left;">
+MarcosQuezado1
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+6634
+</td>
+<td style="text-align:right;">
+1068
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+1148318806303027205
+</td>
+<td style="text-align:left;">
+MarcosQuezado1
+</td>
+<td style="text-align:left;">
+pt
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA, NA, NA, NA, NA, NA, NA)
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256122766815870976" class="uri">https://twitter.com/CarlosBolsonaro/status/1256122766815870976</a>
+</td>
+<td style="text-align:left;">
+Carlos Bolsonaro
+</td>
+<td style="text-align:left;">
+Rio de Janeiro-RJ
+</td>
+<td style="text-align:left;">
+Vereador da cidade do Rio de Janeiro (ainda podendo opinar sobre o que achar pertinente).
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1790529
+</td>
+<td style="text-align:right;">
+510
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:right;">
+15351
+</td>
+<td style="text-align:right;">
+4127
+</td>
+<td style="text-align:left;">
+1251212007
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+<a href="http://www.carlosbolsonaro.com.br" class="uri">http://www.carlosbolsonaro.com.br</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://pbs.twimg.com/profile_banners/68712576/1575806653" class="uri">https://pbs.twimg.com/profile_banners/68712576/1575806653</a>
+</td>
+<td style="text-align:left;">
+<a href="http://abs.twimg.com/images/themes/theme1/bg.png" class="uri">http://abs.twimg.com/images/themes/theme1/bg.png</a>
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg" class="uri">http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+68712576
+</td>
+<td style="text-align:left;">
+1256119682911920129
+</td>
+<td style="text-align:left;">
+1588317244
+</td>
+<td style="text-align:left;">
+CarlosBolsonaro
+</td>
+<td style="text-align:left;">
+<span class="citation">@ClaudeLuca_</span> <span class="citation">@CrisBernart</span> <span class="citation">@FMouraBrasil</span> <span class="citation">@RevistaCrusoe</span> <span class="citation">@RevistaISTOE</span> <span class="citation">@VEJA</span> Tudo engatado um no outro… acuse os do que você é…..
+</td>
+<td style="text-align:left;">
+Twitter for iPhone
+</td>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:left;">
+1256091079343996929
+</td>
+<td style="text-align:left;">
+186240150
+</td>
+<td style="text-align:left;">
+ClaudeLuca_
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+554
+</td>
+<td style="text-align:right;">
+109
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(“186240150”, “1081209715923795968”, “52849416”, “967904717446766593”, “29913589”, “17715048”)
+</td>
+<td style="text-align:left;">
+c(“ClaudeLuca_”, “CrisBernart”, “FMouraBrasil”, “RevistaCrusoe”, “RevistaISTOE”, “VEJA”)
+</td>
+<td style="text-align:left;">
+pt
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA, NA, NA, NA, NA, NA, NA)
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256119682911920129" class="uri">https://twitter.com/CarlosBolsonaro/status/1256119682911920129</a>
+</td>
+<td style="text-align:left;">
+Carlos Bolsonaro
+</td>
+<td style="text-align:left;">
+Rio de Janeiro-RJ
+</td>
+<td style="text-align:left;">
+Vereador da cidade do Rio de Janeiro (ainda podendo opinar sobre o que achar pertinente).
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1790529
+</td>
+<td style="text-align:right;">
+510
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:right;">
+15351
+</td>
+<td style="text-align:right;">
+4127
+</td>
+<td style="text-align:left;">
+1251212007
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+<a href="http://www.carlosbolsonaro.com.br" class="uri">http://www.carlosbolsonaro.com.br</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://pbs.twimg.com/profile_banners/68712576/1575806653" class="uri">https://pbs.twimg.com/profile_banners/68712576/1575806653</a>
+</td>
+<td style="text-align:left;">
+<a href="http://abs.twimg.com/images/themes/theme1/bg.png" class="uri">http://abs.twimg.com/images/themes/theme1/bg.png</a>
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg" class="uri">http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+68712576
+</td>
+<td style="text-align:left;">
+1256107374919778304
+</td>
+<td style="text-align:left;">
+1588314310
+</td>
+<td style="text-align:left;">
+CarlosBolsonaro
+</td>
+<td style="text-align:left;">
+<span class="citation">@kimpaim</span> Interessante!
+</td>
+<td style="text-align:left;">
+Twitter for Android
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+1256102613306576896
+</td>
+<td style="text-align:left;">
+75264300
+</td>
+<td style="text-align:left;">
+kimpaim
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+4525
+</td>
+<td style="text-align:right;">
+418
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+75264300
+</td>
+<td style="text-align:left;">
+kimpaim
+</td>
+<td style="text-align:left;">
+pt
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA, NA, NA, NA, NA, NA, NA)
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256107374919778304" class="uri">https://twitter.com/CarlosBolsonaro/status/1256107374919778304</a>
+</td>
+<td style="text-align:left;">
+Carlos Bolsonaro
+</td>
+<td style="text-align:left;">
+Rio de Janeiro-RJ
+</td>
+<td style="text-align:left;">
+Vereador da cidade do Rio de Janeiro (ainda podendo opinar sobre o que achar pertinente).
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1790529
+</td>
+<td style="text-align:right;">
+510
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:right;">
+15351
+</td>
+<td style="text-align:right;">
+4127
+</td>
+<td style="text-align:left;">
+1251212007
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+<a href="http://www.carlosbolsonaro.com.br" class="uri">http://www.carlosbolsonaro.com.br</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://pbs.twimg.com/profile_banners/68712576/1575806653" class="uri">https://pbs.twimg.com/profile_banners/68712576/1575806653</a>
+</td>
+<td style="text-align:left;">
+<a href="http://abs.twimg.com/images/themes/theme1/bg.png" class="uri">http://abs.twimg.com/images/themes/theme1/bg.png</a>
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg" class="uri">http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+68712576
+</td>
+<td style="text-align:left;">
+1256078557203386368
+</td>
+<td style="text-align:left;">
+1588307439
+</td>
+<td style="text-align:left;">
+CarlosBolsonaro
+</td>
+<td style="text-align:left;">
+Belo Horizonte (30/04/2020). Via <span class="citation">@taoquei1</span> <a href="https://t.co/BowdIhGrlj" class="uri">https://t.co/BowdIhGrlj</a>
+</td>
+<td style="text-align:left;">
+Twitter for Android
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+18349
+</td>
+<td style="text-align:right;">
+4696
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/ext_tw_video_thumb/1256078371030798339/pu/img/GvaHj1cQSD9F4Scn.jpg" class="uri">http://pbs.twimg.com/ext_tw_video_thumb/1256078371030798339/pu/img/GvaHj1cQSD9F4Scn.jpg</a>
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/BowdIhGrlj" class="uri">https://t.co/BowdIhGrlj</a>
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256078557203386368/video/1" class="uri">https://twitter.com/CarlosBolsonaro/status/1256078557203386368/video/1</a>
+</td>
+<td style="text-align:left;">
+photo
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/ext_tw_video_thumb/1256078371030798339/pu/img/GvaHj1cQSD9F4Scn.jpg" class="uri">http://pbs.twimg.com/ext_tw_video_thumb/1256078371030798339/pu/img/GvaHj1cQSD9F4Scn.jpg</a>
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/BowdIhGrlj" class="uri">https://t.co/BowdIhGrlj</a>
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256078557203386368/video/1" class="uri">https://twitter.com/CarlosBolsonaro/status/1256078557203386368/video/1</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+1087259768
+</td>
+<td style="text-align:left;">
+taoquei1
+</td>
+<td style="text-align:left;">
+pt
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA)
+</td>
+<td style="text-align:left;">
+c(NA, NA, NA, NA, NA, NA, NA, NA)
+</td>
+<td style="text-align:left;">
+<a href="https://twitter.com/CarlosBolsonaro/status/1256078557203386368" class="uri">https://twitter.com/CarlosBolsonaro/status/1256078557203386368</a>
+</td>
+<td style="text-align:left;">
+Carlos Bolsonaro
+</td>
+<td style="text-align:left;">
+Rio de Janeiro-RJ
+</td>
+<td style="text-align:left;">
+Vereador da cidade do Rio de Janeiro (ainda podendo opinar sobre o que achar pertinente).
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1790529
+</td>
+<td style="text-align:right;">
+510
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:right;">
+15351
+</td>
+<td style="text-align:right;">
+4127
+</td>
+<td style="text-align:left;">
+1251212007
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://t.co/3z2ZiPnA8f" class="uri">https://t.co/3z2ZiPnA8f</a>
+</td>
+<td style="text-align:left;">
+<a href="http://www.carlosbolsonaro.com.br" class="uri">http://www.carlosbolsonaro.com.br</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://pbs.twimg.com/profile_banners/68712576/1575806653" class="uri">https://pbs.twimg.com/profile_banners/68712576/1575806653</a>
+</td>
+<td style="text-align:left;">
+<a href="http://abs.twimg.com/images/themes/theme1/bg.png" class="uri">http://abs.twimg.com/images/themes/theme1/bg.png</a>
+</td>
+<td style="text-align:left;">
+<a href="http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg" class="uri">http://pbs.twimg.com/profile_images/1230681290120318977/iI2UkUQm_normal.jpg</a>
+</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
 <p>Bonito, né? A API do Twitter nos retorna diversas informações que podem ser utilizadas para vários tipos de análises diferentes, vale a pena dar uma olhada no que o pessoal da <a href="http://observademocraciadigital.org/">DAPP/FGV tem feito com eles</a>. Mas só a coluna <code>text</code> será utilizada por nós. Passemos ao código…</p>
 <pre class="r"><code>clean_tweets &lt;- function(text_input){
   text_input %&gt;% 
@@ -152,15 +2008,110 @@ dados &lt;- tweets_carluxo %&gt;%
 <p>Em algumas situações, palavras com capitalização diferente podem significar diferentes coisas, por exemplo, <code>&quot;A Grande Sambista, a Marrom&quot;</code> se refere à gloriosa cantora Alcione, por outro lado, a sentença <code>o carro marrom</code> se refere a algum carro feio. Contudo, isso é a minoria dos casos, e caso aconteça em algum momento e o leitor queira fazer a diferenciação, é possível utilizar ‘Part-of-Speech Tagging’ para fazer a separação.</p>
 <p>Então, temos uma segunda função, a <code>treat</code>, o que ela faz é receber nosso data.frame com os resultados da API, selecionar por meio da função <code>dplyr::select()</code> as colunas desejadas, e então, utilizando <code>dplyr::mutate()</code>, aliado com nossa função <code>clean_tweets()</code> trata a coluna <code>text</code>. Então, em um terceiro - e último - passo, filtramos os Tweets por tamanho, removendo todos com menos de 20 caracteres de extensão, essa remoção é necessária para que sejam removidas as linhas vazias ou com muito pouco conteúdo, dessa forma agilizamos nosso modelo.</p>
 <p>Por fim, passo os nossos dados pelas funções que criamos, e… Voilá!</p>
-<pre><code>## # A tibble: 6 x 4
-##   created_at          text                            favorite_count reply_count
-##   &lt;dttm&gt;              &lt;chr&gt;                                    &lt;int&gt;       &lt;int&gt;
-## 1 2020-05-01 07:26:19 SE VI ESSA MULHER NA CASA DO M…           6556          NA
-## 2 2020-05-01 07:14:04 TUDO ENGATADO UM NO OUTROACUSE…            516          NA
-## 3 2020-05-01 02:31:39 O VALE CINZENTO DA RAZÃO VAI M…          12575          NA
-## 4 2020-05-01 02:23:03 PRUDÊNCIA E SOFISTICAÇÃOCÊ CUR…          22446          NA
-## 5 2020-04-30 17:24:11 MAIS EXEMPLOS DE ATUAÇÕES DO N…           3769          NA
-## 6 2020-04-30 17:19:06 MAIS EXEMPLOS DE ATUAÇÕES DO N…           8730          NA</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+created_at
+</th>
+<th style="text-align:left;">
+text
+</th>
+<th style="text-align:right;">
+favorite_count
+</th>
+<th style="text-align:right;">
+reply_count
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2020-05-01 07:26:19
+</td>
+<td style="text-align:left;">
+SE VI ESSA MULHER NA CASA DO MEU PAI 4 VEZES FOI MUITO O QUE TODOS VIAM ERA ALGUÉM MAIS PREOCUPADA EM SE FILMAR EM EVENTOS PÚBLICOS AO LADO DE JAIR BOLSONARO PARA SE PROMOVER E DEPOIS FAZER O QUE FEZ COMO MUITOS MINHA IRMÃÉ MUITO CARA DE PAU MEU DEUS
+</td>
+<td style="text-align:right;">
+6634
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2020-05-01 07:14:04
+</td>
+<td style="text-align:left;">
+TUDO ENGATADO UM NO OUTROACUSE OS DO QUE VOCÊ É
+</td>
+<td style="text-align:right;">
+554
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2020-05-01 02:31:39
+</td>
+<td style="text-align:left;">
+O VALE CINZENTO DA RAZÃO VAI MUITO ALÉM DOS CALÇAS ENCRAVADAS
+</td>
+<td style="text-align:right;">
+12669
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2020-05-01 02:23:03
+</td>
+<td style="text-align:left;">
+PRUDÊNCIA E SOFISTICAÇÃOCÊ CURTE
+</td>
+<td style="text-align:right;">
+22640
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2020-04-30 17:24:11
+</td>
+<td style="text-align:left;">
+MAIS EXEMPLOS DE ATUAÇÕES DO NOS ÚLTIMOS DIAS 2
+</td>
+<td style="text-align:right;">
+3825
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2020-04-30 17:19:06
+</td>
+<td style="text-align:left;">
+MAIS EXEMPLOS DE ATUAÇÕES DO NOS ÚLTIMOS DIAS 1
+</td>
+<td style="text-align:right;">
+8820
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>model_it &lt;- dados %&gt;%  #remove pontuação
   pull(text) %&gt;% #puxa a coluna que contem o texto dos tweets.
   str_split(&#39; &#39;) %&gt;%  #quebra a coluna, cada palavra vira um elemento de lista
@@ -175,16 +2126,16 @@ dados &lt;- tweets_carluxo %&gt;%
 <pre class="r"><code>tic()
 model &lt;- markovchainFit(model_it[1:20000]) # fita o modelo
 toc()</code></pre>
-<pre><code>## 306.087 sec elapsed</code></pre>
+<pre><code>## 303.786 sec elapsed</code></pre>
 <p>Para atingir o ponto que queriamos, então, fitamos o modelo utilizando o <code>markovchain::markovchainFit()</code>, aqui utilizaremos somente as primeiras 20000 palavras do nosso vetor, isso será feito por limitações computacionais. Quanto maior o vetor inserido, mais tempo a computação do modelo levará. Acima temos o tempo que levou para rodar no meu computador. O argumento <code>n</code> da função indica quantas palavras devem ser gerados pelo modelo.</p>
 <pre class="r"><code>for(i in 1:3){
   markovchainSequence(model$estimate, n = 20) %&gt;% 
     paste(collapse= &#39; &#39;) %&gt;% 
     print()
 }</code></pre>
-<pre><code>## [1] &quot;A UNIFICAÇÃO DAS REFORMAS ADMINISTRATIVA E FOI SEGUNDA MESMO PERÍODO DO ROMBO FISCAL UMA LUTA INGLÓRIA O CONGRESSO PARA A&quot;
-## [1] &quot;COM O FURO MENTIROSO  DEPOIS DAS CRIANÇAS E ESTRELA DPARA 2020 E JÁ É INSTALAR CONEXÃO DE FRASCOS DE&quot;
-## [1] &quot;MATRÍCULAS A REDUÇÃO DE SAÚDE CIDADANIA E MUNICÍPIOS   QUE OUTRORA ERA ESCONDIDO EXAMINE APENAS PARA A FALTA DE&quot;</code></pre>
+<pre><code>## [1] &quot;INVASÕES DE DESENVOLVIMENTO COMERCIAL COM ENTREGA DO SENADO PODEM FAZER ISSO E MUNICÍPIOS DE CONSERVAÇÃO NO MERCADO INTERNACIONAL O RISCO&quot;
+## [1] &quot; ALGUÉM ACHA MESMO QUE DEMOCRACIA AMEAÇA NÓS JAMAIS PENSEI QUE HOJE SABEMOS A BASE SEJA DERRUBÁÀ FORÇA AGORA 24&quot;
+## [1] &quot;ÀS DROGAS NO BRASIL O TEOR DA TRIBUTAÇÃO DO GOVERNO BOLSONARO ACABOU O MÊS DE 0NA COMPARAÇÃO COM NOME JAIR&quot;</code></pre>
 <p>Pronto, nosso modelo está pronto, acima temos 3 exemplos de palavras geradas por ele.</p>
 <p>Iremos então fazer uma função para dar ajustes finais no tweet que nosso modelo gerar, e então fazer o Tweet caso este atenda ao critério para publicação que é: possuir menos de 280 caracteres (é o limite atual de caracteres de um tweet).</p>
 <pre class="r"><code>tuita_ai = function(model_here){
