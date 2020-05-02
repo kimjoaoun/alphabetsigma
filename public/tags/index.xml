@@ -7,10 +7,64 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>João Pedro Oliveira dos Santos</copyright>
-    <lastBuildDate>Tue, 17 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 01 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://alphabetsigma.netlify.app/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>api</title>
+      <link>https://alphabetsigma.netlify.app/tags/api/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://alphabetsigma.netlify.app/tags/api/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bolsonaro</title>
+      <link>https://alphabetsigma.netlify.app/tags/bolsonaro/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://alphabetsigma.netlify.app/tags/bolsonaro/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bot</title>
+      <link>https://alphabetsigma.netlify.app/tags/bot/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://alphabetsigma.netlify.app/tags/bot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>carluxo</title>
+      <link>https://alphabetsigma.netlify.app/tags/carluxo/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://alphabetsigma.netlify.app/tags/carluxo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>markov chain</title>
+      <link>https://alphabetsigma.netlify.app/tags/markov-chain/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://alphabetsigma.netlify.app/tags/markov-chain/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>twitter</title>
+      <link>https://alphabetsigma.netlify.app/tags/twitter/</link>
+      <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://alphabetsigma.netlify.app/tags/twitter/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>nlp</title>

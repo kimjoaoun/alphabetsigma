@@ -1,0 +1,222 @@
+---
+title: Markov-Chain Carluxo - Criando um bot para Twitter usando o algorítmo de Markov-Chain
+author: Joao Pedro Oliveira
+date: '2020-05-01'
+slug: automated-carluxo-generator
+categories: []
+tags: [twitter, bolsonaro, carluxo, bot, markov chain, api]
+lastmod: '2020-05-01T12:31:15-03:00'
+keywords: []
+description: 'Nesse post utilizamos a API do Twitter e um modelo de Markov-Chain para gerar tweets do deputado Carlos Bolsonaro, utilizando os posts do próprio na plataforma social como insumo.'
+comment: no
+toc: no
+autoCollapseToc: no
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+reward: no
+mathjax: no
+mathjaxEnableSingleDollar: no
+mathjaxEnableAutoNumber: no
+hideHeaderAndFooter: no
+flowchartDiagrams:
+  enable: no
+  options: ''
+sequenceDiagrams:
+  enable: no
+  options: ''
+---
+
+
+<div id="TOC">
+no
+</div>
+
+<p>O primeiro passo a ser feito é instalar e carregar três bibliotecas, a <code>tidyverse, rtweet, markovchain</code>, caso você não tenha-as instaladas instale-as direto do CRAN usando a função <code>install.packages()</code>. Não sabe como fazer? Digite <code>help(install.packages)</code> no console!
+Cada uma tem uma funcionalidade:</p>
+<ul>
+<li><p><code>Tidyverse</code>: Uma metabiblioteca que contém um conjunto de ferramentas que adicionam uma nova sintaxe no <code>R</code>. Por meio delas é possível escrever um código mais limpo e eficiente.</p></li>
+<li><p><code>rtweet</code>: É a interface entre <code>R</code> e a API do twitter, é ela que será utilizada para capturarmos os tweets e depois fazermos a publicação de um novo.</p></li>
+<li><p><code>markovchain</code>: é a biblioteca que implementa em <code>R</code> o algoritmo que será utilizado para a geração do texto. Eu poderia fazer explicações acerca da lógica que está por trás, porém, existem excelentes explicações onlines como <a href="https://setosa.io/ev/markov-chains/">1. esta explicação visual (caso você goste de imagens)</a>; e <a href="https://www.cs.princeton.edu/courses/archive/spring05/cos126/assignments/markov.html">2. essa mais teórica, feita por acadêmicos de Princeton</a>.</p></li>
+<li><p><code>tictoc</code>: será utilizada para marcarmos tempo, <em>não é necessária para o funcionamento do modelo</em>.</p></li>
+</ul>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.0     ✓ purrr   0.3.4
+## ✓ tibble  3.0.1     ✓ dplyr   0.8.5
+## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ──────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(rtweet)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rtweet&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     flatten</code></pre>
+<pre class="r"><code>library(markovchain)</code></pre>
+<pre><code>## Package:  markovchain
+## Version:  0.8.4
+## Date:     2020-03-12
+## BugReport: http://github.com/spedygiorgio/markovchain/issues</code></pre>
+<pre class="r"><code>library(tictoc)</code></pre>
+<p>Carregadas as bibliotecas, vamos fazer o login na API do twitter. Se você não possui as credenciais necessárias, sem problemas é bem fácil criar, e - descontado o tempo que o Twitter levar demorar para liberar sua conta de desenvolvedor - não deve demorar mais de 10 minutos. <a href="https://www.youtube.com/watch?v=OKfUBNccLRo">Tem um videozinho aqui explicando</a>, é em inglês, mas pode ser assistido sem som, nada essencial de ser ouvido.</p>
+<pre class="r"><code>rtweet::create_token(consumer_key = &#39;IeJNAZGSI4tllPIVcxvET3XD7&#39;,
+                     consumer_secret = &#39;lBUizFufSsLcRkGDbccOLqwnKzZwlQQkiFd9iqLNH2YiOs1mrK&#39;,
+                     access_token = &#39;1191556232701714433-POH16GqS5emhcznq9t6LxFLeNEqvPd&#39;,
+                     access_secret = &#39;yf6MAn2o7dAOJ72v4bsXnYzU3ZInlPZpd8e3wrDxDYAgI&#39;,
+                     app = &#39;carluxobot&#39;)</code></pre>
+<pre><code>## &lt;Token&gt;
+## &lt;oauth_endpoint&gt;
+##  request:   https://api.twitter.com/oauth/request_token
+##  authorize: https://api.twitter.com/oauth/authenticate
+##  access:    https://api.twitter.com/oauth/access_token
+## &lt;oauth_app&gt; carluxobot
+##   key:    IeJNAZGSI4tllPIVcxvET3XD7
+##   secret: &lt;hidden&gt;
+## &lt;credentials&gt; oauth_token, oauth_token_secret
+## ---</code></pre>
+<pre class="r"><code>tweets_carluxo &lt;- rtweet::get_timeline(&#39;carlosbolsonaro&#39;, n = 3200)</code></pre>
+<p>No código acima temos duas funções, a primeira é a que faz o Login na API do twitter, utilizando os dados que pegamos lá no app que criamos. A partir disso, nós usamos a função <code>get_timeline</code>, do <code>{rtweet}</code>, para coletar os últimos 3200 tweets feitos pelo Vereador Federal Carlos Bolsonaro. Este número, 3200, não foi escolhido por acaso, ele é o número máximo de tweets passíveis de serem coletados por 1 requisição, isso na versão gratuita da API do Twitter.</p>
+<p>Isso vai nos retornar um dataframe bem grande, qual só iremos utilizar uma coluna, mas o leitor é livre para explorá-lo e encontrar outras utilidades. Veja-o.</p>
+<pre><code>## # A tibble: 6 x 90
+##   user_id status_id created_at          screen_name text  source
+##   &lt;chr&gt;   &lt;chr&gt;     &lt;dttm&gt;              &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; 
+## 1 687125… 12563357… 2020-05-01 21:32:32 CarlosBols… - @g… Twitt…
+## 2 687125… 12562069… 2020-05-01 13:00:46 CarlosBols… http… Twitt…
+## 3 687125… 12561227… 2020-05-01 07:26:19 CarlosBols… @Mar… Twitt…
+## 4 687125… 12561196… 2020-05-01 07:14:04 CarlosBols… @Cla… Twitt…
+## 5 687125… 12561073… 2020-05-01 06:25:10 CarlosBols… @kim… Twitt…
+## 6 687125… 12560785… 2020-05-01 04:30:39 CarlosBols… Belo… Twitt…
+## # … with 84 more variables: display_text_width &lt;dbl&gt;, reply_to_status_id &lt;chr&gt;,
+## #   reply_to_user_id &lt;chr&gt;, reply_to_screen_name &lt;chr&gt;, is_quote &lt;lgl&gt;,
+## #   is_retweet &lt;lgl&gt;, favorite_count &lt;int&gt;, retweet_count &lt;int&gt;,
+## #   quote_count &lt;int&gt;, reply_count &lt;int&gt;, hashtags &lt;list&gt;, symbols &lt;list&gt;,
+## #   urls_url &lt;list&gt;, urls_t.co &lt;list&gt;, urls_expanded_url &lt;list&gt;,
+## #   media_url &lt;list&gt;, media_t.co &lt;list&gt;, media_expanded_url &lt;list&gt;,
+## #   media_type &lt;list&gt;, ext_media_url &lt;list&gt;, ext_media_t.co &lt;list&gt;,
+## #   ext_media_expanded_url &lt;list&gt;, ext_media_type &lt;chr&gt;,
+## #   mentions_user_id &lt;list&gt;, mentions_screen_name &lt;list&gt;, lang &lt;chr&gt;,
+## #   quoted_status_id &lt;chr&gt;, quoted_text &lt;chr&gt;, quoted_created_at &lt;dttm&gt;,
+## #   quoted_source &lt;chr&gt;, quoted_favorite_count &lt;int&gt;,
+## #   quoted_retweet_count &lt;int&gt;, quoted_user_id &lt;chr&gt;, quoted_screen_name &lt;chr&gt;,
+## #   quoted_name &lt;chr&gt;, quoted_followers_count &lt;int&gt;,
+## #   quoted_friends_count &lt;int&gt;, quoted_statuses_count &lt;int&gt;,
+## #   quoted_location &lt;chr&gt;, quoted_description &lt;chr&gt;, quoted_verified &lt;lgl&gt;,
+## #   retweet_status_id &lt;chr&gt;, retweet_text &lt;chr&gt;, retweet_created_at &lt;dttm&gt;,
+## #   retweet_source &lt;chr&gt;, retweet_favorite_count &lt;int&gt;,
+## #   retweet_retweet_count &lt;int&gt;, retweet_user_id &lt;chr&gt;,
+## #   retweet_screen_name &lt;chr&gt;, retweet_name &lt;chr&gt;,
+## #   retweet_followers_count &lt;int&gt;, retweet_friends_count &lt;int&gt;,
+## #   retweet_statuses_count &lt;int&gt;, retweet_location &lt;chr&gt;,
+## #   retweet_description &lt;chr&gt;, retweet_verified &lt;lgl&gt;, place_url &lt;chr&gt;,
+## #   place_name &lt;chr&gt;, place_full_name &lt;chr&gt;, place_type &lt;chr&gt;, country &lt;chr&gt;,
+## #   country_code &lt;chr&gt;, geo_coords &lt;list&gt;, coords_coords &lt;list&gt;,
+## #   bbox_coords &lt;list&gt;, status_url &lt;chr&gt;, name &lt;chr&gt;, location &lt;chr&gt;,
+## #   description &lt;chr&gt;, url &lt;chr&gt;, protected &lt;lgl&gt;, followers_count &lt;int&gt;,
+## #   friends_count &lt;int&gt;, listed_count &lt;int&gt;, statuses_count &lt;int&gt;,
+## #   favourites_count &lt;int&gt;, account_created_at &lt;dttm&gt;, verified &lt;lgl&gt;,
+## #   profile_url &lt;chr&gt;, profile_expanded_url &lt;chr&gt;, account_lang &lt;lgl&gt;,
+## #   profile_banner_url &lt;chr&gt;, profile_background_url &lt;chr&gt;,
+## #   profile_image_url &lt;chr&gt;</code></pre>
+<p>Bonito, né? A API do Twitter nos retorna diversas informações que podem ser utilizadas para vários tipos de análises diferentes, vale a pena dar uma olhada no que o pessoal da <a href="http://observademocraciadigital.org/">DAPP/FGV tem feito com eles</a>. Mas só a coluna <code>text</code> será utilizada por nós. Passemos ao código…</p>
+<pre class="r"><code>clean_tweets &lt;- function(text_input){
+  text_input %&gt;% 
+    str_remove_all(pattern=&#39;\n&#39;) %&gt;% # remove quebras de linha desnecessárias
+    str_remove_all(pattern= &#39;[:punct:](\\S+[:space:])?&#39;) %&gt;% #remove as @ citadas. 
+    str_remove_all(pattern= &#39;http\\S+&#39;) %&gt;%  # remove as URLs
+    toupper() # Design Decision: para ficar parecido com um louco.
+}
+
+treat &lt;- function(dados){
+  dados %&gt;% 
+    select(created_at, text, favorite_count, reply_count) %&gt;% # seleciona as colunas desejadas.
+    mutate(text = clean_tweets(text)) %&gt;% # passa os tweets pela função clean.
+    filter(nchar(text) &gt; 20) #remove linhas com menos de 20 caracteres
+}
+
+dados &lt;- tweets_carluxo %&gt;% 
+  treat() # RUN.</code></pre>
+<p>Acima temos duas funções: <code>clean_tweets</code> e <code>treat</code>, a primeira será utilizada dentro da segunda, e é composta por 3 chamadas à função <code>stringr::str_remove_all()</code>, e uma à função <code>toupper()</code>. As 3 chamadas iniciais são ajustes no texto necessários para remover elementos indesejados.</p>
+<ul>
+<li><p>/<code>'\n'</code>/ é a expressão regular para que sejam removidas o conjunto de caracteres que indica quebra de linha.</p></li>
+<li><p>/<code>[:punct:](\\S+[:space:])?</code>/ remove todo agrupamento textual composto por pontuação-palavra-espaço, foi o mecanismo que recorri para remover as @’s que o Carluxo citou. Elas não serão úteis para nós, além disso, fazer um tweet com essas <span class="citation">@s</span> seria notificar alguém sobre nosso bot, o que não é nosso objetivo.</p></li>
+<li><p>/<code>http\\S+</code>/ remove links iniciados ou qualquer palavra que tenha http em seu inicio, como não existem muitas</p></li>
+</ul>
+<p>Por fim, temos…</p>
+<ul>
+<li><code>toupper</code> o que essa função, que faz parte do R-base (ou seja, ela já vem instalado no seu R), faz é transformar todos os caracteres em maíusculos.</li>
+</ul>
+<p>Nós utilizaremos o artifício da capitalização por dois motivos, um de design, e outro técnico. Sobre o design, o motivo é que Carlos é conhecido por gritar, então deixar em maíusculo dá um tom cômico às publicações. Já a justificativa técnica é que nosso algoritmo funciona com probabilidade de uma determinada palavra aparecer, contudo em diversos momentos podemos ter a mesma palavra com capitalização diferenciada. Não é desejável para nós que o computador diferencia ‘canalha’ de ‘Canalha’, visto que as duas palavras tem o mesmo significado, então padronizamo-as com a capitalização total. Utilizar <code>tolower()</code> para caracteres todas minúsculos também é uma opção.</p>
+<p>Em algumas situações, palavras com capitalização diferente podem significar diferentes coisas, por exemplo, <code>&quot;A Grande Sambista, a Marrom&quot;</code> se refere à gloriosa cantora Alcione, por outro lado, a sentença <code>o carro marrom</code> se refere a algum carro feio. Contudo, isso é a minoria dos casos, e caso aconteça em algum momento e o leitor queira fazer a diferenciação, é possível utilizar ‘Part-of-Speech Tagging’ para fazer a separação.</p>
+<p>Então, temos uma segunda função, a <code>treat</code>, o que ela faz é receber nosso data.frame com os resultados da API, selecionar por meio da função <code>dplyr::select()</code> as colunas desejadas, e então, utilizando <code>dplyr::mutate()</code>, aliado com nossa função <code>clean_tweets()</code> trata a coluna <code>text</code>. Então, em um terceiro - e último - passo, filtramos os Tweets por tamanho, removendo todos com menos de 20 caracteres de extensão, essa remoção é necessária para que sejam removidas as linhas vazias ou com muito pouco conteúdo, dessa forma agilizamos nosso modelo.</p>
+<p>Por fim, passo os nossos dados pelas funções que criamos, e… Voilá!</p>
+<pre><code>## # A tibble: 6 x 4
+##   created_at          text                            favorite_count reply_count
+##   &lt;dttm&gt;              &lt;chr&gt;                                    &lt;int&gt;       &lt;int&gt;
+## 1 2020-05-01 07:26:19 SE VI ESSA MULHER NA CASA DO M…           6556          NA
+## 2 2020-05-01 07:14:04 TUDO ENGATADO UM NO OUTROACUSE…            516          NA
+## 3 2020-05-01 02:31:39 O VALE CINZENTO DA RAZÃO VAI M…          12575          NA
+## 4 2020-05-01 02:23:03 PRUDÊNCIA E SOFISTICAÇÃOCÊ CUR…          22446          NA
+## 5 2020-04-30 17:24:11 MAIS EXEMPLOS DE ATUAÇÕES DO N…           3769          NA
+## 6 2020-04-30 17:19:06 MAIS EXEMPLOS DE ATUAÇÕES DO N…           8730          NA</code></pre>
+<pre class="r"><code>model_it &lt;- dados %&gt;%  #remove pontuação
+  pull(text) %&gt;% #puxa a coluna que contem o texto dos tweets.
+  str_split(&#39; &#39;) %&gt;%  #quebra a coluna, cada palavra vira um elemento de lista
+  unlist %&gt;% # remove os caracteres das listas que a função anterior retorna
+  na.omit() # remove caracteres missing (NA), não deve haver nenhum, mas só por precaução.</code></pre>
+<p>Passando agora os preparativos finais, é importante que o objeto inserido na função que calculará o modelo seja:</p>
+<ol style="list-style-type: decimal">
+<li><p>Grande: Quando maior o vetor inserido em nosso modelo, maiores serão as frases que ele conseguirá formular.</p></li>
+<li><p>Tokenizado: O objeto inserido deve ser um vetor de caracteres, onde cada elemento é uma palavra.</p></li>
+</ol>
+<p>Para que atendamos a essas obrigações precisamos que façamos alterações em nossos dados, que estão em formado de <code>dataframe</code>. Para resolver esse problema, nós extraímos somente a coluna <code>text</code> do dataframe - em formato de vetor - utilizando a função <code>dplyr::pull()</code>. A partir disso, quebramos nosso vetor em uma lista em que cada item é composto é um vetor de caracteres, nestes, cada palavra (usamos o espaço como separador) é um elemento. Contudo, listas não são o formato desejado, e utilizamos a função <code>unlist()</code> para remover os vetores, transformando-os em um <code>large character vector</code>. Por fim, removemos nos <code>NA</code> potenciais usando a <code>na.omit()</code>.</p>
+<pre class="r"><code>tic()
+model &lt;- markovchainFit(model_it[1:20000]) # fita o modelo
+toc()</code></pre>
+<pre><code>## 306.087 sec elapsed</code></pre>
+<p>Para atingir o ponto que queriamos, então, fitamos o modelo utilizando o <code>markovchain::markovchainFit()</code>, aqui utilizaremos somente as primeiras 20000 palavras do nosso vetor, isso será feito por limitações computacionais. Quanto maior o vetor inserido, mais tempo a computação do modelo levará. Acima temos o tempo que levou para rodar no meu computador. O argumento <code>n</code> da função indica quantas palavras devem ser gerados pelo modelo.</p>
+<pre class="r"><code>for(i in 1:3){
+  markovchainSequence(model$estimate, n = 20) %&gt;% 
+    paste(collapse= &#39; &#39;) %&gt;% 
+    print()
+}</code></pre>
+<pre><code>## [1] &quot;A UNIFICAÇÃO DAS REFORMAS ADMINISTRATIVA E FOI SEGUNDA MESMO PERÍODO DO ROMBO FISCAL UMA LUTA INGLÓRIA O CONGRESSO PARA A&quot;
+## [1] &quot;COM O FURO MENTIROSO  DEPOIS DAS CRIANÇAS E ESTRELA DPARA 2020 E JÁ É INSTALAR CONEXÃO DE FRASCOS DE&quot;
+## [1] &quot;MATRÍCULAS A REDUÇÃO DE SAÚDE CIDADANIA E MUNICÍPIOS   QUE OUTRORA ERA ESCONDIDO EXAMINE APENAS PARA A FALTA DE&quot;</code></pre>
+<p>Pronto, nosso modelo está pronto, acima temos 3 exemplos de palavras geradas por ele.</p>
+<p>Iremos então fazer uma função para dar ajustes finais no tweet que nosso modelo gerar, e então fazer o Tweet caso este atenda ao critério para publicação que é: possuir menos de 280 caracteres (é o limite atual de caracteres de um tweet).</p>
+<pre class="r"><code>tuita_ai = function(model_here){
+    
+  tweet = markovchainSequence(model_here$estimate, n = 30) %&gt;% 
+    paste(collapse = &#39; &#39;) %&gt;% 
+    str_remove(&#39;[:space:](A|O)$&#39;)
+  
+  if(nchar(tweet)&lt;=280){
+    post_tweet(tweet)
+  } else {
+    message(&#39;Tweet maior que o desejado, tentando novamente, aguarde...&#39;)
+    tuita_ai(model_here)
+  }
+}
+
+tuita_ai(model) #Foi!</code></pre>
+<pre><code>## your tweet has been posted!</code></pre>
+<p>A função acima faz o seguinte:</p>
+<ol style="list-style-type: decimal">
+<li>Cria uma função chamada <code>tuita_ai</code> que receberá o nosso modelo, e fará:</li>
+</ol>
+<ul>
+<li>Cria dentro da função uma variável tweet - ela não ficará visivel em seu ambiente, para entender esse comportamento confira o <a href="https://adv-r.hadley.nz/functions.html#lexical-scoping">capitulo 6.4 do manual Advanced R</a>. Essa variável recebe o resultado de uma computação de nosso modelo, e é colapsada em uma <code>string</code>. São removidos então os caracteres ‘A’ ou ‘O’ caso estejam sozinhos no fim da frase.</li>
+</ul>
+<blockquote>
+<p>A remoção de ‘O’ ou ‘A’ foi feita pois percebi durante a escrita desse post que é normal a ocorrencia dessas letras, sozinhas, no fim da frase.</p>
+</blockquote>
+<ul>
+<li><p>Irá conferir a quantidade de caracteres da string gerada, caso seja <em>menor ou igual a 280</em>, publicará o tweet.</p></li>
+<li><p>Caso a string não seja maior ou igual, portanto maior, que 280 caracteres, irá exibir a mensagem de nova tentativa, e executará novamente nossa função por meio de uma recursão. Peço cuidado aqui, colocar um valor muito grande no <code>n</code> da função <code>markovchainSequence()</code> pode gerar uma recursão infinita, o que é indesejado.</p></li>
+</ul>
+<p>Enfim, rodamos nosso modelo, se tudo deu certo, ele deve exibir uma mensagem de sucesso, e seu tweet foi feito!</p>
+<p>É isso, essa postagem ficou um pouco longo, mas queria mostrar que é possível nos divertirmos pouco esforço. :)</p>
+<p>Abraços, até a proxima!</p>

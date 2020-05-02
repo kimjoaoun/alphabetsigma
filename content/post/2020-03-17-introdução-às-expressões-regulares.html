@@ -60,10 +60,11 @@ stringr::str_replace(string = frase, pattern = &quot;b\\w{3}s&quot;, replacement
 <pre><code>##  [1] &quot;AUTHORS&quot;          &quot;BioC_mirrors.csv&quot; &quot;COPYING&quot;          &quot;COPYRIGHTS&quot;      
 ##  [5] &quot;CRAN_mirrors.csv&quot; &quot;FAQ&quot;              &quot;html&quot;             &quot;KEYWORDS&quot;        
 ##  [9] &quot;KEYWORDS.db&quot;      &quot;manual&quot;           &quot;NEWS&quot;             &quot;NEWS.0&quot;          
-## [13] &quot;NEWS.1&quot;           &quot;NEWS.2&quot;           &quot;NEWS.pdf&quot;         &quot;NEWS.rds&quot;        
-## [17] &quot;RESOURCES&quot;        &quot;THANKS&quot;</code></pre>
+## [13] &quot;NEWS.1&quot;           &quot;NEWS.2&quot;           &quot;NEWS.2.rds&quot;       &quot;NEWS.3&quot;          
+## [17] &quot;NEWS.3.rds&quot;       &quot;NEWS.pdf&quot;         &quot;NEWS.rds&quot;         &quot;RESOURCES&quot;       
+## [21] &quot;THANKS&quot;</code></pre>
 <pre class="r"><code>list.files(path = R.home(&quot;doc&quot;), pattern = &quot;.\\d$&quot;) ## Essa função irá listar todos os arquivos do diretório que terminem com &quot;.[NUMERO]&quot;</code></pre>
-<pre><code>## [1] &quot;NEWS.0&quot; &quot;NEWS.1&quot; &quot;NEWS.2&quot;</code></pre>
+<pre><code>## [1] &quot;NEWS.0&quot; &quot;NEWS.1&quot; &quot;NEWS.2&quot; &quot;NEWS.3&quot;</code></pre>
 <p>Hora do Break para explicações:</p>
 <p><em>Ok, talvez aqui tenhamos um trecho de código complicado para os iniciantes, então vou explicar rapidamente o que ocorre:</em></p>
 <ul>

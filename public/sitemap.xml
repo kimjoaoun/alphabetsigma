@@ -2,6 +2,69 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://alphabetsigma.netlify.app/tags/api/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/tags/bolsonaro/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/tags/bot/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/tags/carluxo/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/tags/markov-chain/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/post/automated-carluxo-generator/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/post/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/tags/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://alphabetsigma.netlify.app/tags/twitter/</loc>
+    <lastmod>2020-05-01T12:31:15-03:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://alphabetsigma.netlify.app/categories/</loc>
     <lastmod>2020-04-22T19:35:15-03:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -37,13 +100,6 @@
   </url>
   
   <url>
-    <loc>https://alphabetsigma.netlify.app/post/</loc>
-    <lastmod>2020-04-22T19:35:15-03:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://alphabetsigma.netlify.app/categories/dificuldade-intermediaria/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -73,13 +129,6 @@
   
   <url>
     <loc>https://alphabetsigma.netlify.app/tags/regex/</loc>
-    <lastmod>2020-03-18T12:46:24-03:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://alphabetsigma.netlify.app/tags/</loc>
     <lastmod>2020-03-18T12:46:24-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
