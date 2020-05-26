@@ -24,10 +24,7 @@
 no
 &lt;/div&gt;
 
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../../img/id_digital.jpg&#34; alt=&#34;banner_id_digital&#34; /&gt;
-&lt;p class=&#34;caption&#34;&gt;banner_id_digital&lt;/p&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;../../img/id_digital.jpg&#34; width=&#34;100%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Lidar com imagens em R é algo que tem um quê de dificuldade, até por conta da escassez de material que se propõe a lhe ensinar como fazer o tratamento. Já vinha alimentando essa curiosidade minha há tempos, queria entender como fazer a extração de dados que originalmente estão encravados em uma imagem.&lt;/p&gt;
 &lt;p&gt;Quando surgiu uma polêmica no Twitter - devido à uma horda de adolescentes terem tido a genial ideia de postar foto de seus documentos online -, foi me dado o incentivo para gastar o tempo - em que eu deveria estar trabalhando - em mais um post para este lindo blog.&lt;/p&gt;
 &lt;p&gt;Primeiro vale falar que não é uma tarefa simples, faltam ferramentas para executarem determinadas tarefas, em especial na fase de pré-processamento de imagem. Também ressalto que esse não tem como objetivo ser um tutorial definitivo sobre tratamento de imagem em R, é só uma brincadeira que pode lhe introduzir ao assunto. Por fim, &lt;strong&gt;pontuo que alguns trechos de código aqui presentes (com especial atenção às expressões regulares) estão intencionalmente confusos&lt;/strong&gt;, decidi por fazer isso justamente para dificultar o uso do código aqui presente para fins escusos.&lt;/p&gt;
@@ -41,10 +38,7 @@ library(&amp;#39;image.libfacedetection&amp;#39;) # Detecta faces
 library(&amp;#39;stringi&amp;#39;) # Tratamento de textos
 library(&amp;#39;purrr&amp;#39;) # Programação Funcional&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Agora eu começarei efetivamente a extrair o texto das imagens, primeiro eu irei observar a imagem que há de ser analisada:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../../img/id_verso.png&#34; alt=&#34;verso&#34; /&gt;
-&lt;p class=&#34;caption&#34;&gt;verso&lt;/p&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;../../img/id_verso.png&#34; width=&#34;100%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Temos aqui o verso de um documento de identidade comum, dependendo de quão no futuro você esteja, talvez não conheça esse padrão do documento. Esse é o padrão de identidade antigo, e neste ano de 2020, a maior parte das identidades estão nesse padrão.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Vale notar que essa identidade é fictícia, e os numeros são todos falsos. A ‘Maria Eduarda’ não existe.&lt;/em&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;remove_acct_char &amp;lt;- function(str){
@@ -105,18 +99,15 @@ library(&amp;#39;purrr&amp;#39;) # Programação Funcional&lt;/code&gt;&lt;/pre&
 ## 1 52.2X4.… MARIA EDUAR… 04/DEZ/… 01/DEZ… 314.291… &amp;quot;C. NASC \&amp;quot;LIV 84X - FLS 19X …&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Agora aproveitamos da pivot_wider(), função nova do tidyr para rotacionar nossa tabela e transformar ela em um formato ideal. O que anteriormente era a primeira coluna, agora está nos nomes. O que era a segunda coluna, agora está em uma só linha. Finalmente, tidy!&lt;/p&gt;
 &lt;p&gt;Contudo, o que eu mostrei anteriormente é que existe uma parte da frente da identidade da nossa querida Maria Eduarda. Vamos aproveitar para retirar a foto dela dali? Vai que você quer guardar uma 3x4 da Duda?&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../../img/id_frente.png&#34; alt=&#34;frente&#34; /&gt;
-&lt;p class=&#34;caption&#34;&gt;frente&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;Para isso, usarei uma biblioteca experimental, que é a &lt;code&gt;image.libfacedetection&lt;/code&gt; - que não está no CRAN, mas está aqui(LINK), junto à já bem conhecida biblioteca &lt;code&gt;magick&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;img = magick::image_read(&amp;#39;~/Imagens/id_frente.png&amp;#39;) %&amp;gt;% 
+&lt;p&gt;&lt;img src=&#34;../../img/id_frente.png&#34; width=&#34;100%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Para isso, usarei uma biblioteca experimental, que é a &lt;code&gt;image.libfacedetection&lt;/code&gt; - que não está no CRAN, mas está &lt;a href=&#34;https://bnosac.github.io/drat/&#34;&gt;aqui&lt;/a&gt;, junto à já bem conhecida biblioteca &lt;code&gt;magick&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;img = magick::image_read(&amp;#39;../../img/id_frente.png&amp;#39;) %&amp;gt;% 
   image_rotate(270)
 
 rosto = image_detect_faces(img)
 
 plot(rosto, img, border = &amp;quot;red&amp;quot;, lwd = 3, col = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;Primeiro, uso a &lt;code&gt;magick::image_read()&lt;/code&gt; para fazer a leitura da imagem, carregando-a na memória. Logo rotaciono a imagem para que ela fique de pé, a rotação é importante pois a nossa &lt;code&gt;image.libfacedetection&lt;/code&gt; não reconhecerá a face caso a imagem esteja deitada.&lt;/p&gt;
 &lt;p&gt;Passamos então a imagem já rotacionada à função &lt;code&gt;image_detect_faces()&lt;/code&gt;, ela localizará onde estão as faces. Então uso a função &lt;code&gt;plot()&lt;/code&gt; para marcar na nossa imagem onde está o rosto.&lt;/p&gt;
 &lt;p&gt;Feito isso, temos nosso rosto, temos nossos dados.&lt;/p&gt;

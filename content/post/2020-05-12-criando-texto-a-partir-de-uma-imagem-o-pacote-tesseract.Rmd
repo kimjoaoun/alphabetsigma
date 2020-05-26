@@ -16,7 +16,7 @@ keywords: [tesseract, image, imagick, data]
 description: ''
 comment: no
 toc: no
-highlight: yes    
+highlight: no    
 autoCollapseToc: no
 postMetaInFooter: no
 hiddenFromHomePage: no
@@ -32,7 +32,10 @@ flowchartDiagrams:
 
 ---
 
-![banner_id_digital](../../img/id_digital.jpg)
+```{r echo=FALSE, out.width="100%", fig.align='center'}
+knitr::include_graphics("../../img/id_digital.jpg")
+```
+
 
 
 Lidar com imagens em R é algo que tem um quê de dificuldade, até por conta da escassez de material que se propõe a lhe ensinar como fazer o tratamento. Já vinha alimentando essa curiosidade minha há tempos, queria entender como fazer a extração de dados que originalmente estão encravados em uma imagem. 
@@ -57,7 +60,11 @@ library('purrr') # Programação Funcional
 
 Agora eu começarei efetivamente a extrair o texto das imagens, primeiro eu irei observar a imagem que há de ser analisada:
 
-![verso](../../img/id_verso.png)
+
+```{r echo=FALSE, out.width="100%", fig.align='center'}
+knitr::include_graphics("../../img/id_verso.png")
+```
+
 
 Temos aqui o verso de um documento de identidade comum, dependendo de quão no futuro você esteja, talvez não conheça esse padrão do documento. Esse é o padrão de identidade antigo, e neste ano de 2020, a maior parte das identidades estão nesse padrão.
 
@@ -140,12 +147,15 @@ Agora aproveitamos da pivot_wider(), função nova do tidyr para rotacionar noss
 Contudo, o que eu mostrei anteriormente é que existe uma parte da frente da identidade da nossa querida Maria Eduarda. Vamos aproveitar para retirar a foto dela dali? Vai que você quer guardar uma 3x4 da Duda?
 
 
-![frente](../../img/id_frente.png)
+```{r echo=FALSE, out.width="100%", fig.align='center'}
+knitr::include_graphics("../../img/id_frente.png")
+```
 
-Para isso, usarei uma biblioteca experimental, que é a `image.libfacedetection` - que não está no CRAN, mas está aqui(LINK), junto à já bem conhecida biblioteca `magick`.
+
+Para isso, usarei uma biblioteca experimental, que é a `image.libfacedetection` - que não está no CRAN, mas está [aqui](https://bnosac.github.io/drat/), junto à já bem conhecida biblioteca `magick`.
 
 ```{r}
-img = magick::image_read('~/Imagens/id_frente.png') %>% 
+img = magick::image_read('../../img/id_frente.png') %>% 
   image_rotate(270)
 
 rosto = image_detect_faces(img)
