@@ -29,13 +29,16 @@ hideHeaderAndFooter: no
 flowchartDiagrams:
   enable: no
   options: ''
+sequenceDiagrams:
+  enable: no
+  options: ''
 
 ---
 
 ```{r echo=FALSE, out.width="100%", fig.align='center'}
-knitr::include_graphics("../../img/id_digital.jpg")
-```
 
+plot(magick::image_read("../../img/id_digital.jpg"))
+```
 
 
 Lidar com imagens em R é algo que tem um quê de dificuldade, até por conta da escassez de material que se propõe a lhe ensinar como fazer o tratamento. Já vinha alimentando essa curiosidade minha há tempos, queria entender como fazer a extração de dados que originalmente estão encravados em uma imagem. 
@@ -62,7 +65,7 @@ Agora eu começarei efetivamente a extrair o texto das imagens, primeiro eu irei
 
 
 ```{r echo=FALSE, out.width="100%", fig.align='center'}
-knitr::include_graphics("../../img/id_verso.png")
+image_read("../../img/id_verso.png") %>% plot()
 ```
 
 
@@ -148,7 +151,7 @@ Contudo, o que eu mostrei anteriormente é que existe uma parte da frente da ide
 
 
 ```{r echo=FALSE, out.width="100%", fig.align='center'}
-knitr::include_graphics("../../img/id_frente.png")
+image_read("../../img/id_frente.png") %>% plot()
 ```
 
 
