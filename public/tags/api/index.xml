@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>api on Alphabet Sigma</title>
-    <link>https://alphabetsigma.netlify.app/tags/api/</link>
+    <link>/tags/api/</link>
     <description>Recent content in api on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>João Pedro Oliveira dos Santos</copyright>
     <lastBuildDate>Fri, 01 May 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://alphabetsigma.netlify.app/tags/api/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/api/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Markov-Chain Carluxo - Criando um bot para Twitter usando o algorítmo de Markov-Chain</title>
-      <link>https://alphabetsigma.netlify.app/post/automated-carluxo-generator/</link>
+      <link>/post/automated-carluxo-generator/</link>
       <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/post/automated-carluxo-generator/</guid>
+      <guid>/post/automated-carluxo-generator/</guid>
       <description>no  O primeiro passo a ser feito é instalar e carregar três bibliotecas, a tidyverse, rtweet, markovchain, caso você não tenha-as instaladas instale-as direto do CRAN usando a função install.packages(). Não sabe como fazer? Digite help(install.packages) no console! Cada uma tem uma funcionalidade:
  Tidyverse: Uma metabiblioteca que contém um conjunto de ferramentas que adicionam uma nova sintaxe no R. Por meio delas é possível escrever um código mais limpo e eficiente.</description>
     </item>

@@ -2,51 +2,172 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Alphabet Sigma</title>
-    <link>https://alphabetsigma.netlify.app/</link>
+    <link>/</link>
     <description>Recent content on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>João Pedro Oliveira dos Santos</copyright>
     <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
     
-	<atom:link href="https://alphabetsigma.netlify.app/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Extraindo uma identidade: o pacote Tesseract e a transformação de imagem em texto.</title>
+      <link>/post/text-data-from-image-tesseract/</link>
+      <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/text-data-from-image-tesseract/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+no
+&lt;/div&gt;
+
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../img/id_digital.jpg&#34; alt=&#34;banner_id_digital&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;banner_id_digital&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Lidar com imagens em R é algo que tem um quê de dificuldade, até por conta da escassez de material que se propõe a lhe ensinar como fazer o tratamento. Já vinha alimentando essa curiosidade minha há tempos, queria entender como fazer a extração de dados que originalmente estão encravados em uma imagem.&lt;/p&gt;
+&lt;p&gt;Quando surgiu uma polêmica no Twitter - devido à uma horda de adolescentes terem tido a genial ideia de postar foto de seus documentos online -, foi me dado o incentivo para gastar o tempo - em que eu deveria estar trabalhando - em mais um post para este lindo blog.&lt;/p&gt;
+&lt;p&gt;Primeiro vale falar que não é uma tarefa simples, faltam ferramentas para executarem determinadas tarefas, em especial na fase de pré-processamento de imagem. Também ressalto que esse não tem como objetivo ser um tutorial definitivo sobre tratamento de imagem em R, é só uma brincadeira que pode lhe introduzir ao assunto. Por fim, &lt;strong&gt;pontuo que alguns trechos de código aqui presentes (com especial atenção às expressões regulares) estão intencionalmente confusos&lt;/strong&gt;, decidi por fazer isso justamente para dificultar o uso do código aqui presente para fins escusos.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;Começo então carregando as bibliotecas necessárias:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(&amp;#39;tesseract&amp;#39;) # Transforma imagens em texto.
+library(&amp;#39;magick&amp;#39;) # Tratamento de imagens
+library(&amp;#39;stringr&amp;#39;) # Tratamento de texto
+library(&amp;#39;tidyverse&amp;#39;) # Metabiblioteca
+library(&amp;#39;image.libfacedetection&amp;#39;) # Detecta faces
+library(&amp;#39;stringi&amp;#39;) # Tratamento de textos
+library(&amp;#39;purrr&amp;#39;) # Programação Funcional&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Agora eu começarei efetivamente a extrair o texto das imagens, primeiro eu irei observar a imagem que há de ser analisada:&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../img/id_verso.png&#34; alt=&#34;verso&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;verso&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Temos aqui o verso de um documento de identidade comum, dependendo de quão no futuro você esteja, talvez não conheça esse padrão do documento. Esse é o padrão de identidade antigo, e neste ano de 2020, a maior parte das identidades estão nesse padrão.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Vale notar que essa identidade é fictícia, e os numeros são todos falsos. A ‘Maria Eduarda’ não existe.&lt;/em&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;remove_acct_char &amp;lt;- function(str){
+  #&amp;#39; Essa função remove os acentos das palavras.
+      
+    stringi::stri_trans_general(str, id= &amp;quot;Latin-ASCII&amp;quot;)
+}
+
+
+  id &amp;lt;- tesseract::ocr(&amp;#39;../../img/id_verso.png&amp;#39;, 
+                     engine = tesseract(&amp;#39;por&amp;#39;)) %&amp;gt;% 
+  str_replace_all(pattern = &amp;#39;\n&amp;#39;, 
+                  replacement = &amp;#39; &amp;#39;) %&amp;gt;% {
+  list(
+  rg = stringr::str_extract(., pattern = &amp;#39;\\d{2}\\..{3}\\..{3}\\-\\d&amp;#39;), #extrai o RG
+  
+  nome = stringr::str_extract_all(., pattern = &amp;#39;((Nove|Nome)(\\s\\w{1,20}\\s\\w{1,20}\\s(\\w{1,20})?\\s(\\w{1,})?))&amp;#39;), #extrai
+  
+  datas = stringr::str_extract_all(., pattern = &amp;#39;\\d{2}/(\\w{3}|\\d{2})/(\\d{4})&amp;#39;), #extrai data de nascimento e expedição
+  
+  cpf = stringr::str_extract(., pattern = &amp;#39;(\\d{3}\\.){2}\\d{3}\\-.{2}&amp;#39;), #extrai o CPF
+  
+  doc_origem = remove_acct_char(stringr::str_extract(., pattern = &amp;#39;(C(\\.\\s)NASC).{1,50}\\w{2}&amp;#39;)) #Dados da certidão de nascimento.
+  )
+  } %&amp;gt;% 
+    unlist %&amp;gt;% 
+    enframe&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Começo criando uma função que futuramente será útil, a função &lt;code&gt;remove_acct_char&lt;/code&gt;. Essa função que criamos usa da mudança de &lt;code&gt;encoding&lt;/code&gt;, por meio da função &lt;code&gt;stringi::stri_trans_general()&lt;/code&gt;, para fazer a remoção de acentuação das palavras. Um exemplo pode ser visto abaixo: casarão =&amp;gt; casarao.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;remove_acct_char(&amp;#39;Eu vivo em um casarão&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Eu vivo em um casarao&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Logo depois eu crio um objeto chamado id, é nele em que armazenarei o resultado da extração das informações da identidade da nossa querida Maria Eduarda.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Começarei usando a biblioteca &lt;code&gt;tesseract&lt;/code&gt;, que faz a leitura de imagem e extrai o texto ali presente. Para que a Tesseract funcione é recomendado que os dados estejam alinhados, isto é, o texto precisa estar em linhas, texto na diagonal (ou de cabeça para baixo) pode gerar problemas, provavelmente irá. Uso o argumento &lt;code&gt;engine=&#39;por&#39;&lt;/code&gt;, que indica ao Tesseract que a linguagem do documento é português, assim o processamento é otimizado para nosso idioma. O Tesseract irá retornar o texto abaixo:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;E S = =\nBERTRO. 52.2x4.654-1 PNSBE.o 04/DEZ/2021\nNove MARIA EDUARDA DA SILVA\n\nEDUARDO RIBEIRO DA SILVA\n\nANA CLAUDIA DA SILVA\n\nVITÓRIA - ES 01/DEZ/1989\n6c omcem C. NASC \&amp;quot;LIV 84X — FLS 19X / TERM 14188X co07\n\nVITÓRIA Es\ncm 314.291.255-XX\nASSINATUBA DO DIRETOR 020X\n\n= c E =E = =\n&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Logo após isso, eu irei passar a string por uma expressão regular com o objetivo de substituir o padrão ‘’ por um espaço em branco. O padrão indica ao programador que ali temos uma quebra de linha, mas não será util a nós, por isso a remoção.&lt;/p&gt;
+&lt;p&gt;Então, crio uma &lt;code&gt;list&lt;/code&gt; que agrupará das strings com o texto que faremos a extração por meio de expressões regulares. Uso expressões regulares para extrair os seguintes dados: &lt;code&gt;rg&lt;/code&gt;, &lt;code&gt;cpf&lt;/code&gt;, &lt;code&gt;datas&lt;/code&gt; (expedição e nascimento), &lt;code&gt;doc_origem&lt;/code&gt; - este último são os dados acerca da Certidão de Nascimento.&lt;/p&gt;
+&lt;p&gt;Por fim, retiro as informações da &lt;code&gt;list&lt;/code&gt;, usando &lt;code&gt;unlist()&lt;/code&gt;, issso farácom que nossa lista se torne um conjunto de strings. E então uso a função &lt;code&gt;enframe&lt;/code&gt; para criar uma &lt;code&gt;data.frame&lt;/code&gt;- na verdade, uma &lt;code&gt;tibble&lt;/code&gt; - com nossos dados.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 2
+##   name       value                                                       
+##   &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;                                                       
+## 1 rg         &amp;quot;52.2x4.654-1&amp;quot;                                              
+## 2 nome       &amp;quot;Nove MARIA EDUARDA DA SILVA&amp;quot;                               
+## 3 datas1     &amp;quot;04/DEZ/2021&amp;quot;                                               
+## 4 datas2     &amp;quot;01/DEZ/1989&amp;quot;                                               
+## 5 cpf        &amp;quot;314.291.255-XX&amp;quot;                                            
+## 6 doc_origem &amp;quot;C. NASC \&amp;quot;LIV 84X - FLS 19X / TERM 14188X co07  VITORIA Es&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;O resultado contudo não é satisfatório, como pode-se ver a nossa tabela não está em formato Tidy, o que dificulda nosso trabalho. Devemos agora tratar a tabela, tornando-a ideal para a manipulação usando o &lt;code&gt;dplyr&lt;/code&gt; e o &lt;code&gt;tidyr&lt;/code&gt;. Além disso, a nossa expressão regular também capturou um trecho ‘Nove’ que está anterior ao nome de Maria Eduarda, precisamos corrigir isso.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;id %&amp;gt;% 
+  pivot_wider() %&amp;gt;%  # &amp;#39;gira&amp;#39; a tabela, transformando-a em formato longo
+  mutate(nome = str_remove(nome, &amp;#39;(Nove|Nome)\\s&amp;#39;), #r
+         rg = toupper(rg)) %&amp;gt;% 
+  rename(exp = datas1,
+         nasc = datas2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 6
+##   rg       nome         exp      nasc    cpf      doc_origem                    
+##   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;                         
+## 1 52.2X4.… MARIA EDUAR… 04/DEZ/… 01/DEZ… 314.291… &amp;quot;C. NASC \&amp;quot;LIV 84X - FLS 19X …&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Agora aproveitamos da pivot_wider(), função nova do tidyr para rotacionar nossa tabela e transformar ela em um formato ideal. O que anteriormente era a primeira coluna, agora está nos nomes. O que era a segunda coluna, agora está em uma só linha. Finalmente, tidy!&lt;/p&gt;
+&lt;p&gt;Contudo, o que eu mostrei anteriormente é que existe uma parte da frente da identidade da nossa querida Maria Eduarda. Vamos aproveitar para retirar a foto dela dali? Vai que você quer guardar uma 3x4 da Duda?&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../img/id_frente.png&#34; alt=&#34;frente&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;frente&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Para isso, usarei uma biblioteca experimental, que é a &lt;code&gt;image.libfacedetection&lt;/code&gt; - que não está no CRAN, mas está aqui(LINK), junto à já bem conhecida biblioteca &lt;code&gt;magick&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;img = magick::image_read(&amp;#39;~/Imagens/id_frente.png&amp;#39;) %&amp;gt;% 
+  image_rotate(270)
+
+rosto = image_detect_faces(img)
+
+plot(rosto, img, border = &amp;quot;red&amp;quot;, lwd = 3, col = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;Primeiro, uso a &lt;code&gt;magick::image_read()&lt;/code&gt; para fazer a leitura da imagem, carregando-a na memória. Logo rotaciono a imagem para que ela fique de pé, a rotação é importante pois a nossa &lt;code&gt;image.libfacedetection&lt;/code&gt; não reconhecerá a face caso a imagem esteja deitada.&lt;/p&gt;
+&lt;p&gt;Passamos então a imagem já rotacionada à função &lt;code&gt;image_detect_faces()&lt;/code&gt;, ela localizará onde estão as faces. Então uso a função &lt;code&gt;plot()&lt;/code&gt; para marcar na nossa imagem onde está o rosto.&lt;/p&gt;
+&lt;p&gt;Feito isso, temos nosso rosto, temos nossos dados.&lt;/p&gt;
+&lt;p&gt;Abraços!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Markov-Chain Carluxo - Criando um bot para Twitter usando o algorítmo de Markov-Chain</title>
-      <link>https://alphabetsigma.netlify.app/post/automated-carluxo-generator/</link>
+      <link>/post/automated-carluxo-generator/</link>
       <pubDate>Fri, 01 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/post/automated-carluxo-generator/</guid>
+      <guid>/post/automated-carluxo-generator/</guid>
       <description>no  O primeiro passo a ser feito é instalar e carregar três bibliotecas, a tidyverse, rtweet, markovchain, caso você não tenha-as instaladas instale-as direto do CRAN usando a função install.packages(). Não sabe como fazer? Digite help(install.packages) no console! Cada uma tem uma funcionalidade:
  Tidyverse: Uma metabiblioteca que contém um conjunto de ferramentas que adicionam uma nova sintaxe no R. Por meio delas é possível escrever um código mais limpo e eficiente.</description>
     </item>
     
     <item>
       <title>Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</title>
-      <link>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</link>
+      <link>/post/isis-nlp-analysis/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/post/isis-nlp-analysis/</guid>
+      <guid>/post/isis-nlp-analysis/</guid>
       <description>Nesse post nós iremos fazer uma simples (e rápida) análise do dataset “ISIS Religious Texts v1”, que pode ser encontrado AQUI. Essa base de dados contém textos de duas revistas do ISIS, estas sendo a “Dabiq” e a “Rumyiah”, que são (ou eram?) usadas para propaganda política e recrutamento de novos membros para o grupo terrorista.
 Primeiro começamos carregando as bibliotecas essenciais para a tarefa, com atenção à Rlang, que nos será bem util.</description>
     </item>
     
     <item>
+      <title>Entendendo funções em 5 minutos</title>
+      <link>/post/entendendo-funcoes-cinco-minutos/</link>
+      <pubDate>Wed, 18 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/entendendo-funcoes-cinco-minutos/</guid>
+      <description>Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.</description>
+    </item>
+    
+    <item>
       <title>Introdução às Expressões Regulares em R</title>
-      <link>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</link>
+      <link>/post/introducao-as-expressoes-regulares/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/post/introducao-as-expressoes-regulares/</guid>
+      <guid>/post/introducao-as-expressoes-regulares/</guid>
       <description>São utilizadas: Strings e Funções do R-Base e do {Stringr}; Conhecimento prévio necessário.  Parte 1. One Reason Why Trabalhar com texto em uma linguagem tão centrada em números quanto o R é um desafio para muitos. A quantidade de desafios a serem enfrentados já é grande desde o inicio, a começar pela falta de materiais disponíveis, e que quando estão disponíveis na maioria das vezes estes possuem somente versões em inglês.</description>
     </item>
     
     <item>
       <title>Sobre</title>
-      <link>https://alphabetsigma.netlify.app/about/</link>
+      <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/about/</guid>
+      <guid>/about/</guid>
       <description>Olá queridos,
 Meu nome é João Pedro Oliveira, eu sou graduando e pesquisador da área de Relações Internacionais. Atualmente pesquiso Processamento de Linguagem Natural (NLP), e Crimes Transnacionais em uma Instituição Pública de Pesquisa. Aqui no Blog devo falar bastante sobre NLP e Programação Funciona, visto que são os assuntos que mais me interessam. Caso queiram falar comigo pode me dar um alô no Twitter! No menu lateral você consegue encontrar outras formas de me contatar, como o LinkedIn e o Github.</description>
     </item>

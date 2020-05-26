@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Entendendo funções em 5 minutos - Alphabet Sigma</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Joao Pedro Oliveira" /><meta name="description" content="Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual." />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.69.2 with theme even" />
+
+
+<link rel="canonical" href="/post/entendendo-funcoes-cinco-minutos/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.78f8f17bab244b9ee62ad16480c9584d5fc2db06ae20681d1ca225cefd80767c.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Entendendo funções em 5 minutos" />
+<meta property="og:description" content="Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/post/entendendo-funcoes-cinco-minutos/" />
+<meta property="article:published_time" content="2020-03-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-03-18T12:46:24-03:00" />
+<meta itemprop="name" content="Entendendo funções em 5 minutos">
+<meta itemprop="description" content="Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.">
+<meta itemprop="datePublished" content="2020-03-18T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-03-18T12:46:24-03:00" />
+<meta itemprop="wordCount" content="270">
+
+
+
+<meta itemprop="keywords" content="Functions,R," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Entendendo funções em 5 minutos"/>
+<meta name="twitter:description" content="Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara \((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\). Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada \(A_e\), sempre retornam \(B_s\). Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Alphabet Sigma</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Alphabet Sigma</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Entendendo funções em 5 minutos</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-03-18 </span>
+        <div class="post-category">
+            <a href="/categories/r/"> R </a>
+            <a href="/categories/dificuldade-basica/"> dificuldade basica </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      
+
+
+<p>Quando você estava no ensino médio (ou colegial/segundo grau, para os mais antigos) em algum momento aprendeu funções de primeiro grau e de segundo grau, sendo a mais memorável a fórmula de Bhaskara <span class="math inline">\((x= \frac{b^2\pm\sqrt{\Delta}}{2a})\)</span>. Porém, o que pode não ter percebido é que um aprendizado importante ficou, o de que funções ao receberem a entrada <span class="math inline">\(A_e\)</span>, sempre retornam <span class="math inline">\(B_s\)</span>. Ou seja, é sempre possível que uma função seja resolvida, não importando o dia e hora, caso uma série de conjuntos de instruções pré-determinadas sejam seguidos, e o resultado será sempre igual.</p>
+<p>As funções em linguagens de programação obedecem a mesma lógica. Se você possui uma função <span class="math inline">\(f\)</span> ao ser inserido um argumento de valor <span class="math inline">\(k\)</span> o resultado é <span class="math inline">\(100\)</span>, então <span class="math inline">\(f(k) = 100\)</span>. Abaixo eu defino uma função no R chamada <span class="math inline">\(f\)</span>, que sempre que receber o texto <code>&quot;k&quot;</code>, terá como resposta o texto <code>&quot;l&quot;</code>, caso não, retornará <code>&quot;Comando Inválido&quot;</code>.</p>
+<pre class="r"><code>f = function(entrada){ # A função function() é responsável por criar funções. Ela aceita infinitos argumentos, estes serão o argumento da sua nova função.
+  if(entrada == &quot;k&quot;){ # if() é um controlador de fluxo, ele estabelece uma condição a ser atendida ou não.
+    # Dentro de um &quot;if&quot; temos o bloco de código a ser executado caso a condição seja verdadeira.
+    return(&quot;100&quot;) # O return estabelece o que responder ao usuário no fim de uma computação, ele termina a função.
+  } else { # O else{} é o que responder
+    return(&quot;Comando Inválido&quot;)
+  }
+}</code></pre>
+<p>Para definir uma função com um nome, é só criarmos um objeto com o nome desejado e atribuir à ele a função <code>function()</code> seguido dos</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Joao Pedro Oliveira</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-03-18
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/functions/">Functions</a>
+          <a href="/tags/r/">R</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/isis-nlp-analysis/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Escola ISIS de Radicalização Religiosa: Uma Análise com NLP</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/introducao-as-expressoes-regulares/">
+            <span class="next-text nav-default">Introdução às Expressões Regulares em R</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-03-18 00:00:00 \x2b0000 UTC',
+        title: 'Entendendo funções em 5 minutos',
+        clientID: 'c1170dfca474e1cb4d6d',
+        clientSecret: 'a4c3b39af68c69dcceae407421a673fc09e892ba',
+        repo: 'kimjoaoun\/alphabetsigma',
+        owner: 'kimjoaoun',
+        admin: ['kimjoaoun'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://stackoverflow.com/users/9829398/john-p-s" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://www.twitter.com/kimjoaoun" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://www.linkedin.com/in/joaoposantos/" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://www.github.com/kimjoaoun" class="iconfont icon-github" title="github"></a>
+  <a href="/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">João Pedro Oliveira dos Santos</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.cddea96674a99fd8cea50d36fb19d9c91f497feea4af5ce4596afd2dbaab9202.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

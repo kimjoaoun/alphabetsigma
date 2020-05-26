@@ -2,49 +2,67 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Alphabet Sigma</title>
-    <link>https://alphabetsigma.netlify.app/categories/</link>
+    <link>/categories/</link>
     <description>Recent content in Categories on Alphabet Sigma</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>João Pedro Oliveira dos Santos</copyright>
-    <lastBuildDate>Wed, 22 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 12 May 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://alphabetsigma.netlify.app/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>dificuldade intermediária</title>
-      <link>https://alphabetsigma.netlify.app/categories/dificuldade-intermedi%C3%A1ria/</link>
-      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
+      <link>/categories/dificuldade-intermedi%C3%A1ria/</link>
+      <pubDate>Tue, 12 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/categories/dificuldade-intermedi%C3%A1ria/</guid>
+      <guid>/categories/dificuldade-intermedi%C3%A1ria/</guid>
       <description></description>
     </item>
     
     <item>
       <title>LDA</title>
-      <link>https://alphabetsigma.netlify.app/categories/lda/</link>
+      <link>/categories/lda/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/categories/lda/</guid>
+      <guid>/categories/lda/</guid>
       <description></description>
     </item>
     
     <item>
       <title>nlp</title>
-      <link>https://alphabetsigma.netlify.app/categories/nlp/</link>
+      <link>/categories/nlp/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/categories/nlp/</guid>
+      <guid>/categories/nlp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dificuldade basica</title>
+      <link>/categories/dificuldade-basica/</link>
+      <pubDate>Wed, 18 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/dificuldade-basica/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/categories/r/</link>
+      <pubDate>Wed, 18 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/r/</guid>
       <description></description>
     </item>
     
     <item>
       <title>dificuldade intermediaria</title>
-      <link>https://alphabetsigma.netlify.app/categories/dificuldade-intermediaria/</link>
+      <link>/categories/dificuldade-intermediaria/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://alphabetsigma.netlify.app/categories/dificuldade-intermediaria/</guid>
+      <guid>/categories/dificuldade-intermediaria/</guid>
       <description></description>
     </item>
     
