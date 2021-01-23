@@ -1,0 +1,120 @@
+---
+title: 'Building Blocks: O que é uma tibble?'
+author: Joao Pedro Oliveira
+date: '2021-01-23'
+slug: []
+categories: []
+tags: []
+lastmod: '2021-01-23T14:51:51-03:00'
+keywords: []
+description: 'O nosso bom(?) e velho(!) data.frame tem seus problemas.'
+comment: no
+toc: no
+autoCollapseToc: no
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+enableOutdatedInfoWarning: true
+editor_options: 
+  markdown: 
+    wrap: 80
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+
+</div>
+
+<div id="intro" class="section level1">
+<h1>Intro</h1>
+<p>O R possui diversas estruturas de dados nativamente suportadas, dessas a mais
+vital para o trabalho de processamento de dados é o <code>data frame</code> (class
+<code>data.frame</code>), todavia ao utilizarmos os pacotes que fazem parte do Tidyverse, é
+nos apresentado uma estrutura de dados nova, a Tibble. Embora pareçam
+estéticamente semelhantes, essas duas estruturas possuem diferenças em sua
+implementação e estas podem ter impacto nos seus dados e nos resultados de suas
+análises. Recomenda-se a utilização de tibbles, mas o motivo disso nunca é
+explicado, aqui tentarei fazer isso. Mas primeiro, vamos dar uma olhada nos Data
+Frames.</p>
+<p>Se você possui qualquer familiaridade com a linguagem provavelmente já teve
+contato com um, mas caso não recorde, podemos rapidamente relembrar. O
+<code>data.frame</code> é uma estrutura de dados tabular composta por linhas e colunas, e
+que faz parte do R-base, isto é, está presente em toda instalação do pacote
+estatístico. Possui algumas características quais são necessárias entendermos
+para que possamos gerar uma imagem mental da estrutura.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Quantidade de Linhas</strong> -&gt; Dado um data.frame de dimensões <span class="math inline">\(LxC\)</span>, onde <span class="math inline">\(L\)</span>
+representa a quantidade de Linhas e <span class="math inline">\(C\)</span> a de Colunas, podemos dizer que
+todas as colunas de determinado data.frame possuirá <span class="math inline">\(L\)</span> linhas. Isso ocorre
+pois a estrutura de dado não aceita que uma coluna possua uma quantidade de
+linhas menor do que outra. Caso seja tentado acoplar uma coluna, de
+<span class="math inline">\(nrow == L-1\)</span> ao nosso <code>data.frame</code>, teremos como retorno um erro.</li>
+</ol>
+<p>No exemplo abaixo, criamos um <code>data.frame</code> de dimensões <span class="math inline">\(10x3\)</span>, e tentamos
+acoplar a ele um terceiro data.frame de dimensões <span class="math inline">\(13x1\)</span>. Devido a diferença no
+tamanho das colunas, o <code>R</code> nos retornará um erro nos informando que os
+argumentos (no nosso caso estes são os dfs) fornecidos possuem um diferente
+número de linhas.</p>
+<pre class="r"><code>df &lt;- data.frame(x=rnorm(10, 2, 1), 
+           y=rnorm(10, 7, 1), 
+           z=rnorm(10, 5, 1))
+df2 &lt;- data.frame(k = rnorm(13,9, 1))
+
+
+# A função &#39;cbind&#39; acopla data.frame lado-a-lado, faz parte do pacote básico do R.
+df_binded &lt;- cbind(df,df2)</code></pre>
+<pre><code>## Error in data.frame(..., check.names = FALSE): arguments imply differing number of rows: 10, 13</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><p><strong>Conversão de Tipos</strong> -&gt; Uma antiga característica do data.frame e que
+pode se tornar problemática é a conversão automática de tipos. O R-base tem
+o horrível hábito de fazer conversões de tipos, muitas vezes sem notificar o
+usuário de que foi feita uma alteração na informação carregada. Isso gera
+situações extremamente problemáticas, sendo a mais clássica, a
+<code>stringsAsFactors</code>, onde o R converte automaticamente o tipo <code>character</code> em
+tipo <code>factor</code>, situação que gera uma série de incompatibilidades com
+bibliotecas. <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Em algumas situações, valores inteiros (<code>integers</code>) podem
+ser transformados em valores de ponto flutuante (No R chamamos de<code>doubles</code>,
+e são os números que possuem casas decimais, como <span class="math inline">\(2.4\)</span>, <span class="math inline">\(13.50\)</span>,
+<span class="math inline">\(6.9\)</span><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>).</p></li>
+<li><p><strong>Reciclagem</strong> -&gt; Caso você tente adicionar uma coluna nova, de tamanho
+<span class="math inline">\(Lx\)</span>, e <span class="math inline">\(Lx &lt; L\)</span>, os valores da coluna serão replicados por todo o
+dataframe, de forma a criar uma coluna de tamanho <span class="math inline">\(L\)</span>. Esse comportamento,
+embora não seja problemático para o usuário experiente, é conhecido por
+gerar bugs e erros nos códigos de usuários iniciantes e nao acostumados com
+a estrutura. No exemplo abaixo podemos ver essa repetição não solicitada
+acontecendo, onde o <code>R</code> replica o nosso vetor <code>c(2, 3)</code>, transformado-o em
+um vetor <code>c(2, 3, 2, 3, 2, 3, 2 ,3, 2, 3)</code>.</p></li>
+</ol>
+<pre class="r"><code>df &lt;- data.frame(x=rnorm(10, 2, 1), 
+           y=rnorm(10, 7, 1), 
+           z=rnorm(10, 5, 1))
+df &lt;- cbind(df, new= c(2, 3))
+df</code></pre>
+<pre><code>##              x        y        z new
+## 1   2.65565301 6.630347 4.929653   2
+## 2   0.51664341 6.944042 5.631174   3
+## 3   2.89801270 7.554724 5.426745   2
+## 4   2.45037432 5.451395 5.089278   3
+## 5   1.77913369 9.803147 5.534787   2
+## 6  -0.01508192 7.978771 4.879035   3
+## 7   0.46761645 6.872980 4.703716   2
+## 8   1.34845986 8.191106 6.854723   3
+## 9   2.44098933 6.658275 3.415549   2
+## 10  2.80909498 7.690405 5.241115   3</code></pre>
+<p>Felizmente a solução para esses problemas, e seu nome é lindo: A tibble.</p>
+<p>Em uma próxima publicação, irei abordar a tibble as soluções que ela apresenta.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>O problema foi corrigido, contudo pede que voce esteja executando o R em
+versão maior ou igual a <code>4.0.0</code>. Esse problema ocorria pois R é uma
+linguagem antiga, e pensada por estatísticos, sendo assim, no passado fazia
+sentido com que a conversão ocorresse devido a natureza de dados usados por
+estatisticos. Para entender mais sobre stringsAsFactors, veja
+<a href="https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography" title="StringsAsFactors: An unauthorized biography (ENG)">StringsAsFactors: An unauthorized biography
+(ENG)</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Nice.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
