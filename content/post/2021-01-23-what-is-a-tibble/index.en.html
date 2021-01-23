@@ -1,5 +1,5 @@
 ---
-title: 'Building Blocks: O que é uma tibble?'
+title: 'Building Blocks: Problemas dos Data.frames'
 author: Joao Pedro Oliveira
 date: '2021-01-23'
 slug: []
@@ -10,6 +10,7 @@ keywords: []
 description: 'O nosso bom(?) e velho(!) data.frame tem seus problemas.'
 comment: no
 toc: no
+draft: true
 autoCollapseToc: no
 postMetaInFooter: no
 hiddenFromHomePage: no
@@ -91,17 +92,17 @@ um vetor <code>c(2, 3, 2, 3, 2, 3, 2 ,3, 2, 3)</code>.</p></li>
            z=rnorm(10, 5, 1))
 df &lt;- cbind(df, new= c(2, 3))
 df</code></pre>
-<pre><code>##              x        y        z new
-## 1   2.65565301 6.630347 4.929653   2
-## 2   0.51664341 6.944042 5.631174   3
-## 3   2.89801270 7.554724 5.426745   2
-## 4   2.45037432 5.451395 5.089278   3
-## 5   1.77913369 9.803147 5.534787   2
-## 6  -0.01508192 7.978771 4.879035   3
-## 7   0.46761645 6.872980 4.703716   2
-## 8   1.34845986 8.191106 6.854723   3
-## 9   2.44098933 6.658275 3.415549   2
-## 10  2.80909498 7.690405 5.241115   3</code></pre>
+<pre><code>##           x        y        z new
+## 1  2.284038 8.899848 4.496610   2
+## 2  2.144131 6.594407 4.144863   3
+## 3  1.275129 7.537183 4.549144   2
+## 4  1.407789 8.712891 8.320079   3
+## 5  1.712564 7.922923 2.955346   2
+## 6  3.334381 7.419100 5.687224   3
+## 7  1.903085 5.907908 4.319209   2
+## 8  1.891025 6.900097 4.024288   3
+## 9  2.078914 8.354754 5.428384   2
+## 10 1.860410 7.160519 4.096249   3</code></pre>
 <p>Felizmente a solução para esses problemas, e seu nome é lindo: A tibble.</p>
 <p>Em uma próxima publicação, irei abordar a tibble as soluções que ela apresenta.</p>
 </div>

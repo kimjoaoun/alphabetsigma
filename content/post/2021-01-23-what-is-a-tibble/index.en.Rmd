@@ -1,5 +1,5 @@
 ---
-title: 'Building Blocks: O que é uma tibble?'
+title: 'Building Blocks: Problemas dos Data.frames'
 author: Joao Pedro Oliveira
 date: '2021-01-23'
 slug: []
@@ -10,6 +10,7 @@ keywords: []
 description: 'O nosso bom(?) e velho(!) data.frame tem seus problemas.'
 comment: no
 toc: no
+draft: true
 autoCollapseToc: no
 postMetaInFooter: no
 hiddenFromHomePage: no
@@ -106,3 +107,4 @@ df
 Felizmente a solução para esses problemas, e seu nome é lindo: A tibble.
 
 Em uma próxima publicação, irei abordar a tibble as soluções que ela apresenta.
+
