@@ -1,0 +1,86 @@
+---
+title: Building Blocks\: O que é uma tibble?
+author: Joao Pedro Oliveira
+date: '2021-01-23'
+slug: []
+categories: []
+tags: []
+lastmod: '2021-01-23T14:51:51-03:00'
+keywords: []
+description: 'O nosso bom(?) e velho(!) data.frame tem seus problemas.'
+comment: no
+toc: no
+autoCollapseToc: no
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+enableOutdatedInfoWarning: true
+reward: no
+mathjax: no
+mathjaxEnableSingleDollar: no
+mathjaxEnableAutoNumber: no
+hideHeaderAndFooter: no
+flowchartDiagrams:
+  enable: no
+  options: ''
+sequenceDiagrams:
+  enable: no
+  options: ''
+editor_options: 
+  markdown: 
+    wrap: 80
+---
+
+# Intro
+
+O R possui diversas estruturas de dados nativamente suportadas, dessas a mais vital para o trabalho de processamento de dados é o `data frame` (class `data.frame`), todavia ao utilizarmos os pacotes que fazem parte do Tidyverse, é nos apresentado uma estrutura de dados nova, a Tibble. Embora pareçam estéticamente semelhantes, essas duas estruturas possuem diferenças em sua implementação e estas podem ter impacto nos seus dados e nos resultados de suas análises. Recomenda-se a utilização de tibbles, mas o motivo disso nunca é explicado, aqui tentarei fazer isso. Mas primeiro, vamos dar uma olhada nos Data Frames.
+
+Se você possui qualquer familiaridade com a linguagem provavelmente já teve contato com um, mas caso não recorde, podemos rapidamente relembrar. O `data.frame` é uma estrutura de dados tabular composta por linhas e colunas, e que faz parte do R-base, isto é, está presente em toda instalação do pacote estatístico. Possui algumas características quais são necessárias entendermos para que possamos gerar uma imagem mental da estrutura.
+
+1.  **Quantidade de Linhas** -\> Dado um data.frame de dimensões $LxC$, onde $L$ representa a quantidade de Linhas e $C$ a de Colunas, podemos dizer que todas as colunas de determinado data.frame possuirá $L$ linhas. Isso ocorre pois a estrutura de dado não aceita que uma coluna possua uma quantidade de linhas menor do que outra. Caso seja tentado acoplar uma coluna, de \$nrow == L-1\$ ao nosso `data.frame`, teremos como retorno um erro.
+
+No exemplo abaixo, criamos um `data.frame` de dimensões $10x3$, e tentamos acoplar a ele um terceiro data.frame de dimensões $13x1$. Devido a diferença no tamanho das colunas, o `R` nos retornará um erro nos informando que os argumentos (no nosso caso estes são os dfs) fornecidos possuem um diferente número de linhas.
+
+```{r echo=TRUE, error=TRUE}
+df <- data.frame(x=rnorm(10, 2, 1), 
+           y=rnorm(10, 7, 1), 
+           z=rnorm(10, 5, 1))
+df2 <- data.frame(k = rnorm(13,9, 1))
+
+
+# A função 'cbind' acopla data.frame lado-a-lado, faz parte do pacote básico do R.
+df_binded <- cbind(df,df2)
+```
+
+2.  **Conversão de Tipos** -\> Uma antiga característica do data.frame e que pode se tornar problemática é a conversão automática de tipos. O R-base tem o horrível hábito de fazer conversões de tipos, muitas vezes sem notificar o usuário de que foi feita uma alteração na informação carregada. Isso gera situações extremamente problemáticas, sendo a mais clássica, a `stringsAsFactors`, onde o R converte automaticamente o tipo `character` em tipo `factor`, situação que gera uma série de incompatibilidades com bibliotecas. [^1] Em algumas situações, valores inteiros (`integers`) podem ser transformados em valores de ponto flutuante (No R chamamos de`doubles`, e são os números que possuem casas decimais, como $2.4$, $13.50$, $6.9$[^2]).
+
+
+3.  **Reciclagem** -\> Caso você tente adicionar uma coluna nova, de tamanho $Lx$, e $Lx < L$, os valores da coluna serão replicados por todo o dataframe, de forma a criar uma coluna de tamanho $L$. Esse comportamento, embora não seja problemático para o usuário experiente, é conhecido por gerar bugs e erros nos códigos de usuários iniciantes e nao acostumados com a estrutura. No exemplo abaixo podemos ver essa repetição não solicitada acontecendo, onde o `R` replica o nosso vetor `c(2, 3)`, transformado-o em um vetor `c(2, 3, 2, 3, 2, 3, 2 ,3, 2, 3)`.
+
+
+```{r}
+df <- data.frame(x=rnorm(10, 2, 1), 
+           y=rnorm(10, 7, 1), 
+           z=rnorm(10, 5, 1))
+df <- cbind(df, new= c(2, 3))
+df
+
+```
+
+Felizmente a solução para esses problemas, e seu nome é lindo: A tibble.
+
+Em uma próxima publicação, irei abordar a tibble as soluções que ela apresenta.
+
+
+
+[^1]: O problema foi corrigido, contudo pede que voce esteja executando o R em versão maior ou igual a `4.0.0`. Esse problema ocorria pois R é uma linguagem antiga, e pensada por estatísticos, sendo assim, no passado fazia sentido com que a conversão ocorresse devido a natureza de dados usados por estatisticos. Para entender mais sobre stringsAsFactors, veja [StringsAsFactors: An unauthorized biography (ENG)](https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography "StringsAsFactors: An unauthorized biography (ENG)")
+
+[^2]: Nice.
+
+
+
+
+
+
+
+
