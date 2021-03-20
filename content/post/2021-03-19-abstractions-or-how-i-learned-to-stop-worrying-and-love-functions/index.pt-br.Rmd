@@ -151,7 +151,7 @@ for(j in 1:length(vetor)) {
 vetor
 ```
 
-Resultado da segunda execução: $4,5,6,7,8$
+Resultado da segunda execução: $3,4,5,6,7$
 
 Se você for uma pessoa atenta, perceberá que o tipo do retorno não é o de um vetor de `numerics`, mas sim o de uma **lista**[^2] composta por esses algarismos. E isso é importante, o `purrr::map()` sempre tera como retorno uma lista com os valores computados, e isso o torna previsivel, o tipo do objeto retornado sempre será `list`.
 
@@ -163,4 +163,4 @@ Outra vantagem da função é que ela interrompe a execução e discarta todo o 
 
 Hoje eu *tentei* mostrar a vocês o motivo de toda vez que alguem me pede para ler um código, e eu vejo um loop, eu tilto. Escrever uma função que faz a mesma operação muitas vezes e mais simples e nos leva a menos possiveis problemas durante a execução. Além disso, o debugging pode ser mais facil e a `function` ser mais eficiente. O problema da eficiência não foi abordado aqui, mas ele existe, e tem [relação com a forma com que o R manipula a memoria do computador](http://adv-r.had.co.nz/memory.html), um loop mal escrito pode ser problemático nesse sentido.
 
-Até a proxima.
+Até a proxima. :)
