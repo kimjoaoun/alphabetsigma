@@ -1,0 +1,166 @@
+---
+title: 'Abstractions or: How I Learned to Stop Worrying and Love Functions'
+author: Joao Pedro Oliveira
+date: '2021-03-19'
+slug: []
+categories:
+  - fp
+  - R
+tags:
+  - fp
+  - R
+lastmod: '2021-03-19T18:01:27-03:00'
+keywords: ["functions", "r", "functional programming", "loops", "map", "purrr"]
+description: 'Ame-as. Nunca mais me mostre um loop.'
+comment: no
+toc: no
+autoCollapseToc: yes
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+reward: no
+mathjax: yes
+mathjaxEnableSingleDollar: yes
+mathjaxEnableAutoNumber: no
+hideHeaderAndFooter: no
+flowchartDiagrams:
+  enable: no
+  options: ''
+sequenceDiagrams:
+  enable: no
+  options: ''
+---
+
+#### Temos um problema!
+
+```{r eval=FALSE, include=TRUE}
+for(i in Inf) {
+  print("Nunca mais escrevo um loop!")
+}
+```
+
+Em diversos cenarios é comum que precisemos fazer iterações. Aplicar milhares (ou milhões!) de vezes a mesma operaçao em um objeto composto por observações de mesma natureza. A repetição é tão necessária que temos até mesmo uma família de construtos que tem como objetivo facilitar nossa vida, o `loop`, mas será que ele ajuda tanto assim? Loops são conhecidos por serem ineficientes, mas esse não é seu maior problema. O problemas dos loops, além da ineficiência, residem principalmente na sintaxe necessária para operar dentro deles, a necessidade de repetir constantemente os índices (no caso do loop acima, nosso índice é a letra `i`) torna o código confuso e passível de erros.
+
+Outro problema aparece quando você precisa aplicar o mesmo bloco de código em diversas situações no mesmo script. Um exemplo frequente é quando há a demanda por aplicar uma mesma tarefa de limpeza de dados em diversas colunas do mesmo banco de dados. Pessoas mais experientes são acostumadas com o chamado `DRY: Don't Repeat Yourself`, isto é, não escreva o mesmo código repetidamente, faça abstrações, escreva módulos que possam ser reutilizados posteriormente. Se você não está acostumado com essas 3 letrinhas, melhor se acostumar.
+
+#### Ok, mas tudo tem jeito!
+
+O uso de `function` + [maps](https://en.wikipedia.org/wiki/Map_(higher-order_function) "Map - Wikipedia") são a segunda melhor alternativa para você evitar o construto maldito e a repetição de código -- atrás somente da vetorizacao, que é assunto para outro post --, a primeira faz com que a repetição de código seja desnecessaria, e aliada com a segunda, soluciona todos os problemas que faz com que loops sejam indesejados, inutilizando-os. Primeiro vamos para `functions`...
+
+#### Assim como uma industria...
+
+Para manter de forma simples eu não irei entrar em assuntos tecnicamente densos, e tentarei simplificar ao máximo possível os conceitos (computeiros, por favor, não me matem). Na verdade, não teremos conceito algum.
+
+![Esqueleto de uma funçao.](images/function.png "Como funciona uma funçao."){width="610"}
+
+Uma `function` funciona como uma máquina, ela recebe um argumento (ou não), e retorna aquele argumento apos alguma transformação. E sempre de forma previsivel, e sempre a mesma transformação. Idealmente se você inserir hoje um valor numa função, e inserir o mesmo valor, na mesma função, 2 anos no futuro, ela terá o mesmo retorno -- caso o código se mantenha inalterado. As `functions` são isoladas do ambiente em seu entorno, e é muito bom que continuem assim.
+
+E você ja usou muitas, na verdade, o R e escrito de uma forma em que quase tudo é uma função, desde coisas mais obvias como `base::sum()`, `dplyr::filter()`, ou `base::read.csv()`, até construtos mais complexos como os operadores `+`, `-` e `%>%`. Duvida? Olha aqui...
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+```
+
+```{r}
+print(`%>%`)
+```
+
+*Le pipe est une fonction.*
+
+Quando uma função é executada ela cria seu próprio ambiente, e de dentro dele é impossível[^1] acessar o que esta fora dele. Na prática isso é o que mantem ela blindada contra alterações no ambiente de trabalho, e lhe fornece garantias de que o resultado sempre será o esperado. Por exemplo...
+
+[^1]: Na verdade é bem possível acessar, nada muito dificil, mas você vai evitar ao máximo fazer isso.
+
+```{r}
+x<- 10000
+fun <- function(x) { x + 1 }
+print(fun(100))
+print(x)
+
+x<- 99999
+print(fun(100))
+print(x)
+```
+
+Perceba que mesmo que o valor fora de `fun()` seja alterado, `fun()` continua executando a mesma operação. O `x` dentro de `fun()` -- chamarei de $[x]$ -- está isolado do `x` fora de `fun()` -- somente $x$. Para melhor explicar, posso dizer que eles se encontram em ambientes diferentes. Enquanto $[x]$ se encontra encapsulado dentro de `fun()`, isolado do ambiente global, $x$ está no ambiente global. Vamos tentar observar isso no nosso código...
+
+```{r}
+
+x<- 10000 # x esta no ambiente global
+fun <- function(x) { x + 1 } # [x] esta encapsulada no contexto da função, e não consegue acessar x.
+
+```
+
+#### Ok. E a novidade?
+
+Revisando, nos fazemos funções quando...
+
+-   Se faz necessário repetir código mais de uma vez.
+
+-   Queremos iterar sobre uma sequência de valores
+
+Agora que estamos todos na mesma página, e sabemos quando escrever funções, podemos passar para o tópico principal aqui: o como substituir um loop. O quando não é uma questão. Sempre é possível fazer a substituição, escrever ela pode levar mais ou menos tempo a depender do seu costume com desenvolver uma `function`. Como dito por [Wickham](https://r4ds.had.co.nz/index.html), é um aprendizado constante e permanente, existe uma curva de aprendizado até ficar bom nessa coisa de abstrair código. A questão principal é que essa dor do aprendizado vai se pagar no futuro, em forma de dor de cabeça evitada.
+
+O nosso exemplo começará de onde paramos, uma soma simples. Se eu preciso somar `1` em cada valor de um vetor de números, eu posso fazer assim...
+
+```{r}
+vetor = c(1,2,3,4,5) # ou 1:5
+for(j in 1:length(vetor)) {
+  vetor[j] = vetor[j] + 1
+}
+vetor
+```
+
+Tenho aqui o resultado da minha soma de 1, $2,3,4,5,6$ . Mas perceba que para uma pequena operação, eu precisei fazer algo extremamente trabalhoso, e usar o `j` como índice, que se repetiu diversas vezes durante o código. Essa repetição de índice pode se tornar extremamente problemática, e muitos erros acontecem quando ela está presente. Uma pessoa com sono pode sem querer trocar o `j` por uma outra letra, e o encontrar desse equivoco pode levar horas -- ou mesmo dias --, com horas de trabalho sendo jogadas no lixo.
+
+A solução funcional para esse problema é feito por meio da função `map`, que faz parte da biblioteca `purrr`. A tarefa do `map` é bem simples, ele aplica uma função em cada elemento de um vetor qualquer -- como por exemplo, todas as colunas de um `data.frame`, ou elementos de uma `list`. Ou seja, se eu especificar uma função chamada `somaum()`, e mandar o `map` executar ela sobre um vetor numerico, o retorno será aqueles valores com 1 somado, veja...
+
+```{r}
+vetor = 1:5
+somaum <- function(x) {x + 1}
+
+purrr::map(.x = vetor, .f = somaum)
+# em purrr::map, o argumento que recebe o vetor chama-se ".x",
+# o argumento que recebe a function chama-se ".f".
+```
+
+Retornemos no resultado no próximo parágrafo, por enquanto perceba que eu não precisei em momento algum usar um indice -- no exemplo anterior: `j` -- para se referir aos valores. O `purrr` tem consiencia de que deve *mapear* o resultado em ordem, um depois do outro, e guardar o resultado de cada computação até o fim da operação, onde todas são retornadas em conjunto. Executar o mesmo `map` varias vezes retornara o mesmo resultado, com `loops` resultados diferentes podem acontecer.
+
+```{r}
+# Nosso map novamente retorna o mesmo valor!
+purrr::map(.x = vetor, .f = somaum)
+
+```
+
+Mas tentar executar o mesmo loop redefinir nosso vetor, nos retornará um resultado diferente (!), o que pode nos fazer ter resultados incorretos em caso de um misto de reexecução e falta de atenção da pessoa responsável por executar o código. Veja abaixo...
+
+```{r}
+vetor = c(1,2,3,4,5)
+for(j in 1:length(vetor)) {
+  vetor[j] = vetor[j] + 1
+}
+vetor
+```
+
+Resultado da primeira execução: $2,3,4,5,6$
+
+```{r}
+for(j in 1:length(vetor)) {
+  vetor[j] = vetor[j] + 1
+}
+vetor
+```
+
+Resultado da segunda execução: $4,5,6,7,8$
+
+Se você for uma pessoa atenta, perceberá que o tipo do retorno não é o de um vetor de `numerics`, mas sim o de uma **lista**[^2] composta por esses algarismos. E isso é importante, o `purrr::map()` sempre tera como retorno uma lista com os valores computados, e isso o torna previsivel, o tipo do objeto retornado sempre será `list`.
+
+[^2]: Caso não deseje uma lista, consulte a documentacao e veja os "type-specific maps": <https://purrr.tidyverse.org/reference/map.html>
+
+Outra vantagem da função é que ela interrompe a execução e discarta todo o resultado -- isto é, não faz nada -- caso encontre um erro. Esse comportamento embora seja irritante muitas vezes evita que erros passem despercebidos, estes que podem ter um impacto desastroso posteriormente caso não sejam detectados.
+
+#### Vamos parar por aqui?
+
+Hoje eu *tentei* mostrar a vocês o motivo de toda vez que alguem me pede para ler um código, e eu vejo um loop, eu tilto. Escrever uma função que faz a mesma operação muitas vezes e mais simples e nos leva a menos possiveis problemas durante a execução. Além disso, o debugging pode ser mais facil e a `function` ser mais eficiente. O problema da eficiência não foi abordado aqui, mas ele existe, e tem [relação com a forma com que o R manipula a memoria do computador](http://adv-r.had.co.nz/memory.html), um loop mal escrito pode ser problemático nesse sentido.
+
+Até a proxima.

@@ -12,6 +12,9 @@ comment: no
 toc: no
 draft: true
 autoCollapseToc: no
+mathjax: yes
+mathjaxEnableSingleDollar: yes
+mathjaxEnableAutoNumber: no
 postMetaInFooter: no
 hiddenFromHomePage: no
 contentCopyright: no
