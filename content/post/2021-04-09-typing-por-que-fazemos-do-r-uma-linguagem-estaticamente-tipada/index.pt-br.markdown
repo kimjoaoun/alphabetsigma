@@ -8,7 +8,7 @@ tags:
   - r
 lastmod: '2021-04-09T17:29:39-03:00'
 keywords: []
-description: ''
+description: 'Types are cool!'
 comment: no
 toc: no
 autoCollapseToc: no
@@ -16,16 +16,10 @@ postMetaInFooter: no
 hiddenFromHomePage: no
 contentCopyright: no
 reward: no
-mathjax: yes
+mathjax: no
 mathjaxEnableSingleDollar: yes
 mathjaxEnableAutoNumber: no
 hideHeaderAndFooter: no
-flowchartDiagrams:
-  enable: no
-  options: ''
-sequenceDiagrams:
-  enable: no
-  options: ''
 ---
 
 #### Contexto
@@ -62,14 +56,7 @@ library(typed)
 ```
 
 ```
-## 
-## Attaching package: 'typed'
-```
-
-```
-## The following object is masked from 'package:utils':
-## 
-##     ?
+## Warning: package 'typed' was built under R version 4.0.5
 ```
 
 ```r
@@ -118,6 +105,4 @@ add(1,1)
 
 Por hoje é isso. Teremos outros posts sobre o `Typed`, mas esse é só o primeiro, onde eu apresento para os que não estão familiarizados com a biblioteca.
 
-Abraço.  
-
-<!--more-->
+Abraço. 
