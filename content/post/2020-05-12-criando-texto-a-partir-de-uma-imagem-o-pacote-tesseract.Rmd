@@ -20,7 +20,7 @@ highlight: no
 autoCollapseToc: no
 postMetaInFooter: no
 hiddenFromHomePage: no
-contentCopyright: yes
+contentCopyright: no
 reward: no
 mathjax: no
 mathjaxEnableSingleDollar: no

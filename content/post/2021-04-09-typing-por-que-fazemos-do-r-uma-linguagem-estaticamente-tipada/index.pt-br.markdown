@@ -1,0 +1,123 @@
+---
+title: 'Typing: Entendendo a biblioteca typed e motivos para tipar'
+author: Joao Pedro Oliveira
+date: '2021-04-09'
+slug: []
+categories:
+tags:
+  - r
+lastmod: '2021-04-09T17:29:39-03:00'
+keywords: []
+description: ''
+comment: no
+toc: no
+autoCollapseToc: no
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+reward: no
+mathjax: yes
+mathjaxEnableSingleDollar: yes
+mathjaxEnableAutoNumber: no
+hideHeaderAndFooter: no
+flowchartDiagrams:
+  enable: no
+  options: ''
+sequenceDiagrams:
+  enable: no
+  options: ''
+---
+
+#### Contexto
+
+Nestas últimas semanas meu dia-a-dia de trabalho mudou radicalmente, após mais de 4 anos trabalhando com *ciencia de dados* em institutos de pesquisa e universidades, decidi trabalhar na iniciativa privada com Engenharia de Dados. Essa escolha aconteceu por vários motivos, entre eles a busca por aprender novas formas de aplicar meu conhecimento e também aprender mais sobre como manter e subir infraestrutura.
+
+Como todos sabem, o ritmo da indústria é outro. Enquanto em pesquisas o processo todo pode demorar meses (ou até anos), em empresas de tecnologia ocorrem entregas semanais, e muitas vezes mais de uma por semana. Isso faz com que novas formas de programar sejam lhe apresentadas em uma frequencia bem grande. E embora eu achasse que já estava escrevendo código em uma qualidade boa o suficiente para produçao, algumas alteraçoes no meu fluxo de escrita foram necessários. A velocidade em que as demandas ocorrem -- e a confiabilidade que os nossos dados devem ter pois servem de guia para decisão corporativa -- faz com que tenhamos de redobrar cuidados.
+
+A principal mudança, e que vai permear toda a nossa codebase de R na *`#firma`* é o uso de `types` quando estamos escrevendo nossas funçoes. E acreditamos que isso será uma prática que vai nos evitar problemas conforme a nossa codebase vai acumulando suas dezenas, centenas e milhares de linhas de código.
+
+#### O Problema
+
+O problema é que código grande é extremamente suscetível a quebrar. Todos que já programaram sabem que códigos quebram, e jogue uma pedra quem nunca teve um erro inesperado que lhe deixou em estado de completo desespero. Todavia isso é normal, e hoje já sabemos que o problema não é quebrar, é quebrar de forma não prevista e gerar resultados com as quais o resto do código não está pronto para lidar.
+
+Para evitar esse tipo de problema, programadores desenvolveram uma série de práticas que podem ser utilizadas para evitar que operações tenham retornos indesejados, por meio da adição de previsibilidade no comportamento de funções. Uma dessas práticas é o uso de tipagem.
+
+Sem entrar na parte técnica da coisa[^1] eu vou aqui cometer o absurdo de simplificar o "tipar" como: dizer ao computador qual o formato do valor que ele deve esperar em determinado campo. Sabe quando vai preencher um formulário, tem um campo chamado "Data de Nascimento", e ele não deixa inserir seu nome pois ali não está se esperando letras? É quase isso.
+
+[^1]: Pesquisa sobre teoria dos tipos (type theory) caso esteja interessado em conhecer mais a fundo.
+
+Queremos evitar que o usuário ou programador consiga enviar para processamento algo que nao está no campo apropriado. Também queremos ter certeza que caso de alguma forma ele envie, saibamos qual será o erro retornado e consigamos escrever um tratamento para que o software saiba contornar o problema que apareceu.
+
+#### A Solução
+
+A solução que encontramos para esse problema, na minha opinião, não é a ideal mas é a que temos. Ela vem por meio do uso da biblioteca `{typed}`, que adiciona sintaxe para o uso de tipagem estática no R. O meu principal problema com a biblioteca é justamente a forma como ele implementa essa sintaxe - qual não tenho propostas de possíveis melhorias e soluções - que causa estranheza em quem já tem familiaridade com a forma de declarar tipos em linguagens como TypeScript e Rust.
+
+O uso de tipos estáticos nas nossas `function` tem como objetivo evitar que erros decorrentes de falta de atenção do programador ocorram. O sistema de tipos estáticos serve para evitar que o computador tente realizar a operação `add(10, "banana")`, e isso vai ser evitado em tempo de compilação/interpretação, ou seja, no momento em que o código estiver sendo escrito escrito ou for compilado/interpretado, o interpretador ou o Language Server deve retornar que a *function* `add()` espera e aceita *somente* valores numéricos, e portanto uma modificação no código deve ser feita.
+
+Abaixo eu dou exemplos de como isso funciona, forçando o interpretador a me retornar erros por conta de uma inserção incorreta de tipos.
+
+
+```r
+library(typed)
+```
+
+```
+## 
+## Attaching package: 'typed'
+```
+
+```
+## The following object is masked from 'package:utils':
+## 
+##     ?
+```
+
+```r
+add <- Double() ? function (x= ? Double(), y= 1 ? Double()) {
+  x + y
+}
+
+add(10, "banana")
+```
+
+```
+## Error: In `add(10, "banana")` at `check_arg(y, Double())`:
+## wrong argument to function, type mismatch
+## `typeof(value)`: "character"
+## `expected`:      "double"
+```
+
+A função acima é bem boba, e ela tem como objetivo ilustrar \[1\] a sintaxe adicionada pelo `{typed}`, e também \[2\] o erro retornado quando há a inserção de tipos incorretos. Para tentar explicar o que está ocorrendo naquela declaração de função, irei quebra-lá em blocos:
+
+
+```r
+add <- Double() ? function(...) {} # Está declarando uma função que retornará sempre um valor do tipo Double.
+  
+add <- Double() ? function(x = ? Double(), ...) {} # Nessa função, o argumento "x" deverá ser do tipo Double, e nao possui valor padrao. 
+  
+add <- Double() ? function(x = ? Double(), y = 1 ? Double()) {}
+```
+
+A salvaguarda implementada também impedirá um retorno incorreto, onde é disparado um erro quando a função tenta retornar um tipo diferente do que se espera dela.
+
+
+```r
+add <- Double() ? function (x= ? Double(), y= 1 ? Double()) {
+  "batata"
+}
+
+add(1,1)
+```
+
+```
+## Error: In `add(1, 1)` at `check_output("batata", Double())`:
+## wrong return value, type mismatch
+## `typeof(value)`: "character"
+## `expected`:      "double"
+```
+
+Por hoje é isso. Teremos outros posts sobre o `Typed`, mas esse é só o primeiro, onde eu apresento para os que não estão familiarizados com a biblioteca.
+
+Abraço.  
+
+<!--more-->
