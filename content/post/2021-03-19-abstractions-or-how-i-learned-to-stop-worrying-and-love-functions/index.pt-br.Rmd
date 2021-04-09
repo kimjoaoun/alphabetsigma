@@ -111,7 +111,7 @@ for(j in 1:length(vetor)) {
 vetor
 ```
 
-Tenho aqui o resultado da minha soma de 1, $2,3,4,5,6$ . Mas perceba que para uma pequena operação, eu precisei fazer algo extremamente trabalhoso, e usar o `j` como índice, que se repetiu diversas vezes durante o código. Essa repetição de índice pode se tornar extremamente problemática, e muitos erros acontecem quando ela está presente. Uma pessoa com sono pode sem querer trocar o `j` por uma outra letra, e o encontrar desse equivoco pode levar horas -- ou mesmo dias --, com horas de trabalho sendo jogadas no lixo.
+Tenho aqui o resultado da minha soma de 1: $2,3,4,5,6$ . Mas perceba que para uma pequena operação, eu precisei fazer algo extremamente trabalhoso, e usar o `j` como índice, que se repetiu diversas vezes durante o código. Essa repetição de índice pode se tornar extremamente problemática, e muitos erros acontecem quando ela está presente. Uma pessoa com sono pode sem querer trocar o `j` por uma outra letra, e o encontrar desse equivoco pode levar horas -- ou mesmo dias --, com horas de trabalho sendo jogadas no lixo.
 
 A solução funcional para esse problema é feito por meio da função `map`, que faz parte da biblioteca `purrr`. A tarefa do `map` é bem simples, ele aplica uma função em cada elemento de um vetor qualquer -- como por exemplo, todas as colunas de um `data.frame`, ou elementos de uma `list`. Ou seja, se eu especificar uma função chamada `somaum()`, e mandar o `map` executar ela sobre um vetor numerico, o retorno será aqueles valores com 1 somado, veja...
 
@@ -124,7 +124,7 @@ purrr::map(.x = vetor, .f = somaum)
 # o argumento que recebe a function chama-se ".f".
 ```
 
-Retornemos no resultado no próximo parágrafo, por enquanto perceba que eu não precisei em momento algum usar um indice -- no exemplo anterior: `j` -- para se referir aos valores. O `purrr` tem consiencia de que deve *mapear* o resultado em ordem, um depois do outro, e guardar o resultado de cada computação até o fim da operação, onde todas são retornadas em conjunto. Executar o mesmo `map` varias vezes retornara o mesmo resultado, com `loops` resultados diferentes podem acontecer.
+Retornemos no resultado no próximo parágrafo, por enquanto perceba que eu não precisei em momento algum usar um indice -- no exemplo anterior: `j` -- para se referir aos valores. O `purrr` tem consciencia de que deve *mapear* o resultado em ordem, um depois do outro, e guardar o resultado de cada computação até o fim da operação, onde todas são retornadas em conjunto. Executar o mesmo `map` varias vezes retornara o mesmo resultado, com `loops` resultados diferentes podem acontecer.
 
 ```{r}
 # Nosso map novamente retorna o mesmo valor!
@@ -151,7 +151,7 @@ for(j in 1:length(vetor)) {
 vetor
 ```
 
-Resultado da segunda execução: $4,5,6,7,8$
+Resultado da segunda execução: $3,4,5,6,7$
 
 Se você for uma pessoa atenta, perceberá que o tipo do retorno não é o de um vetor de `numerics`, mas sim o de uma **lista**[^2] composta por esses algarismos. E isso é importante, o `purrr::map()` sempre tera como retorno uma lista com os valores computados, e isso o torna previsivel, o tipo do objeto retornado sempre será `list`.
 
@@ -163,4 +163,4 @@ Outra vantagem da função é que ela interrompe a execução e discarta todo o 
 
 Hoje eu *tentei* mostrar a vocês o motivo de toda vez que alguem me pede para ler um código, e eu vejo um loop, eu tilto. Escrever uma função que faz a mesma operação muitas vezes e mais simples e nos leva a menos possiveis problemas durante a execução. Além disso, o debugging pode ser mais facil e a `function` ser mais eficiente. O problema da eficiência não foi abordado aqui, mas ele existe, e tem [relação com a forma com que o R manipula a memoria do computador](http://adv-r.had.co.nz/memory.html), um loop mal escrito pode ser problemático nesse sentido.
 
-Até a proxima.
+Até a proxima. :)

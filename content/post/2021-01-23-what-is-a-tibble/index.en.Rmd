@@ -110,4 +110,3 @@ df
 Felizmente a solução para esses problemas, e seu nome é lindo: A tibble.
 
 Em uma próxima publicação, irei abordar a tibble as soluções que ela apresenta.
-
