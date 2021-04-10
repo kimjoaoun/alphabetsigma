@@ -44,9 +44,9 @@ Queremos evitar que o usuário ou programador consiga enviar para processamento 
 
 #### A Solução
 
-A solução que encontramos para esse problema, na minha opinião, não é a ideal mas é a que temos. Ela vem por meio do uso da biblioteca `{typed}`, que adiciona sintaxe para o uso de tipagem estática no R. O meu principal problema com a biblioteca é justamente a forma como ele implementa essa sintaxe - qual não tenho propostas de possíveis melhorias e soluções - que causa estranheza em quem já tem familiaridade com a forma de declarar tipos em linguagens como TypeScript e Rust.
+A solução que encontramos para esse problema, na minha opinião, não é a ideal mas é a que temos. Ela vem por meio do uso da biblioteca `{typed}`, que adiciona sintaxe para o uso de tipagem estática no R. O meu principal problema com a biblioteca é justamente a forma como ela implementa essa sintaxe - qual não tenho propostas de possíveis melhorias e soluções - que causa estranheza em quem já tem familiaridade com a forma de declarar tipos em linguagens como TypeScript e Rust.
 
-O uso de tipos estáticos nas nossas `function` tem como objetivo evitar que erros decorrentes de falta de atenção do programador ocorram. O sistema de tipos estáticos serve para evitar que o computador tente realizar a operação `add(10, "banana")`, e isso vai ser evitado em tempo de compilação/interpretação, ou seja, no momento em que o código estiver sendo escrito escrito ou for compilado/interpretado, o interpretador ou o Language Server deve retornar que a *function* `add()` espera e aceita *somente* valores numéricos, e portanto uma modificação no código deve ser feita.
+O uso de tipos estáticos nas nossas `function` tem como objetivo evitar que erros decorrentes de falta de atenção do programador ocorram. O sistema de tipos estáticos serve para evitar que o computador tente realizar a operação `add(10, "banana")`, e isso vai ser evitado em tempo de compilação/interpretação, ou seja, no momento em que o código estiver sendo escrito ou for compilado/interpretado, o interpretador ou o Language Server deve retornar que a *function* `add()` espera e aceita *somente* valores numéricos, e portanto uma modificação no código deve ser feita.
 
 Abaixo eu dou exemplos de como isso funciona, forçando o interpretador a me retornar erros por conta de uma inserção incorreta de tipos.
 
