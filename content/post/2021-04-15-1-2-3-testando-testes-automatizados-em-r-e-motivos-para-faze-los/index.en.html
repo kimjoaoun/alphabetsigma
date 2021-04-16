@@ -1,0 +1,83 @@
+---
+title: 1,2,3, Testando! - Testes automatizados em R, e motivos para fazê-los (pt. 1)
+author: Joao Pedro Oliveira
+date: '2021-04-15'
+slug: []
+categories:
+  - R
+tags:
+  - engineering
+Description: ''
+Tags: []
+Categories: []
+DisableComments: no
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="git-commit--m-agora_vai_7.r---fix-corrigido-n.5" class="section level2">
+<h2>git commit -m “agora_vai_7.R - fix corrigido n.5”</h2>
+<p>Provavelmente você já esteve na situação em que não confia em seu próprio código. Depois dele falhar uma dezena de vezes, é dificil olhar para algo que escreveu e que mesmo que tenha revisado dezenas de vezes difícil acreditar que nenhum erro passou. Um tipo que foi convertido erroneamente e preencheu sua base de dados com <code>NA</code>, uma vírgula que adiciona um argumento extra e que não deveria estar ali, um arquivo errado que foi importado (Será que aquele <code>dados*2</code> não foi escrito como <code>data*2</code> em um surto de desatenção?). Muitos erros possíveis, como evitar? Como impedir de que cheguem no seu cliente? Como impedir que infectem sua pesquisa e tornem seus resultados inválidos? Testes! Nesse post vamos aprender um pouco sobre os motivos para testar e dar uma sobrevoada pela biblioteca <code>{testthat}</code>.</p>
+<p>Testes automatizados <strong>sao</strong> formas de <strong>voc</strong>ê garantir que seu código está se comportando exatamente da forma como <strong>voc</strong>ê deseja e retornando o resultado esperado. Eles tem como objetivo garantir que nenhuma distorção está acontecendo na pipeline e que as informaçõessao confiáveis o suficiente para serem entregues ao cliente. Neles <strong>voce</strong> alimenta o computador com uma funçãoa ser testada e um resultado esperado quando <strong>voce</strong> insere determinado valor, como boas <strong>funções</strong> tendem a retornar <span class="math inline">\(f(x)\)</span> quando alimentadas com <span class="math inline">\(x\)</span>, é de se esperar que os testes passem quando tudo está ocorrendo perfeitamente.</p>
+<p>Em R, convencionou-se que os testes são feitos utilizando a biblioteca <code>{testthat}</code>, que fornece uma excelente API tanto para testes unitários, quanto para testes deintegração<strong>.</strong> Nesse post eu focarei em testes unitários, no futuro eu voltarei para falar mais sobre testes de integração. Ambos são imensamente importantes, mas aqui eu tento manter um assunto por post, ou acabo me extendendo demais.</p>
+<p>Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes […] <strong>sao funções</strong> que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes <strong>ações:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Preparam qualquer dado ou estado necessário.</p></li>
+<li><p>Executam o código a ser verificado.</p></li>
+<li><p>Conferem se o resultado do código é o esperado pelo desenvolvedor."</p></li>
+</ol>
+<p>Embora o Rnãotenha a mesma suite de testes <em>built-in</em> que o Rust possui, sempre conseguimos dar um jeitinho.</p>
+<div id="nosso-toolkit" class="section level3">
+<h3>Nosso toolkit</h3>
+<p>Como dito anteriormente, a principal biblioteca que utilizaremos é a <code>testthat</code>, que deve estar acompanhada da <code>usethis</code>, então para reproduzir os exemplos aqui dispostos deve possuir ambas instaladas. Também adotarei uma sintaxe diferente, como em alguns momentos as <strong>f</strong>unções geram efeitos colaterais, irei descrever o efeito gerado em itálico logo após o código executado.</p>
+<p>Digamos que eu possua um projeto<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> que está localizado no diretório que eu chamarei de <code>$JOBDIR/</code>, dentro dessa pasta eu possuo todos os arquivos essenciais para o meu trabalho. Dentro dessa pasta também tenho a pasta <code>R/</code>, onde estao os meus arquivos <code>.R</code>, que contém todo o código a ser executado.</p>
+</div>
+<div id="quando-é-23" class="section level3">
+<h3>Quando é 2+3?</h3>
+<p>Em um cenário que unico arquivo dentro de <code>R/</code>, é o <code>1_somador.R</code>, e dentro desse arquivo eu tenho somente uma <code>function</code> chamada <code>soma()</code>, como definida abaixo:</p>
+<pre class="r"><code>soma &lt;- function(x, y) {
+  x + y
+}</code></pre>
+<p>Se eu já tenho uma função funcional, a criação de um teste simples passa para a etapa de escrever o teste em si. Para fazer isso, executamos a função <code>usethis::use_testthat()</code> e logo depois <code>usethis::use_test("somador")</code>, onde o primeiro argumento é o nome do arquivo do teste a ser executado. O nome deve ser sempre descritivo da<code>função (ou bloco de funções</code>) a ser testada. Executar:</p>
+<pre class="r"><code>usethis::use_test(&quot;somador&quot;)</code></pre>
+<p>Irá gerar os seguintes efeitos colaterais:</p>
+<ul>
+<li><p>//&gt; Cria o diretório <code>tests/testthat/</code></p></li>
+<li><p>//&gt; Dentro do diretório é criado o arquivo <code>test-somador.R</code></p></li>
+</ul>
+<p>Ao abrir o arquivo, irá se deparar com algo diferente, um template automático será gerado, olhe um pouco, entenda como funciona e depois apague tudo, iremos refazer ele aqui.</p>
+<p>O primeiro passo é dizer para o o computador algo como “ei, aqui eu vou testar uma coisinha!”, e no <code>R</code>, nós fazemos isso por meio da função <code>testthat::test_that()</code>. Usando <code>test_that("testa a soma de valores decimais", {...})</code>, eu consigo fazer a sinalização necessária para a linguagem. Para efetivamente testar se minha <code>função</code> funciona, eu devo escrever o seguinte</p>
+<pre class="r"><code>library(testthat)
+test_that(&quot;testa a soma de valores decimais&quot;, # Aqui uma pequena descrição do teste
+                    {
+                      # Aqui o teste a ser executado.
+                      valor_retornado &lt;- soma(0.1 + 0.3)
+                      
+                      expect_identical(valor_retornado, 0.4)
+                      
+                    })</code></pre>
+<p>Opa, perceba que nós temos algo novo aí, a função <code>expect_identical</code> aparece pela primeira vez, possuindo o nome bem sugestivo, o que ela diz é que ao executar <code>valor_retornado</code> e capturar seu resultado, o <code>R</code> deverá comparar este com <code>0.4</code>, se os resultados forem iguais o teste passou, caso contrário houve uma falha. Na ocorrencia de falhas o programador deve voltar a função e verificar qual foi o problema.</p>
+<p>Curiosamente, ao contrário do que voce pode pensar, esse teste irá falhar. A falha na maioria dos casos é culpa do programador que não percebeu algum problema no decorrer do processo. No exemplo acima a falha tem uma origem, a <a href="https://en.wikipedia.org/wiki/IEEE_754" title="Wikipedia - IEEE 754"><strong>IEEE 754</strong></a>, que é uma norma técnica que define como devem ser feitas operações com valores de ponto flutuante (valores decimais), ou seja, os falores diferem na casa dos decimais por conta de regras de arredondamento. Até mesmo o erro gerado é estranho, veja…</p>
+<pre class="r"><code>testthat::expect_identical(0.1+0.2, 0.3)</code></pre>
+<pre><code>## Error: 0.1 + 0.2 not identical to 0.3.
+## Objects equal but not identical</code></pre>
+<p>Iguais mais nao identicos? Bom, realmente, o resultado teoricamente é igual:</p>
+<pre class="r"><code>0.1+0.2</code></pre>
+<pre><code>## [1] 0.3</code></pre>
+<p>Mas no fundo, para o computador, eles não são identicos e só um teste poderia lhe dizer isso pois a diferença não é nem exibida para nós.</p>
+<p>A propósito, uma forma de só conferir se são iguais (deixando para lá o fator <em>identico</em>), é por meio da função <code>testthat::expect_equal()</code>, que tem tarefa semelhante, mas esse post já está ficando longo demais, entao fica para a próxima.</p>
+<p>Vale lembrar que como estamos falando de testes unitários, os testes são feitos unidade por unidade, ou seja, umafunção de cada vez. O que eu recomendo é que cada conjunto de funções necessários para executar uma etapa da tarefa seja testada por arquivo, emboranãohaja uma obrigação disso ser seguido, eu acredito que o ganho em organização seja grande o suficiente para justificar a quantidade de arquivos. Portanto, nada de fazer os testes para um projeto inteiro todos em um arquivo só!</p>
+<p>Termino esse post perguntando se ainda possui tanta certeza de que todos os códigos que escreveu anteriormente, e não testou, estão corretos.</p>
+<div id="agradecimento." class="section level5">
+<h5>Agradecimento.</h5>
+<p>Por fim eu gostaria de agradecer Steve Klabnik, Carol Nichols e toda a comunidade de Rust, faço esse agradecimento pois esse post é <strong>fortemente</strong> inspirado no capítulo 11 do livro “The Rust Programming Language” (RPL), e é uma tentativa de adaptar para o R os ensinamentos que ele provem. Acredito que o RPL é uma das melhores obras de computação que eu já tive o prazer de ler, de lá tirei muitas das práticas que atualmente uso. Além disso, é um livro tao completo que até fazer testes ensinam. Obrigado Steve, Carol e comunidade Rust, agradeço principalmente pelas noites em que explodiram minha cabeça com algum conhecimento novo.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Aproveito aqui para lembrar o leitor de sempre usar os RStudio Projects em suas atividades, insular o código é importante muitas vezes.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

@@ -20,7 +20,7 @@ highlight: no
 autoCollapseToc: no
 postMetaInFooter: no
 hiddenFromHomePage: no
-contentCopyright: yes
+contentCopyright: no
 reward: no
 mathjax: no
 mathjaxEnableSingleDollar: no
@@ -35,9 +35,10 @@ sequenceDiagrams:
 
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
-no
+
 </div>
 
 <p><img src="/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-1-1.png" width="100%" style="display: block; margin: auto;" /></p>
@@ -89,19 +90,19 @@ library(&#39;purrr&#39;) # Programação Funcional</code></pre>
 <li>Logo depois eu crio um objeto chamado id, é nele em que armazenarei o resultado da extração das informações da identidade da nossa querida Maria Eduarda.</li>
 </ul>
 <p>Começarei usando a biblioteca <code>tesseract</code>, que faz a leitura de imagem e extrai o texto ali presente. Para que a Tesseract funcione é recomendado que os dados estejam alinhados, isto é, o texto precisa estar em linhas, texto na diagonal (ou de cabeça para baixo) pode gerar problemas, provavelmente irá. Uso o argumento <code>engine='por'</code>, que indica ao Tesseract que a linguagem do documento é português, assim o processamento é otimizado para nosso idioma. O Tesseract irá retornar o texto abaixo:</p>
-<pre><code>## [1] &quot;E S = =\nBERTRO. 52.2x4.654-1 PNSBE.o 04/DEZ/2021\nNove MARIA EDUARDA DA SILVA\n\nEDUARDO RIBEIRO DA SILVA\n\nANA CLAUDIA DA SILVA\n\nVITÓRIA - ES 01/DEZ/1989\n6c omcem C. NASC \&quot;LIV 84X — FLS 19X / TERM 14188X co07\n\nVITÓRIA Es\ncm 314.291.255-XX\nASSINATUBA DO DIRETOR 020X\n\n= c E =E = =\n&quot;</code></pre>
+<pre><code>## [1] &quot;E ES E E\nBENTO 52.2x4.654-1 BAA88 o 04/DE2/2021\nNove MARIA EDUARDA DA SILVA\n\nEDUARDO RIBEIRO DA SILVA\n\nANA CLAUDIA DA SILVA\n\nVITÓRIA - ES 01/DB2/1989\noc ofceu C. NASC \&quot;LIV 84X FLS 19X TERM 14188X C007\n\nVITÓRIA Es\nce 314.291.255-XX\nASSINATURA DO DIRETOR 020%\n\nE 5 o o E o\n&quot;</code></pre>
 <p>Logo após isso, eu irei passar a string por uma expressão regular com o objetivo de substituir o padrão ‘’ por um espaço em branco. O padrão indica ao programador que ali temos uma quebra de linha, mas não será util a nós, por isso a remoção.</p>
 <p>Então, crio uma <code>list</code> que agrupará das strings com o texto que faremos a extração por meio de expressões regulares. Uso expressões regulares para extrair os seguintes dados: <code>rg</code>, <code>cpf</code>, <code>datas</code> (expedição e nascimento), <code>doc_origem</code> - este último são os dados acerca da Certidão de Nascimento.</p>
 <p>Por fim, retiro as informações da <code>list</code>, usando <code>unlist()</code>, issso farácom que nossa lista se torne um conjunto de strings. E então uso a função <code>enframe</code> para criar uma <code>data.frame</code>- na verdade, uma <code>tibble</code> - com nossos dados.</p>
 <pre><code>## # A tibble: 6 x 2
-##   name       value                                                       
-##   &lt;chr&gt;      &lt;chr&gt;                                                       
-## 1 rg         &quot;52.2x4.654-1&quot;                                              
-## 2 nome       &quot;Nove MARIA EDUARDA DA SILVA&quot;                               
-## 3 datas1     &quot;04/DEZ/2021&quot;                                               
-## 4 datas2     &quot;01/DEZ/1989&quot;                                               
-## 5 cpf        &quot;314.291.255-XX&quot;                                            
-## 6 doc_origem &quot;C. NASC \&quot;LIV 84X - FLS 19X / TERM 14188X co07  VITORIA Es&quot;</code></pre>
+##   name       value                                                         
+##   &lt;chr&gt;      &lt;chr&gt;                                                         
+## 1 rg         &quot;52.2x4.654-1&quot;                                                
+## 2 nome       &quot;Nove MARIA EDUARDA DA SILVA&quot;                                 
+## 3 datas1     &quot;04/DE2/2021&quot;                                                 
+## 4 datas2     &quot;01/DB2/1989&quot;                                                 
+## 5 cpf        &quot;314.291.255-XX&quot;                                              
+## 6 doc_origem &quot;C. NASC \&quot;LIV 84X FLS 19X TERM 14188X C007  VITORIA Es ce 31&quot;</code></pre>
 <p>O resultado contudo não é satisfatório, como pode-se ver a nossa tabela não está em formato Tidy, o que dificulda nosso trabalho. Devemos agora tratar a tabela, tornando-a ideal para a manipulação usando o <code>dplyr</code> e o <code>tidyr</code>. Além disso, a nossa expressão regular também capturou um trecho ‘Nove’ que está anterior ao nome de Maria Eduarda, precisamos corrigir isso.</p>
 <pre class="r"><code>id %&gt;% 
   pivot_wider() %&gt;%  # &#39;gira&#39; a tabela, transformando-a em formato longo
@@ -112,7 +113,7 @@ library(&#39;purrr&#39;) # Programação Funcional</code></pre>
 <pre><code>## # A tibble: 1 x 6
 ##   rg       nome         exp      nasc    cpf      doc_origem                    
 ##   &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;                         
-## 1 52.2X4.… MARIA EDUAR… 04/DEZ/… 01/DEZ… 314.291… &quot;C. NASC \&quot;LIV 84X - FLS 19X …</code></pre>
+## 1 52.2X4.~ MARIA EDUAR~ 04/DE2/~ 01/DB2~ 314.291~ &quot;C. NASC \&quot;LIV 84X FLS 19X TE~</code></pre>
 <p>Agora aproveitamos da pivot_wider(), função nova do tidyr para rotacionar nossa tabela e transformar ela em um formato ideal. O que anteriormente era a primeira coluna, agora está nos nomes. O que era a segunda coluna, agora está em uma só linha. Finalmente, tidy!</p>
 <p>Contudo, o que eu mostrei anteriormente é que existe uma parte da frente da identidade da nossa querida Maria Eduarda. Vamos aproveitar para retirar a foto dela dali? Vai que você quer guardar uma 3x4 da Duda?</p>
 <p><img src="/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /></p>
@@ -123,9 +124,8 @@ library(&#39;purrr&#39;) # Programação Funcional</code></pre>
 rosto = image_detect_faces(img)
 
 plot(rosto, img, border = &quot;red&quot;, lwd = 3, col = &quot;white&quot;)</code></pre>
-<p><img src="/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-9-1.png" /><!-- --></p>
+<p><img src="/post/2020-05-12-criando-texto-a-partir-de-uma-imagem-o-pacote-tesseract_files/figure-html/unnamed-chunk-9-1.png" width="146" /></p>
 <p>Primeiro, uso a <code>magick::image_read()</code> para fazer a leitura da imagem, carregando-a na memória. Logo rotaciono a imagem para que ela fique de pé, a rotação é importante pois a nossa <code>image.libfacedetection</code> não reconhecerá a face caso a imagem esteja deitada.</p>
 <p>Passamos então a imagem já rotacionada à função <code>image_detect_faces()</code>, ela localizará onde estão as faces. Então uso a função <code>plot()</code> para marcar na nossa imagem onde está o rosto.</p>
 <p>Feito isso, temos nosso rosto, temos nossos dados.</p>
 <p>Abraços!</p>
-<!--more-->
