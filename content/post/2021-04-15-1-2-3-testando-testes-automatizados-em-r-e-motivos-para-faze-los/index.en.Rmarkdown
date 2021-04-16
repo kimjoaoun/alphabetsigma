@@ -32,7 +32,7 @@ Testes automatizados são formas de você garantir que seu código está se comp
 
 Em R, convencionou-se que os testes são feitos utilizando a biblioteca `{testthat}`, que fornece uma excelente API tanto para testes unitários, quanto para testes deintegração**.** Nesse post eu focarei em testes unitários, no futuro eu voltarei para falar mais sobre testes de integração. Ambos são imensamente importantes, mas aqui eu tento manter um assunto por post, ou acabo me extendendo demais.
 
-Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes [...] sãofunções que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes ações:
+Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes \[...\] sãofunções que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes ações:
 
 1.  Preparam qualquer dado ou estado necessário.
 
@@ -89,6 +89,8 @@ test_that("testa a soma de valores decimais", # Aqui uma pequena descrição do 
 ```
 
 Opa, perceba que nós temos algo novo aí, a função `expect_identical` aparece pela primeira vez, possuindo o nome bem sugestivo, o que ela diz é que ao executar `valor_retornado` e capturar seu resultado, o `R` deverá comparar este com `0.4`, se os resultados forem iguais o teste passou, caso contrário houve uma falha. Na ocorrencia de falhas o programador deve voltar a função e verificar qual foi o problema.
+
+Para executar os testes um simples `CTRL+SHIFT+D` (caso esteja usando RStudio) irá dar conta da tarefa, caso nao esteja, a `devtools::test()` faz o trabalho necessário.
 
 Curiosamente, ao contrário do que voce pode pensar, esse teste irá falhar. A falha na maioria dos casos é culpa do programador que não percebeu algum problema no decorrer do processo. No exemplo acima a falha tem uma origem, a [**IEEE 754**](https://en.wikipedia.org/wiki/IEEE_754 "Wikipedia - IEEE 754"), que é uma norma técnica que define como devem ser feitas operações com valores de ponto flutuante (valores decimais), ou seja, os falores diferem na casa dos decimais por conta de regras de arredondamento. Até mesmo o erro gerado é estranho, veja...
 
