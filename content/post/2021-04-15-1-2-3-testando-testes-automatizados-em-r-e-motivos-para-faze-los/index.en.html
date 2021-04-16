@@ -1,6 +1,7 @@
 ---
-title: 1,2,3, Testando! - Testes automatizados em R, e motivos para fazê-los (pt. 1)
-author: Joao Pedro Oliveira
+title: '1,2,3, Testando! - Testes automatizados em R, e motivos para fazê-los (pt. 1)'
+description: 'Nem sempre as coisas são o que aparentam ser...'
+author: João Pedro Oliveira
 date: '2021-04-15'
 slug: []
 categories:
@@ -10,18 +11,31 @@ tags:
 Description: ''
 Tags: []
 Categories: []
-DisableComments: no
+comment: no
+toc: no
+autoCollapseToc: no
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+reward: no
+mathjax: yes
+mathjaxEnableSingleDollar: yes
+mathjaxEnableAutoNumber: no
+hideHeaderAndFooter: no
 ---
 
 <script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
 
+<div id="TOC">
+
+</div>
 
 <div id="git-commit--m-agora_vai_7.r---fix-corrigido-n.5" class="section level2">
 <h2>git commit -m “agora_vai_7.R - fix corrigido n.5”</h2>
 <p>Provavelmente você já esteve na situação em que não confia em seu próprio código. Depois dele falhar uma dezena de vezes, é dificil olhar para algo que escreveu e que mesmo que tenha revisado dezenas de vezes difícil acreditar que nenhum erro passou. Um tipo que foi convertido erroneamente e preencheu sua base de dados com <code>NA</code>, uma vírgula que adiciona um argumento extra e que não deveria estar ali, um arquivo errado que foi importado (Será que aquele <code>dados*2</code> não foi escrito como <code>data*2</code> em um surto de desatenção?). Muitos erros possíveis, como evitar? Como impedir de que cheguem no seu cliente? Como impedir que infectem sua pesquisa e tornem seus resultados inválidos? Testes! Nesse post vamos aprender um pouco sobre os motivos para testar e dar uma sobrevoada pela biblioteca <code>{testthat}</code>.</p>
-<p>Testes automatizados <strong>sao</strong> formas de <strong>voc</strong>ê garantir que seu código está se comportando exatamente da forma como <strong>voc</strong>ê deseja e retornando o resultado esperado. Eles tem como objetivo garantir que nenhuma distorção está acontecendo na pipeline e que as informaçõessao confiáveis o suficiente para serem entregues ao cliente. Neles <strong>voce</strong> alimenta o computador com uma funçãoa ser testada e um resultado esperado quando <strong>voce</strong> insere determinado valor, como boas <strong>funções</strong> tendem a retornar <span class="math inline">\(f(x)\)</span> quando alimentadas com <span class="math inline">\(x\)</span>, é de se esperar que os testes passem quando tudo está ocorrendo perfeitamente.</p>
+<p>Testes automatizados são formas de você garantir que seu código está se comportando exatamente da forma como você deseja e retornando o resultado esperado. Eles tem como objetivo garantir que nenhuma distorção está acontecendo na pipeline e que as informaçõessao confiáveis o suficiente para serem entregues ao cliente. Neles você alimenta o computador com uma função a ser testada e um resultado esperado quando inserido determinado valor, como boas funções tendem a retornar <span class="math inline">\(f(x)\)</span> quando alimentadas com <span class="math inline">\(x\)</span>, é de se esperar que os testes passem quando tudo está ocorrendo perfeitamente.</p>
 <p>Em R, convencionou-se que os testes são feitos utilizando a biblioteca <code>{testthat}</code>, que fornece uma excelente API tanto para testes unitários, quanto para testes deintegração<strong>.</strong> Nesse post eu focarei em testes unitários, no futuro eu voltarei para falar mais sobre testes de integração. Ambos são imensamente importantes, mas aqui eu tento manter um assunto por post, ou acabo me extendendo demais.</p>
-<p>Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes […] <strong>sao funções</strong> que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes <strong>ações:</strong></p>
+<p>Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes […] sãofunções que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes ações:</p>
 <ol style="list-style-type: decimal">
 <li><p>Preparam qualquer dado ou estado necessário.</p></li>
 <li><p>Executam o código a ser verificado.</p></li>
@@ -30,7 +44,7 @@ DisableComments: no
 <p>Embora o Rnãotenha a mesma suite de testes <em>built-in</em> que o Rust possui, sempre conseguimos dar um jeitinho.</p>
 <div id="nosso-toolkit" class="section level3">
 <h3>Nosso toolkit</h3>
-<p>Como dito anteriormente, a principal biblioteca que utilizaremos é a <code>testthat</code>, que deve estar acompanhada da <code>usethis</code>, então para reproduzir os exemplos aqui dispostos deve possuir ambas instaladas. Também adotarei uma sintaxe diferente, como em alguns momentos as <strong>f</strong>unções geram efeitos colaterais, irei descrever o efeito gerado em itálico logo após o código executado.</p>
+<p>Como dito anteriormente, a principal biblioteca que utilizaremos é a <code>testthat</code>, que deve estar acompanhada da <code>usethis</code>, então para reproduzir os exemplos aqui dispostos deve possuir ambas instaladas. Também adotarei uma sintaxe diferente, como em alguns momentos as funções geram efeitos colaterais, irei descrever o efeito gerado em itálico logo após o código executado.</p>
 <p>Digamos que eu possua um projeto<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> que está localizado no diretório que eu chamarei de <code>$JOBDIR/</code>, dentro dessa pasta eu possuo todos os arquivos essenciais para o meu trabalho. Dentro dessa pasta também tenho a pasta <code>R/</code>, onde estao os meus arquivos <code>.R</code>, que contém todo o código a ser executado.</p>
 </div>
 <div id="quando-é-23" class="section level3">

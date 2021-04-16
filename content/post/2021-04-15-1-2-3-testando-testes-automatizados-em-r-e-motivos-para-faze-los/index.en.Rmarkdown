@@ -1,6 +1,7 @@
 ---
-title: 1,2,3, Testando! - Testes automatizados em R, e motivos para fazê-los (pt. 1)
-author: Joao Pedro Oliveira
+title: '1,2,3, Testando! - Testes automatizados em R, e motivos para fazê-los (pt. 1)'
+description: 'Nem sempre as coisas são o que aparentam ser...'
+author: João Pedro Oliveira
 date: '2021-04-15'
 slug: []
 categories:
@@ -10,18 +11,28 @@ tags:
 Description: ''
 Tags: []
 Categories: []
-DisableComments: no
+comment: no
+toc: no
+autoCollapseToc: no
+postMetaInFooter: no
+hiddenFromHomePage: no
+contentCopyright: no
+reward: no
+mathjax: yes
+mathjaxEnableSingleDollar: yes
+mathjaxEnableAutoNumber: no
+hideHeaderAndFooter: no
 ---
 
 ## git commit -m "agora_vai_7.R - fix corrigido n.5"
 
 Provavelmente você já esteve na situação em que não confia em seu próprio código. Depois dele falhar uma dezena de vezes, é dificil olhar para algo que escreveu e que mesmo que tenha revisado dezenas de vezes difícil acreditar que nenhum erro passou. Um tipo que foi convertido erroneamente e preencheu sua base de dados com `NA`, uma vírgula que adiciona um argumento extra e que não deveria estar ali, um arquivo errado que foi importado (Será que aquele `dados*2` não foi escrito como `data*2` em um surto de desatenção?). Muitos erros possíveis, como evitar? Como impedir de que cheguem no seu cliente? Como impedir que infectem sua pesquisa e tornem seus resultados inválidos? Testes! Nesse post vamos aprender um pouco sobre os motivos para testar e dar uma sobrevoada pela biblioteca `{testthat}`.
 
-Testes automatizados **sao** formas de **voc**ê garantir que seu código está se comportando exatamente da forma como **voc**ê deseja e retornando o resultado esperado. Eles tem como objetivo garantir que nenhuma distorção está acontecendo na pipeline e que as informaçõessao confiáveis o suficiente para serem entregues ao cliente. Neles **voce** alimenta o computador com uma funçãoa ser testada e um resultado esperado quando **voce** insere determinado valor, como boas **funções** tendem a retornar $f(x)$ quando alimentadas com $x$, é de se esperar que os testes passem quando tudo está ocorrendo perfeitamente.
+Testes automatizados são formas de você garantir que seu código está se comportando exatamente da forma como você deseja e retornando o resultado esperado. Eles tem como objetivo garantir que nenhuma distorção está acontecendo na pipeline e que as informaçõessao confiáveis o suficiente para serem entregues ao cliente. Neles você alimenta o computador com uma função a ser testada e um resultado esperado quando inserido determinado valor, como boas funções tendem a retornar $f(x)$ quando alimentadas com $x$, é de se esperar que os testes passem quando tudo está ocorrendo perfeitamente.
 
 Em R, convencionou-se que os testes são feitos utilizando a biblioteca `{testthat}`, que fornece uma excelente API tanto para testes unitários, quanto para testes deintegração**.** Nesse post eu focarei em testes unitários, no futuro eu voltarei para falar mais sobre testes de integração. Ambos são imensamente importantes, mas aqui eu tento manter um assunto por post, ou acabo me extendendo demais.
 
-Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes [...] **sao funções** que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes **ações:**
+Com o perdao pela repetição, cito aqui o The Rust Programming Language (RPL), que diz que "Testes [...] sãofunções que verificam que o código que não é teste está funcionando da maneira esperada, testes tipicamente perfomam as seguintes ações:
 
 1.  Preparam qualquer dado ou estado necessário.
 
@@ -33,7 +44,7 @@ Embora o Rnãotenha a mesma suite de testes *built-in* que o Rust possui, sempre
 
 ### Nosso toolkit
 
-Como dito anteriormente, a principal biblioteca que utilizaremos é a `testthat`, que deve estar acompanhada da `usethis`, então para reproduzir os exemplos aqui dispostos deve possuir ambas instaladas. Também adotarei uma sintaxe diferente, como em alguns momentos as **f**unções geram efeitos colaterais, irei descrever o efeito gerado em itálico logo após o código executado.
+Como dito anteriormente, a principal biblioteca que utilizaremos é a `testthat`, que deve estar acompanhada da `usethis`, então para reproduzir os exemplos aqui dispostos deve possuir ambas instaladas. Também adotarei uma sintaxe diferente, como em alguns momentos as funções geram efeitos colaterais, irei descrever o efeito gerado em itálico logo após o código executado.
 
 Digamos que eu possua um projeto[^1] que está localizado no diretório que eu chamarei de `$JOBDIR/`, dentro dessa pasta eu possuo todos os arquivos essenciais para o meu trabalho. Dentro dessa pasta também tenho a pasta `R/`, onde estao os meus arquivos `.R`, que contém todo o código a ser executado.
 
